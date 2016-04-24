@@ -1,0 +1,10 @@
+{
+    "name": "bloomkit/bloomkit",
+    "license": "MIT",
+    "description": "Bloomkit PHP Framework",
+    "keywords": ["framework", "bloomkit"],  
+    "type": "project",
+    "require": {
+        "php": ">=5.5.9",
+    }
+}
