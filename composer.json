@@ -1,10 +1,21 @@
 {
     "name": "bloomkit/bloomkit",
-    "license": "MIT",
     "description": "Bloomkit PHP Framework",
-    "keywords": ["framework", "bloomkit"],  
+    "keywords": ["framework", "bloomkit"],
+    "homepage": "http://www.bloomkit.org",
     "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+          "name": "Probelix GmbH",
+          "email": "bloomkit@probelix.de",
+          "homepage": "www.probelix.de"
+        }    
+    ],          
     "require": {
         "php": ">=5.5.9"
-    }
+    },    
+    "autoload": {
+        "psr-4": {"Bloomkit": "src/Bloomkit/"}
+    }    
 }
