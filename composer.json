@@ -16,6 +16,6 @@
         "php": ">=5.5.9"
     },    
     "autoload": {
-        "psr-4": {"Bloomkit": "src/Bloomkit/"}
+        "psr-4": {"Bloomkit\\": "src/Bloomkit/"}
     }    
 }
