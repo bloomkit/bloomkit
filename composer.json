@@ -5,13 +5,6 @@
     "homepage": "http://www.bloomkit.org",
     "type": "project",
     "license": "MIT",
-    "authors": [
-        {
-          "name": "Probelix GmbH",
-          "email": "bloomkit@probelix.de",
-          "homepage": "http://www.probelix.de"
-        }    
-    ],          
     "require": {
         "php": ">=5.5.9"
     },    
