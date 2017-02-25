@@ -1,6 +1,8 @@
 <?php
 namespace Bloomkit\Core\Application;
 
+use Bloomkit\Core\Application\Exception\DiInstantiationException;
+
 class Container implements \ArrayAccess
 {
 
@@ -14,9 +16,7 @@ class Container implements \ArrayAccess
 
     protected $bindings = array();
 
-    protected $aliases = array();
-
-    protected $services = array();
+    protected $aliases = array();   
 
     protected $rules = array();
 
@@ -72,14 +72,14 @@ class Container implements \ArrayAccess
     /**
      * Set an alias for a value
      *
-     * @param string $alias            
      * @param string $value            
+     * @param string $alias            
      */
-    public function setAlias($alias, $value)
+    public function setAlias($value, $alias)
     {
         $this->aliases[$alias] = $this->normalize($value);
     }
-
+    
     /**
      * Add a binding (eg register a closure for an interface)
      *
@@ -101,18 +101,22 @@ class Container implements \ArrayAccess
     }
     
     /**
-     * Returns the alias for an abstract
+     * Returns the alias for a value
      *
-     * @param string $abstract
+     * @param string $value
      * 
      * @return string 
      */
-    public function getAlias($abstract)
+    public function getAlias($value)
     {
-        if (isset($this->aliases[$abstract]))
-            return ($this->aliases[$abstract]);
+        $alias = array_search($value, $this->aliases);
+        if($alias==FALSE)
+            return $value;
+        return $alias;
+        if (isset($this->aliases[$value]))
+            return ($this->aliases[$value]);
         else
-            return $abstract;
+            return $value;
     }
     
     /**
@@ -126,13 +130,16 @@ class Container implements \ArrayAccess
     public function make($abstract, array $parameters = [])
     {
         $abstract = $this->normalize($abstract);
-        $abstract = $this->getAlias($abstract);
+        $alias = $this->getAlias($abstract);
         
-        if (isset($this->values[$abstract]))
-            return $this->values[$abstract];
+        if ($alias!==$abstract)
+        {        
+            if (isset($this->values[$alias]))
+                return $this->values[$alias];
         
-        if (isset($this->factories[$abstract]))
-            return $this->resolveFactory($abstract);
+            if (isset($this->factories[$alias]))
+                return $this->resolveFactory($alias);
+        }
         
         $concrete = $this->resolveAbstract($abstract);
         
@@ -241,7 +248,7 @@ class Container implements \ArrayAccess
      * 
      * @return mixed
      */
-    public function call($callback, array $parameters = [])
+    protected function call($callback, array $parameters = [])
     {
         $parameters = $this->getCallbackParameters($callback, $parameters);
         return call_user_func_array($callback, $parameters);
@@ -255,9 +262,9 @@ class Container implements \ArrayAccess
      * 
      * @return object
      * 
-     * @throws \Exception If target is not instantiable  
+     * @throws DiInstantiationException If target is not instantiable  
      */
-    public function createObject($class, array $parameters = [])
+    protected function createObject($class, array $parameters = [])
     {
         $r = new \ReflectionClass($class);
         
@@ -273,7 +280,7 @@ class Container implements \ArrayAccess
             } else {
                 $message = "Cannot create [$class] ";
             }
-            throw new \Exception($message);
+            throw new DiInstantiationException($message);
         }
         
         return $r->newInstanceArgs($parameters);
@@ -325,16 +332,6 @@ class Container implements \ArrayAccess
         $this->factories[$key] = compact('factory', 'shared');
     }
     
-    /**
-     * Register a ServiceProvider to the container
-     *
-     * @param ServiceProviderInterface $service
-     */
-    protected function registerService(ServiceProviderInterface $service)
-    {
-        $service->register();
-        $this->services[] = $service;
-    }
     
     /**
      * Check for rules or bindings for an abstract and resolve it if available
