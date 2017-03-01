@@ -5,22 +5,45 @@ use Bloomkit\Core\Application\Exception\DiInstantiationException;
 
 class Container implements \ArrayAccess
 {
+	/**
+	 * @var array
+	 */	
+    protected $keys = [];
 
-    protected $keys = array();
+    /**
+     * @var array
+     */    
+    protected $values = [];
 
-    protected $values = array();
+    /**
+     * @var array
+     */    
+    protected $instances = [];
 
-    protected $instances = array();
+    /**
+     * @var array
+     */    
+    protected $factories = [];
 
-    protected $factories = array();
+    /**
+     * @var array
+     */    
+    protected $bindings = [];
 
-    protected $bindings = array();
+    /**
+     * @var array
+     */    
+    protected $aliases = [];
 
-    protected $aliases = array();   
+    /**
+     * @var array
+     */    
+    protected $rules = [];
 
-    protected $rules = array();
-
-    protected $buildStack = array();
+    /**
+     * @var array
+     */    
+    protected $buildStack = [];
 
     /**
      * Returns a container element (Mapper for array-access)

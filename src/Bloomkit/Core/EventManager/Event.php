@@ -10,7 +10,7 @@ class Event
     protected $eventManager;    
 
     /**
-     * Return the status of the stopProcessing Flag
+     * Return the status of the stopProcessing flag
      *
      * @return boolean
      */
@@ -20,7 +20,7 @@ class Event
     }
 
     /**
-     * Set the stopProcessing Flag
+     * Set the stopProcessing flag
      */
     public function stopProcessing()
     {
