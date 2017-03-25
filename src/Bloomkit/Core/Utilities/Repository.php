@@ -216,6 +216,20 @@ class Repository implements \ArrayAccess, \Iterator
     {
         $this->set($key, null);
     }
+
+    /**
+     * Remove an item from the repository
+     */
+    public function remove($key) {
+        if (is_null($key))
+            return $default;
+        
+        if (array_key_exists($key, $this->items))
+        {
+            unset($this->items[$key]);
+            return;
+        }                     
+    }
     
     /**
      * Iterator function: Set position to 0

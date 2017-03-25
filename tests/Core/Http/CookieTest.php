@@ -30,14 +30,14 @@ class CookieTest extends TestCase
     {
         $expire = new \DateTime();               
         $cookie = new Cookie('name','value',$expire);
-        $this->assertEquals($cookie->getExpiresTime(), $expire->format('U'));
+        $this->assertEquals($expire->format('U'), $cookie->getExpiresTime());
     }
     
     public function testExpireString()
     {
         $expire = '2017-03-25 00:00:00';
         $cookie = new Cookie('name','value',$expire);
-        $this->assertEquals($cookie->getExpiresTime(), strtotime($expire));
+        $this->assertEquals(strtotime($expire), $cookie->getExpiresTime());
     }
     
     public function testCreate()
@@ -52,15 +52,15 @@ class CookieTest extends TestCase
         $raw        = true; 
         $sameSite   = 'strict';
         $cookie     = new Cookie($name, $value, $expire, $path, $domain, $secureOnly, $httpOnly, $raw, $sameSite);
-        $this->assertEquals($cookie->getName(), $name);
-        $this->assertEquals($cookie->getValue(), $value);
-        $this->assertEquals($cookie->getPath(), $path);
-        $this->assertEquals($cookie->getDomain(), $domain);
-        $this->assertEquals($cookie->isSecureOnly(), $secureOnly);
-        $this->assertEquals($cookie->isHttpOnly(), $httpOnly);
-        $this->assertEquals($cookie->isRaw(), $raw);
-        $this->assertEquals($cookie->getSameSite(), $sameSite);
-        $this->assertEquals($cookie->getExpiresTime(), strtotime($expire));
+        $this->assertEquals($name, $cookie->getName());
+        $this->assertEquals($value, $cookie->getValue());
+        $this->assertEquals($path, $cookie->getPath());
+        $this->assertEquals($domain, $cookie->getDomain());
+        $this->assertEquals($secureOnly, $cookie->isSecureOnly());
+        $this->assertEquals($httpOnly, $cookie->isHttpOnly());
+        $this->assertEquals($raw, $cookie->isRaw());
+        $this->assertEquals($sameSite, $cookie->getSameSite());
+        $this->assertEquals(strtotime($expire), $cookie->getExpiresTime());
     }
     
     public function testExpired()
@@ -69,11 +69,11 @@ class CookieTest extends TestCase
         $value      = 'value';
         $expire     = strtotime('+1 hour', time());
         $cookie     = new Cookie($name, $value, $expire);
-        $this->assertEquals($cookie->isExpired(), false);
+        $this->assertEquals(false, $cookie->isExpired());
         
         $expire     = strtotime('-1 hour', time());
         $cookie     = new Cookie($name, $value, $expire);
-        $this->assertEquals($cookie->isExpired(), true);
+        $this->assertEquals(true, $cookie->isExpired());
     }
 }
 

@@ -13,8 +13,8 @@ class ContainerTest extends TestCase
         $container = new Container;
         $container->foo1 = 'bar1';
         $container['foo2'] = 'bar2';
-        $this->assertEquals($container->foo1, 'bar1');
-        $this->assertEquals($container['foo2'], 'bar2');
+        $this->assertEquals('bar1', $container->foo1);
+        $this->assertEquals('bar2', $container['foo2']);
     }
         
     public function testAccessInvalidKey()
@@ -104,7 +104,7 @@ class ContainerTest extends TestCase
 	{
 	    $container = new Container;
 	    $container->setAlias(ContainerTestClassOne::class, 'foo');
-	    $this->assertEquals($container->getAlias(ContainerTestClassOne::class), 'foo');
+	    $this->assertEquals('foo', $container->getAlias(ContainerTestClassOne::class));
 	}
 }
 
