@@ -9,7 +9,7 @@
         "php": ">=5.5.9"
     },
     "require-dev": {
-        "phpunit-phpunit": ">=5.5"
+        "phpunit/phpunit": "~5.7"
     },        
     "autoload": {
         "psr-4": {"Bloomkit\\": "src/Bloomkit/"}
