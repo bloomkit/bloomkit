@@ -17,7 +17,7 @@ class HttpExceptionEvent extends HttpEvent
     public function __construct(HttpRequest $request, \Exception $exception)
     {
         parent::__construct($request);
-        $this->setException($e);
+        $this->setException($exception);
     }
 
     /**

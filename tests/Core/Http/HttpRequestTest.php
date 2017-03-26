@@ -39,6 +39,26 @@ class HttpRequestTest extends TestCase
             unset($request);
         }
     }
+    
+    public function testBaseUrl()
+    {        
+        $_SERVER = [];
+        $_SERVER['SCRIPT_FILENAME'] = '/foo/htdocs/bar/index.php';
+        $_SERVER['SCRIPT_NAME']     = '/foobar/index.php';
+        $_SERVER['REQUEST_URI']     = '/foobar/';
+        $request = HttpRequest::processRequest();
+        $this->assertEquals('/foobar', $request->getBaseUrl());
+    }
+    
+    public function testPathUrl()
+    {
+        $_SERVER = [];
+        $_SERVER['SCRIPT_FILENAME'] = '/foo/htdocs/bar/index.php';
+        $_SERVER['SCRIPT_NAME']     = '/foobar/index.php';
+        $_SERVER['REQUEST_URI']     = '/foobar/test?var=1';
+        $request = HttpRequest::processRequest();
+        $this->assertEquals('/test', $request->getPathUrl());
+    }
 
     public function testGetClientIp()
     {

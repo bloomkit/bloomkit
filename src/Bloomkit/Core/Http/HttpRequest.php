@@ -7,6 +7,11 @@ use Bloomkit\Core\Http\Exceptions\SuspiciousOperationException;
 class HttpRequest
 {
     /**
+     * @var string
+     */
+    protected $baseUrl;    
+    
+    /**
      * @var Repository
      */
     protected $cookies;
@@ -31,6 +36,11 @@ class HttpRequest
      */
     protected $httpMethod;
 
+    /**
+     * @var string
+     */
+    protected $pathUrl;
+    
     /**
      * @var Repository
      */
@@ -76,6 +86,23 @@ class HttpRequest
                 $headers[$key] = $value;
         }
         $this->headers = new Repository($headers);        
+    }
+    
+    /**
+     * Returns the root URL from which this request is executed.
+     *
+     * The base URL never ends with a /.
+     *
+     * This is similar to getBasePath(), except that it also includes the
+     * script filename (e.g. index.php) if one exists.
+     *
+     * @return string The raw URL (i.e. not urldecoded)
+     */
+    public function getBaseUrl()
+    {
+        if (null === $this->baseUrl)
+            $this->baseUrl = $this->prepareBaseUrl();
+        return $this->baseUrl;
     }
     
     /**
@@ -175,6 +202,27 @@ class HttpRequest
     }
     
     /**
+     * Returns the path being requested relative to the executed script.
+     *
+     * The path info always starts with a /.
+     *
+     * Suppose this request is instantiated from /mysite on localhost:
+     *
+     *  * http://localhost/mysite              returns an empty string
+     *  * http://localhost/mysite/about        returns '/about'
+     *  * http://localhost/mysite/enco%20ded   returns '/enco%20ded'
+     *  * http://localhost/mysite/about?var=1  returns '/about'
+     *
+     * @return string The raw path (i.e. not urldecoded)
+     */
+    public function getPathUrl()
+    {
+        if (null === $this->pathUrl)
+            $this->pathUrl = $this->preparePathUrl();
+        return $this->pathUrl;
+    }
+    
+    /**
      * Returns the server port
      *
      * @return string
@@ -241,6 +289,30 @@ class HttpRequest
     {
         return $this->session;
     }    
+    
+    /**
+     * Returns the prefix as encoded in the string when the string starts with
+     * the given prefix, false otherwise.
+     *
+     * @param string $string The urlencoded string
+     * @param string $prefix The prefix not encoded
+     *
+     * @return string|false The prefix as it is encoded in $string, or false
+     */
+    private function getUrlencodedPrefix($string, $prefix)
+    {
+        if (empty($prefix))
+            return false;
+        
+        if (strpos(rawurldecode($string), $prefix) !== 0)
+            return false;
+             
+        $len = strlen($prefix);
+        if (preg_match("#^(%[[:xdigit:]]{2}|.){{$len}}#", $string, $match))
+            return $match[0];
+
+        return false;
+    }
 
     /**
      * Check if a session is set
@@ -289,6 +361,106 @@ class HttpRequest
                 $requestUri = substr($requestUri, strlen($prefix));
         }
         $this->serverParams->set('REQUEST_URI', $requestUri);
+    }
+    
+    /**
+     * Prepares the base url
+     *
+     * @return string
+     */
+    protected function prepareBaseUrl()
+    {
+        $filename = basename($this->serverParams->get('SCRIPT_FILENAME'));
+    
+        if (basename($this->serverParams->get('SCRIPT_NAME')) === $filename)
+            $baseUrl = $this->serverParams->get('SCRIPT_NAME');
+        elseif (basename($this->serverParams->get('PHP_SELF')) === $filename)
+            $baseUrl = $this->serverParams->get('PHP_SELF');
+        elseif (basename($this->serverParams->get('ORIG_SCRIPT_NAME')) === $filename)
+            $baseUrl = $this->serverParams->get('ORIG_SCRIPT_NAME');
+        else {
+            $path = $this->serverParams->get('PHP_SELF', '');
+            $file = $this->serverParams->get('SCRIPT_FILENAME', '');
+            $segs = explode('/', trim($file, '/'));
+            $segs = array_reverse($segs);
+            $index = 0;
+            $last = count($segs);
+            $baseUrl = '';
+            do {
+                $seg = $segs[$index];
+                $baseUrl = '/' . $seg . $baseUrl;
+                ++ $index;
+            } while ($last > $index && (false !== $pos = strpos($path, $baseUrl)) && 0 != $pos);
+        }
+        
+        // Does the baseUrl have anything in common with the request_uri?
+        $requestUri = $this->getRequestUri();
+        if(empty($requestUri))
+            return '';
+            
+        $prefix = $this->getUrlencodedPrefix($requestUri, $baseUrl);
+
+        if ($baseUrl && $prefix!== false) {
+            // full $baseUrl matches
+            return $prefix;
+        }
+
+        $prefix = $this->getUrlencodedPrefix($requestUri, dirname($baseUrl));
+        if ($baseUrl && $prefix!== false) {
+            // directory portion of $baseUrl matches
+            return rtrim($prefix, '/');
+        }
+
+        $truncatedRequestUri = $requestUri;
+        if (false !== $pos = strpos($requestUri, '?')) {
+            $truncatedRequestUri = substr($requestUri, 0, $pos);
+        }
+
+        $basename = basename($baseUrl);
+        if (empty($basename) || ! strpos(rawurldecode($truncatedRequestUri), $basename)) {
+            // no match whatsoever; set it blank
+            return '';
+        }
+
+        // If using mod_rewrite or ISAPI_Rewrite strip the script filename
+        // out of baseUrl. $pos !== 0 makes sure it is not matching a value
+        // from PATH_INFO or QUERY_STRING
+        if (strlen($requestUri) >= strlen($baseUrl) && (false !== $pos = strpos($requestUri, $baseUrl)) && $pos !== 0) {
+            $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
+        }
+
+        return rtrim($baseUrl, '/');
+    }
+    
+    /**
+     * Prepares the path url
+     *
+     * @return string
+     */
+    protected function preparePathUrl()
+    {
+        // Basis-URL ermitteln (z.B: /myapp/rest.php)
+        $baseUrl = $this->getBaseUrl();
+        
+        // Request-URI ermitteln (z.B: /myapp/rest.php/test/a?param=value)
+        $requestUri = $this->getRequestUri();
+        
+        if (is_null($requestUri))
+            return '/';
+        
+        // Evtl. vorhandene URL-Parameter aus Request-URI entfernen
+        if ($pos = strpos($requestUri, '?'))
+            $requestUri = substr($requestUri, 0, $pos);
+
+        if (is_null($baseUrl))
+            return $requestUri;
+
+        $pathInfo = substr($requestUri, strlen($baseUrl));
+         
+        if ($pathInfo === FALSE)
+            return '/';
+        else
+            return $pathInfo;
     }
     
     /**
