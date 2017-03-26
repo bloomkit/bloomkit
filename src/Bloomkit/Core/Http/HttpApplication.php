@@ -15,5 +15,13 @@ class HttpApplication extends Application
     {
         parent::__construct($appName, $appVersion, $basePath, $config);        
     }
+    
+    /**
+     * Start the application
+     */
+    public function run()
+    {
+        $request = HttpRequest::processRequest();
+    }
 
 }
