@@ -4,9 +4,9 @@ namespace Bloomkit\Core\EventManager;
 class Event
 {
     /**
-     * @var bool
+     * @var EventManager
      */
-    private $stopProcessing = FALSE;    
+    protected $eventManager;
 
     /**
      * @var string
@@ -14,10 +14,20 @@ class Event
     private $name = '';     
     
     /**
-     * @var EventManager
+     * @var bool
      */
-    protected $eventManager;    
+    private $stopProcessing = FALSE;    
 
+    /**
+     * Return the event name
+     *
+     * @result string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
     /**
      * Return the status of the stopProcessing flag
      *
@@ -26,14 +36,6 @@ class Event
     public function getStopProcessing()
     {
         return $this->stopProcessing;
-    }
-
-    /**
-     * Set the stopProcessing flag
-     */
-    public function stopProcessing()
-    {
-        $this->stopProcessing = TRUE;
     }
 
     /**
@@ -47,16 +49,6 @@ class Event
     }
 
     /**
-     * Return the event name
-     *
-     * @result string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Set the event name
      *
      * @param string $name
@@ -64,5 +56,13 @@ class Event
     public function setName($name)
     {
         $this->name = $name;
+    }
+    
+    /**
+     * Set the stopProcessing flag
+     */
+    public function stopProcessing()
+    {
+        $this->stopProcessing = TRUE;
     }
 }

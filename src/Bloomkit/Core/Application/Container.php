@@ -5,9 +5,9 @@ use Bloomkit\Core\Application\Exception\DiInstantiationException;
 
 class Container implements \ArrayAccess
 {
-	/**
-	 * @var array
-	 */	
+    /**
+     * @var array
+     */	
     protected $keys = [];
 
     /**
