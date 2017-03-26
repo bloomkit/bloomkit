@@ -49,6 +49,10 @@ class Application extends Container
     
         $this->register('app', $this);
         $this->registerFactory('config', 'Bloomkit\Core\Utilities\Repository', true);
+        $this->registerFactory('eventManager', 'Bloomkit\Core\EventManager\EventManager', true);
+        
+        $this->setAlias('Bloomkit\Core\Application\Application', 'app');
+        $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');        
     }
         
     /**
@@ -59,6 +63,16 @@ class Application extends Container
     public function getConfig()
     {
         return $this['config'];
+    }
+    
+    /**
+     * Returns the event manager
+     * 
+     * @return \Bloomkit\Core\EventManager\EventManager;
+     */
+    public function getEventManager()
+    {
+        return $this['eventManager'];
     }
     
     /**
