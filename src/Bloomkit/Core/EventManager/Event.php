@@ -3,10 +3,19 @@ namespace Bloomkit\Core\EventManager;
 
 class Event
 {
+    /**
+     * @var bool
+     */
     private $stopProcessing = FALSE;    
 
-    private $name;     
+    /**
+     * @var string
+     */
+    private $name = '';     
     
+    /**
+     * @var EventManager
+     */
     protected $eventManager;    
 
     /**
