@@ -1,5 +1,4 @@
 <?php
-
 namespace Bloomkit\Tests\Http;
 
 use Bloomkit\Core\Http\Cookie;
