@@ -76,9 +76,13 @@ class EventManager
     private function getListenerReflectionInfo($listener)
     {
         $result['file'] = null;
-        $result['line'] = null;        
+        $result['line'] = null;       
+                
         try {
-            $reflection = new \ReflectionFunction($listener);
+            if (is_array($listener))
+                $reflection = new \ReflectionMethod($listener[0],$listener[1]);
+            else 
+                $reflection = new \ReflectionFunction($listener);
             $result['line'] = $reflection->getStartLine();
             $result['file'] = $reflection->getFileName();
         } catch (\Exception $e) {
