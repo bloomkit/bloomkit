@@ -19,6 +19,16 @@ class Event
     private $stopProcessing = FALSE;    
 
     /**
+     * @var mixed
+     */
+    private $tracerEvent;
+
+    /**
+     * @var mixed
+     */
+    private $tracerListener;
+    
+    /**
      * Return the event name
      *
      * @result string
@@ -37,7 +47,27 @@ class Event
     {
         return $this->stopProcessing;
     }
-
+    
+    /**
+     * Return the tracer event
+     *
+     * @return mixed
+     */
+    public function getTracerEvent()
+    {
+        return $this->tracerEvent;
+    }
+    
+    /**
+     * Return the tracer listener event
+     *
+     * @return mixed
+     */
+    public function getTracerListenerEvent()
+    {
+        return $this->tracerListener;
+    }
+    
     /**
      * Set the event manager
      *
@@ -56,6 +86,26 @@ class Event
     public function setName($name)
     {
         $this->name = $name;
+    }
+    
+    /**
+     * Set the tracer event
+     *
+     * @param mixed $tracerEvent
+     */
+    public function setTracerEvent($tracerEvent)
+    {
+        $this->tracerEvent = $tracerEvent;
+    }
+    
+    /**
+     * Set the tracer listener event
+     *
+     * @param mixed $tracerEvent
+     */
+    public function setTracerListenerEvent($tracerEvent)
+    {
+        $this->tracerEvent = $tracerListener;
     }
     
     /**
