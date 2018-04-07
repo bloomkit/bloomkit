@@ -76,6 +76,16 @@ class HttpResponse
     }
     
     /**
+     * Return the content
+     *
+     * @return Repository
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+    
+    /**
      * Return the status code
      *
      * @return int

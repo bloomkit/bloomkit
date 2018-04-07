@@ -325,6 +325,17 @@ class HttpRequest
     }
     
     /**
+     * Check if request is made by https
+     *
+     * @return boolean
+     */
+    public function isSecure()
+    {
+        $https = $this->getServerParams()->get('HTTPS');
+        return !empty($https) && 'off' !== strtolower($https);
+    }    
+    
+    /**
      * Normalize the requestUri by handling server-specific Http-headers
      */
     protected function normalizeRequestUri()
