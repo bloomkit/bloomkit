@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Tests\Application;
+namespace Bloomkit\Core\Http\Tests;
 
 use Bloomkit\Core\Http\HttpApplication;
 use PHPUnit\Framework\TestCase;

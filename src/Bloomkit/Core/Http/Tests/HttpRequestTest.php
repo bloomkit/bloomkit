@@ -1,5 +1,5 @@
 <?php
-namespace Bloomkit\Tests\Http;
+namespace Bloomkit\Core\Http\Tests;
 
 use Bloomkit\Core\Http\HttpRequest;
 use PHPUnit\Framework\TestCase;

@@ -1,5 +1,5 @@
 <?php
-namespace Bloomkit\Tests\Utilities;
+namespace Bloomkit\Core\Utilities\Tests;
 
 use Bloomkit\Core\Utilities\Repository;
 use PHPUnit\Framework\TestCase;

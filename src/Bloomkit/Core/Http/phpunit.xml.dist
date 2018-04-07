@@ -13,7 +13,7 @@
          verbose="true"
 >
     <testsuites>
-        <testsuite name="Bloomkit/Core/Utilities Test Suite">            
+        <testsuite name="Bloomkit/Core/Http Test Suite">            
             <directory suffix="Test.php">./Tests/</directory>
         </testsuite>
     </testsuites>

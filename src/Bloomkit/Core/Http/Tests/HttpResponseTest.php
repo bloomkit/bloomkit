@@ -1,10 +1,9 @@
 <?php
 
-namespace Bloomkit\Tests\Http;
+namespace Bloomkit\Core\Http\Tests;
 
 use Bloomkit\Core\Http\HttpResponse;
 use PHPUnit\Framework\TestCase;
-use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Http\Cookie;
 
 class HttpResponseTest extends TestCase
