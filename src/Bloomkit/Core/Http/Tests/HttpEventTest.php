@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Http\Tests;
 
 use Bloomkit\Core\Http\HttpRequest;
@@ -14,7 +15,7 @@ class HttpEventTest extends TestCase
         $event = new HttpEvent($request);
         $this->assertEquals($request, $event->getRequest());
     }
-        
+
     public function testSetResponse()
     {
         $request = HttpRequest::processRequest();
@@ -28,4 +29,3 @@ class HttpEventTest extends TestCase
         $this->assertEquals($response, $event->getResponse());
     }
 }
-

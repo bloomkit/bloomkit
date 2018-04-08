@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Http;
 
 use Bloomkit\Core\Utilities\Repository;
@@ -9,28 +10,28 @@ class HttpRequest
     /**
      * @var string
      */
-    protected $baseUrl;    
-    
+    protected $baseUrl;
+
     /**
      * @var Repository
      */
     protected $cookies;
-    
+
     /**
      * @var Repository
      */
     protected $files;
-    
+
     /**
      * @var Repository
      */
     protected $getParams;
-    
+
     /**
      * @var Repository
      */
     protected $headers;
-    
+
     /**
      * @var string
      */
@@ -40,35 +41,35 @@ class HttpRequest
      * @var string
      */
     protected $pathUrl;
-    
+
     /**
      * @var Repository
      */
     protected $postParams;
-    
+
     /**
      * @var string
      */
     protected $requestUri;
-        
+
     /**
      * @var Repository
      */
     protected $serverParams;
-        
+
     /**
      * @var SessionInterface
      */
     protected $session;
-    
+
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param array $server     SERVER Parameter ($_SERVER)
-     * @param array $get        GET Parameter ($_GET)
-     * @param array $post       POST Parameter ($_POST)
-     * @param array $cookies    COOKIE Parameter ($_COOKIE)
-     * @param array $files      FILES Parameter ($_FILES)
+     * @param array $server  SERVER Parameter ($_SERVER)
+     * @param array $get     GET Parameter ($_GET)
+     * @param array $post    POST Parameter ($_POST)
+     * @param array $cookies COOKIE Parameter ($_COOKIE)
+     * @param array $files   FILES Parameter ($_FILES)
      */
     public function __construct(array $server = [], array $get = [], array $post = [], array $cookies = [], array $files = [])
     {
@@ -77,17 +78,18 @@ class HttpRequest
         $this->cookies = new Repository($cookies);
         $this->files = new Repository($files);
         $this->serverParams = new Repository($server);
-        
+
         $headers = [];
         foreach ($server as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0)
+            if (0 === strpos($key, 'HTTP_')) {
                 $headers[substr($key, 5)] = $value;
-            else if (strpos($key, 'CONTENT_') === 0)
+            } elseif (0 === strpos($key, 'CONTENT_')) {
                 $headers[$key] = $value;
+            }
         }
-        $this->headers = new Repository($headers);        
+        $this->headers = new Repository($headers);
     }
-    
+
     /**
      * Returns the root URL from which this request is executed.
      *
@@ -100,13 +102,15 @@ class HttpRequest
      */
     public function getBaseUrl()
     {
-        if (null === $this->baseUrl)
+        if (null === $this->baseUrl) {
             $this->baseUrl = $this->prepareBaseUrl();
+        }
+
         return $this->baseUrl;
     }
-    
+
     /**
-     * Returns the client ip
+     * Returns the client ip.
      *
      * @return string
      */
@@ -116,7 +120,7 @@ class HttpRequest
     }
 
     /**
-     * Returns the request cookies
+     * Returns the request cookies.
      *
      * @return Repository
      */
@@ -124,9 +128,9 @@ class HttpRequest
     {
         return $this->cookies;
     }
-    
+
     /**
-     * Returns the FILES parameters
+     * Returns the FILES parameters.
      *
      * @return Repository
      */
@@ -134,9 +138,9 @@ class HttpRequest
     {
         return $this->files;
     }
-    
+
     /**
-     * Returns the GET parameters
+     * Returns the GET parameters.
      *
      * @return Repository
      */
@@ -144,9 +148,9 @@ class HttpRequest
     {
         return $this->getParams;
     }
-    
+
     /**
-     * Returns the HTTP-headers
+     * Returns the HTTP-headers.
      *
      * @return Repository
      */
@@ -154,53 +158,57 @@ class HttpRequest
     {
         return $this->headers;
     }
-    
+
     /**
-     * Returns the Host being requested (host + maybe port, no scheme)
+     * Returns the Host being requested (host + maybe port, no scheme).
      *
      * @param bool $forcePort
      *
      * @return string
      */
-    public function getHost($forcePort = FALSE)
-    {              
+    public function getHost($forcePort = false)
+    {
         $host = $this->serverParams->get('SERVER_NAME', '');
-        if ($host == '')
+        if ('' == $host) {
             $host = $this->serverParams->get('SERVER_ADDR', '');
-        
+        }
+
         // trim and remove port number from host
         // host is lowercase as per RFC 952/2181
         $host = strtolower(preg_replace('/:\d+$/', '', trim($host)));
-        
+
         // as the host can come from the user (HTTP_HOST and depending on the configuration, SERVER_NAME too can come from the user)
         // check that it does not contain forbidden characters (see RFC 952 and RFC 2181)
         // use preg_replace() instead of preg_match() to prevent DoS attacks with long host names
         if ($host && '' !== preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host)) {
             throw new SuspiciousOperationException(sprintf('Invalid Host "%s".', $host));
         }
-        
-        $port  = $this->getPort();
-        $https = strtolower($this->serverParams->get('HTTPS',''));
+
+        $port = $this->getPort();
+        $https = strtolower($this->serverParams->get('HTTPS', ''));
 
         //If the default port is used an forcedPort = false return only the host without port
-        if (!isset($port)||((!$forcePort) && (($https == 'on' && $port == 443) || ($https !== 'on' && $port == 80))))
+        if (!isset($port) || ((!$forcePort) && (('on' == $https && 443 == $port) || ('on' !== $https && 80 == $port)))) {
             return $host;
-        
+        }
+
         return $host.':'.$port;
     }
 
     /**
-     * Returns the HTTP-Method (GET, POST, etc)
+     * Returns the HTTP-Method (GET, POST, etc).
      *
      * @return string
      */
     public function getHttpMethod()
     {
-        if (is_null($this->httpMethod))
+        if (is_null($this->httpMethod)) {
             $this->httpMethod = strtoupper($this->serverParams->get('REQUEST_METHOD', 'GET'));
+        }
+
         return $this->httpMethod;
     }
-    
+
     /**
      * Returns the path being requested relative to the executed script.
      *
@@ -217,13 +225,15 @@ class HttpRequest
      */
     public function getPathUrl()
     {
-        if (null === $this->pathUrl)
+        if (null === $this->pathUrl) {
             $this->pathUrl = $this->preparePathUrl();
+        }
+
         return $this->pathUrl;
     }
-    
+
     /**
-     * Returns the server port
+     * Returns the server port.
      *
      * @return string
      */
@@ -231,9 +241,9 @@ class HttpRequest
     {
         return $this->serverParams->get('SERVER_PORT');
     }
-    
+
     /**
-     * Returns the POST parameters
+     * Returns the POST parameters.
      *
      * @return Repository
      */
@@ -241,37 +251,38 @@ class HttpRequest
     {
         return $this->postParams;
     }
-    
+
     /**
-     * Returns the requestUri
+     * Returns the requestUri.
      *
      * @return HttpRequest
      */
     public function getRequestUri()
     {
-        if (is_null($this->requestUri))
-        {
+        if (is_null($this->requestUri)) {
             $this->normalizeRequestUri();
             $this->requestUri = $this->serverParams->get('REQUEST_URI');
         }
+
         return $this->requestUri;
     }
-    
+
     /**
-     * Returns the scheme (https/http)
+     * Returns the scheme (https/http).
      *
      * @return string
      */
     public function getScheme()
     {
-        if ((strtolower($this->serverParams->get('HTTPS','')) == 'on') || ( $this->getPort() == '443'))
+        if (('on' == strtolower($this->serverParams->get('HTTPS', ''))) || ('443' == $this->getPort())) {
             return 'https';
-        else
+        } else {
             return 'http';
+        }
     }
-   
+
     /**
-     * Returns the SERVER parameters
+     * Returns the SERVER parameters.
      *
      * @return Repository
      */
@@ -279,17 +290,17 @@ class HttpRequest
     {
         return $this->serverParams;
     }
-    
+
     /**
-     * Returns the Session
+     * Returns the Session.
      *
      * @return SessionInterface|null The session
      */
     public function getSession()
     {
         return $this->session;
-    }    
-    
+    }
+
     /**
      * Returns the prefix as encoded in the string when the string starts with
      * the given prefix, false otherwise.
@@ -301,21 +312,24 @@ class HttpRequest
      */
     private function getUrlencodedPrefix($string, $prefix)
     {
-        if (empty($prefix))
+        if (empty($prefix)) {
             return false;
-        
-        if (strpos(rawurldecode($string), $prefix) !== 0)
+        }
+
+        if (0 !== strpos(rawurldecode($string), $prefix)) {
             return false;
-             
+        }
+
         $len = strlen($prefix);
-        if (preg_match("#^(%[[:xdigit:]]{2}|.){{$len}}#", $string, $match))
+        if (preg_match("#^(%[[:xdigit:]]{2}|.){{$len}}#", $string, $match)) {
             return $match[0];
+        }
 
         return false;
     }
 
     /**
-     * Check if a session is set
+     * Check if a session is set.
      *
      * @return boolean
      */
@@ -323,24 +337,25 @@ class HttpRequest
     {
         return isset($this->session);
     }
-    
+
     /**
-     * Check if request is made by https
+     * Check if request is made by https.
      *
      * @return boolean
      */
     public function isSecure()
     {
         $https = $this->getServerParams()->get('HTTPS');
+
         return !empty($https) && 'off' !== strtolower($https);
-    }    
-    
+    }
+
     /**
-     * Normalize the requestUri by handling server-specific Http-headers
+     * Normalize the requestUri by handling server-specific Http-headers.
      */
     protected function normalizeRequestUri()
     {
-        $requestUri = '';        
+        $requestUri = '';
         if ($this->headers->has('X_ORIGINAL_URL')) {
             // IIS with Microsoft Rewrite
             $requestUri = $this->headers->get('X_ORIGINAL_URL');
@@ -352,7 +367,7 @@ class HttpRequest
             // IIS with ISAPI_Rewrite
             $requestUri = $this->headers->get('X_REWRITE_URL');
             $this->headers->remove('X_REWRITE_URL');
-        } elseif ($this->serverParams->get('IIS_WasUrlRewritten') == '1' && $this->serverParams->get('UNENCODED_URL','') != '') {
+        } elseif ('1' == $this->serverParams->get('IIS_WasUrlRewritten') && '' != $this->serverParams->get('UNENCODED_URL', '')) {
             // IIS7 with URL Rewrite: make sure we get the unencoded url (double slash problem)
             $requestUri = $this->serverParams->get('UNENCODED_URL');
             $this->serverParams->remove('UNENCODED_URL');
@@ -360,36 +375,38 @@ class HttpRequest
         } elseif ($this->serverParams->has('ORIG_PATH_INFO')) {
             // IIS5 with PHP as CGI
             $requestUri = $this->serverParams->get('ORIG_PATH_INFO');
-            $qryStr = $this->serverParams->get('QUERY_STRING','');
-            if ($qryStr != '')
-                $requestUri .= '?' . $qryStr;
+            $qryStr = $this->serverParams->get('QUERY_STRING', '');
+            if ('' != $qryStr) {
+                $requestUri .= '?'.$qryStr;
+            }
             $this->serverParams->remove('ORIG_PATH_INFO');
-        } 
+        }
         if ($this->serverParams->has('REQUEST_URI')) {
             $requestUri = $this->serverParams->get('REQUEST_URI');
             $prefix = $this->getScheme().'://'.$this->getHost();
-            if (strpos($requestUri, $prefix) === 0)
+            if (0 === strpos($requestUri, $prefix)) {
                 $requestUri = substr($requestUri, strlen($prefix));
+            }
         }
         $this->serverParams->set('REQUEST_URI', $requestUri);
     }
-    
+
     /**
-     * Prepares the base url
+     * Prepares the base url.
      *
      * @return string
      */
     protected function prepareBaseUrl()
     {
         $filename = basename($this->serverParams->get('SCRIPT_FILENAME'));
-    
-        if (basename($this->serverParams->get('SCRIPT_NAME')) === $filename)
+
+        if (basename($this->serverParams->get('SCRIPT_NAME')) === $filename) {
             $baseUrl = $this->serverParams->get('SCRIPT_NAME');
-        elseif (basename($this->serverParams->get('PHP_SELF')) === $filename)
+        } elseif (basename($this->serverParams->get('PHP_SELF')) === $filename) {
             $baseUrl = $this->serverParams->get('PHP_SELF');
-        elseif (basename($this->serverParams->get('ORIG_SCRIPT_NAME')) === $filename)
+        } elseif (basename($this->serverParams->get('ORIG_SCRIPT_NAME')) === $filename) {
             $baseUrl = $this->serverParams->get('ORIG_SCRIPT_NAME');
-        else {
+        } else {
             $path = $this->serverParams->get('PHP_SELF', '');
             $file = $this->serverParams->get('SCRIPT_FILENAME', '');
             $segs = explode('/', trim($file, '/'));
@@ -399,25 +416,26 @@ class HttpRequest
             $baseUrl = '';
             do {
                 $seg = $segs[$index];
-                $baseUrl = '/' . $seg . $baseUrl;
-                ++ $index;
+                $baseUrl = '/'.$seg.$baseUrl;
+                ++$index;
             } while ($last > $index && (false !== $pos = strpos($path, $baseUrl)) && 0 != $pos);
         }
-        
+
         // Does the baseUrl have anything in common with the request_uri?
         $requestUri = $this->getRequestUri();
-        if(empty($requestUri))
+        if (empty($requestUri)) {
             return '';
-            
+        }
+
         $prefix = $this->getUrlencodedPrefix($requestUri, $baseUrl);
 
-        if ($baseUrl && $prefix!== false) {
+        if ($baseUrl && false !== $prefix) {
             // full $baseUrl matches
             return $prefix;
         }
 
         $prefix = $this->getUrlencodedPrefix($requestUri, dirname($baseUrl));
-        if ($baseUrl && $prefix!== false) {
+        if ($baseUrl && false !== $prefix) {
             // directory portion of $baseUrl matches
             return rtrim($prefix, '/');
         }
@@ -428,7 +446,7 @@ class HttpRequest
         }
 
         $basename = basename($baseUrl);
-        if (empty($basename) || ! strpos(rawurldecode($truncatedRequestUri), $basename)) {
+        if (empty($basename) || !strpos(rawurldecode($truncatedRequestUri), $basename)) {
             // no match whatsoever; set it blank
             return '';
         }
@@ -436,15 +454,15 @@ class HttpRequest
         // If using mod_rewrite or ISAPI_Rewrite strip the script filename
         // out of baseUrl. $pos !== 0 makes sure it is not matching a value
         // from PATH_INFO or QUERY_STRING
-        if (strlen($requestUri) >= strlen($baseUrl) && (false !== $pos = strpos($requestUri, $baseUrl)) && $pos !== 0) {
+        if (strlen($requestUri) >= strlen($baseUrl) && (false !== $pos = strpos($requestUri, $baseUrl)) && 0 !== $pos) {
             $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
         }
 
         return rtrim($baseUrl, '/');
     }
-    
+
     /**
-     * Prepares the path url
+     * Prepares the path url.
      *
      * @return string
      */
@@ -452,30 +470,34 @@ class HttpRequest
     {
         // Basis-URL ermitteln (z.B: /myapp/rest.php)
         $baseUrl = $this->getBaseUrl();
-        
+
         // Request-URI ermitteln (z.B: /myapp/rest.php/test/a?param=value)
         $requestUri = $this->getRequestUri();
-        
-        if (is_null($requestUri))
-            return '/';
-        
-        // Evtl. vorhandene URL-Parameter aus Request-URI entfernen
-        if ($pos = strpos($requestUri, '?'))
-            $requestUri = substr($requestUri, 0, $pos);
 
-        if (is_null($baseUrl))
+        if (is_null($requestUri)) {
+            return '/';
+        }
+
+        // Evtl. vorhandene URL-Parameter aus Request-URI entfernen
+        if ($pos = strpos($requestUri, '?')) {
+            $requestUri = substr($requestUri, 0, $pos);
+        }
+
+        if (is_null($baseUrl)) {
             return $requestUri;
+        }
 
         $pathInfo = substr($requestUri, strlen($baseUrl));
-         
-        if ($pathInfo === FALSE)
+
+        if (false === $pathInfo) {
             return '/';
-        else
+        } else {
             return $pathInfo;
+        }
     }
-    
+
     /**
-     * Create and return a HttpRequest from php superglobals
+     * Create and return a HttpRequest from php superglobals.
      *
      * @return HttpRequest
      */
@@ -483,9 +505,9 @@ class HttpRequest
     {
         return new HttpRequest($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
     }
-    
+
     /**
-     * Set a session
+     * Set a session.
      *
      * @param SessionInterface $session The Session
      */
@@ -493,4 +515,4 @@ class HttpRequest
     {
         $this->session = $session;
     }
-} 
+}

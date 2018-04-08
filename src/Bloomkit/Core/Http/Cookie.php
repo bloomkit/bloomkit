@@ -1,8 +1,9 @@
 <?php
+
 namespace Bloomkit\Core\Http;
 
 class Cookie
-{   
+{
     /**
      * @var domain
      */
@@ -12,39 +13,39 @@ class Cookie
      * @var int
      */
     protected $expire;
-    
+
     /**
      * @var bool
      */
     protected $httpOnly;
-    
+
     /**
      * @var bool
      */
     protected $isRaw;
-    
+
     /**
      * @var string
      */
-    protected $name;    
-    
+    protected $name;
+
     /**
      * @var string
      */
     protected $path;
-    
+
     /**
      * @var bool
      */
     protected $secureOnly;
-    
+
     /**
      * @var mixed|null
      */
     protected $value;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string                        $name       The name of the cookie
      * @param string|null                   $value      The value of the cookie
@@ -61,31 +62,32 @@ class Cookie
     public function __construct($name, $value = null, $expire = 0, $path = '/', $domain = null, $secureOnly = false, $httpOnly = true, $raw = false, $sameSite = null)
     {
         // from PHP source code
-        if (preg_match("/[=,; \t\r\n\013\014]/", $name))
+        if (preg_match("/[=,; \t\r\n\013\014]/", $name)) {
             throw new \InvalidArgumentException(sprintf('The cookie name "%s" contains invalid characters.', $name));
-        if (empty($name))
+        }
+        if (empty($name)) {
             throw new \InvalidArgumentException('The cookie name cannot be empty.');
-        
+        }
         // convert expiration time to a Unix timestamp
         if ($expire instanceof \DateTimeInterface) {
             $expire = $expire->format('U');
         } elseif (!is_numeric($expire)) {
             $expire = strtotime($expire);
-            if ($expire === FALSE) {
+            if (false === $expire) {
                 throw new \InvalidArgumentException('The cookie expiration time is not valid.');
             }
         }
-        $this->name         = $name;
-        $this->value        = $value;
-        $this->domain       = $domain;
-        $this->sameSite     = $sameSite;
-        $this->expire       = 0 < $expire ? (int) $expire : 0;
-        $this->path         = empty($path) ? '/' : $path;
-        $this->secureOnly   = (bool) $secureOnly;        
-        $this->httpOnly     = (bool) $httpOnly;
-        $this->raw          = (bool) $raw;
+        $this->name = $name;
+        $this->value = $value;
+        $this->domain = $domain;
+        $this->sameSite = $sameSite;
+        $this->expire = 0 < $expire ? (int) $expire : 0;
+        $this->path = empty($path) ? '/' : $path;
+        $this->secureOnly = (bool) $secureOnly;
+        $this->httpOnly = (bool) $httpOnly;
+        $this->raw = (bool) $raw;
     }
-    
+
     /**
      * Gets the domain that the cookie is available to.
      *
@@ -95,9 +97,9 @@ class Cookie
     {
         return $this->domain;
     }
-    
+
     /**
-     * Gets the time the cookie expires
+     * Gets the time the cookie expires.
      *
      * @return int
      */
@@ -105,31 +107,33 @@ class Cookie
     {
         return $this->expire;
     }
-    
+
     /**
-     * Gets the max-age attribute
+     * Gets the max-age attribute.
      *
      * @return int
      */
     public function getMaxAge()
     {
-        if ($this->expire !== 0)
+        if (0 !== $this->expire) {
             return $this->expire - time();
-        return 0; 
+        }
+
+        return 0;
     }
-    
+
     /**
-     * Gets the name of the cookie
+     * Gets the name of the cookie.
      *
      * @return string
      */
     public function getName()
     {
         return $this->name;
-    }    
-    
+    }
+
     /**
-     * Gets the path on the server in which the cookie will be available on
+     * Gets the path on the server in which the cookie will be available on.
      *
      * @return string
      */
@@ -137,9 +141,9 @@ class Cookie
     {
         return $this->path;
     }
-       
+
     /**
-     * Gets the SameSite attribute
+     * Gets the SameSite attribute.
      *
      * @return string|null
      */
@@ -147,19 +151,19 @@ class Cookie
     {
         return $this->sameSite;
     }
-    
+
     /**
-     * Gets the value of the cookie
+     * Gets the value of the cookie.
      *
      * @return mixed|null
      */
     public function getValue()
     {
         return $this->value;
-    }   
-        
+    }
+
     /**
-     * Whether this cookie is expired
+     * Whether this cookie is expired.
      *
      * @return bool
      */
@@ -167,9 +171,9 @@ class Cookie
     {
         return $this->expire < time();
     }
-    
+
     /**
-     * Checks whether the cookie will be made accessible only through the HTTP protocol
+     * Checks whether the cookie will be made accessible only through the HTTP protocol.
      *
      * @return bool
      */
@@ -177,9 +181,9 @@ class Cookie
     {
         return $this->httpOnly;
     }
-    
+
     /**
-     * Checks if the cookie value should be sent with no url encoding
+     * Checks if the cookie value should be sent with no url encoding.
      *
      * @return bool
      */
@@ -187,9 +191,9 @@ class Cookie
     {
         return $this->raw;
     }
-    
+
     /**
-     * Checks whether the cookie should only be transmitted over a secure HTTPS connection from the client
+     * Checks whether the cookie should only be transmitted over a secure HTTPS connection from the client.
      *
      * @return bool
      */

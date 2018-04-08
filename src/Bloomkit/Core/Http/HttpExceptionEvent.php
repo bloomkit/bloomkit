@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Http;
 
 class HttpExceptionEvent extends HttpEvent
@@ -9,10 +10,10 @@ class HttpExceptionEvent extends HttpEvent
     private $exception;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param HttpRequest   $request
-     * @param \Exception    $exception
+     * @param HttpRequest $request
+     * @param \Exception  $exception
      */
     public function __construct(HttpRequest $request, \Exception $exception)
     {
@@ -21,8 +22,8 @@ class HttpExceptionEvent extends HttpEvent
     }
 
     /**
-     * Returns the exception
-     * 
+     * Returns the exception.
+     *
      * @return \Exception
      */
     public function getException()
@@ -31,9 +32,9 @@ class HttpExceptionEvent extends HttpEvent
     }
 
     /**
-     * Set the exception
+     * Set the exception.
      *
-     * @param \Exception    $exception
+     * @param \Exception $exception
      */
     public function setException(\Exception $exception)
     {

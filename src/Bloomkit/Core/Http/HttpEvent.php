@@ -1,9 +1,8 @@
 <?php
+
 namespace Bloomkit\Core\Http;
 
 use Bloomkit\Core\EventManager\Event;
-use Bloomkit\Core\Http\HttpRequest;
-use Bloomkit\Core\Http\HttpResponse;
 
 class HttpEvent extends Event
 {
@@ -18,9 +17,9 @@ class HttpEvent extends Event
     private $response;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param HttpRequest   $request
+     * @param HttpRequest $request
      */
     public function __construct(HttpRequest $request)
     {
@@ -28,7 +27,7 @@ class HttpEvent extends Event
     }
 
     /**
-     * Return the http-request
+     * Return the http-request.
      *
      * @return HttpRequest
      */
@@ -38,7 +37,7 @@ class HttpEvent extends Event
     }
 
     /**
-     * Return the http-response (if set)
+     * Return the http-response (if set).
      *
      * @return HttpResponse|null
      */
@@ -48,7 +47,7 @@ class HttpEvent extends Event
     }
 
     /**
-     * Set the http-response and stop event-processing
+     * Set the http-response and stop event-processing.
      *
      * @return HttpResponse
      */
@@ -59,7 +58,7 @@ class HttpEvent extends Event
     }
 
     /**
-     * Check if a response is set
+     * Check if a response is set.
      *
      * @return boolean
      */
