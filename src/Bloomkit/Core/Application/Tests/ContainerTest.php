@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Tests\Application;
+namespace Bloomkit\Core\Application\Tests;
 
 use Bloomkit\Core\Application\Container;
 use Bloomkit\Core\Application\Exception\DiInstantiationException;
@@ -29,10 +29,10 @@ class ContainerTest extends TestCase
         $container = new Container;
         
         //register explicit singleton factory by classname
-        $container->registerFactory('foo1', 'Bloomkit\Tests\Application\ContainerTestClassOne', true);
+        $container->registerFactory('foo1', 'Bloomkit\Core\Application\Tests\ContainerTestClassOne', true);
         
         //register explicit factory by classname
-        $container->registerFactory('foo2', 'Bloomkit\Tests\Application\ContainerTestClassOne', false);        
+        $container->registerFactory('foo2', 'Bloomkit\Core\Application\Tests\ContainerTestClassOne', false);        
              
         //register implicit factory by classname
         $container->register('foo3', function () {
@@ -40,9 +40,9 @@ class ContainerTest extends TestCase
         });        
         
         //Check if we have the right objects        
-        $this->assertInstanceOf('Bloomkit\Tests\Application\ContainerTestClassOne', $container->foo1);        
-        $this->assertInstanceOf('Bloomkit\Tests\Application\ContainerTestClassOne', $container->foo2);
-        $this->assertInstanceOf('Bloomkit\Tests\Application\ContainerTestClassOne', $container->foo3);
+        $this->assertInstanceOf('Bloomkit\Core\Application\Tests\ContainerTestClassOne', $container->foo1);        
+        $this->assertInstanceOf('Bloomkit\Core\Application\Tests\ContainerTestClassOne', $container->foo2);
+        $this->assertInstanceOf('Bloomkit\Core\Application\Tests\ContainerTestClassOne', $container->foo3);
         
         //Check if singleton is working
         $class1 = $container->foo1;
@@ -58,38 +58,38 @@ class ContainerTest extends TestCase
     public function testDi()
     {
         $container = new Container;
-        $className = 'Bloomkit\Tests\Application\ContainerTestClassTwo';
+        $className = 'Bloomkit\Core\Application\Tests\ContainerTestClassTwo';
         $class = $container->make($className);
-        $this->assertInstanceOf('Bloomkit\Tests\Application\ContainerTestClassTwo', $class);
-        $this->assertInstanceOf('Bloomkit\Tests\Application\ContainerTestClassOne', $class->impl);
+        $this->assertInstanceOf('Bloomkit\Core\Application\Tests\ContainerTestClassTwo', $class);
+        $this->assertInstanceOf('Bloomkit\Core\Application\Tests\ContainerTestClassOne', $class->impl);
     }
 
     public function testDiWithUnresolvedBinding()
     {
         $this->expectException(DiInstantiationException::class);        
         $container = new Container;
-        $className = 'Bloomkit\Tests\Application\ContainerTestClassThree';
+        $className = 'Bloomkit\Core\Application\Tests\ContainerTestClassThree';
         $class = $container->make($className);
     }
     
     public function testDiWithBinding()
     {
         $container = new Container;        
-        $className = 'Bloomkit\Tests\Application\ContainerTestClassThree';
-        $container->bind('Bloomkit\Tests\Application\ContainerTestInterface', 'Bloomkit\Tests\Application\ContainerTestClassFive');
+        $className = 'Bloomkit\Core\Application\Tests\ContainerTestClassThree';
+        $container->bind('Bloomkit\Core\Application\Tests\ContainerTestInterface', 'Bloomkit\Core\Application\Tests\ContainerTestClassFive');
         $class = $container->make($className);
     }
     
 	public function testDiWithRules()
 	{
 		$container = new Container;
-		$container->bind('Bloomkit\Tests\Application\ContainerTestInterface', 'Bloomkit\Tests\Application\ContainerTestClassFive');
+		$container->bind('Bloomkit\Core\Application\Tests\ContainerTestInterface', 'Bloomkit\Core\Application\Tests\ContainerTestClassFive');
 		
-		$what1 = 'Bloomkit\Tests\Application\ContainerTestClassThree';
-		$what2 = 'Bloomkit\Tests\Application\ContainerTestClassFour';
-		$needs = 'Bloomkit\Tests\Application\ContainerTestInterface';
-		$give1 = 'Bloomkit\Tests\Application\ContainerTestClassFive';
-		$give2 = 'Bloomkit\Tests\Application\ContainerTestClassSix';
+		$what1 = 'Bloomkit\Core\Application\Tests\ContainerTestClassThree';
+		$what2 = 'Bloomkit\Core\Application\Tests\ContainerTestClassFour';
+		$needs = 'Bloomkit\Core\Application\Tests\ContainerTestInterface';
+		$give1 = 'Bloomkit\Core\Application\Tests\ContainerTestClassFive';
+		$give2 = 'Bloomkit\Core\Application\Tests\ContainerTestClassSix';
 		
         $container->addRule($what1, $needs, $give1);
         $container->addRule($what2, $needs, $give2);
