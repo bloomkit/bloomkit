@@ -10,7 +10,7 @@ class HttpResponseTest extends TestCase
 {
     public function testCreateResponse()
     {
-        $response = new HttpResponse(500, 'foo');
+        $response = new HttpResponse('foo', 500);
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertEquals('foo', $response->getContent());
     }
