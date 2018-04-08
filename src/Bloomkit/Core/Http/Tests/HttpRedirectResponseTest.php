@@ -9,7 +9,7 @@ class HttpRedirectResponseTest extends TestCase
 {
     public function testCreateResponse()
     {
-        $response = HttpRedirectResponse::createResponse('https://www.example.com');
+        $response = new HttpRedirectResponse('https://www.example.com');
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('https://www.example.com', $response->getTargetUrl());
     }

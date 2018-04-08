@@ -44,27 +44,18 @@ class HttpResponse
      * @param array  $headers
      * @param array  $cookies
      */
-    public function __construct($content = '', $statusCode = 200, $headers = array(), $cookies = array())
+    public function __construct($content = '', $statusCode = 200, array $headers = [], array $cookies = [])
     {
         $this->content = $content;
         $this->statusCode = $statusCode;
         $this->httpVersion = '1.0';
+
+        if (0 == count($headers)) {
+            $headers = ['Content-type' => 'text/html; charset=utf-8'];
+        }
+
         $this->headers = new Repository($headers);
         $this->cookies = new Repository($cookies);
-    }
-
-    /**
-     * Create and return a httpResponse with the given statusCode and message.
-     *
-     * @return HttpResponse
-     */
-    public static function createResponse($statusCode, $message)
-    {
-        $headers = array(
-                'Content-type' => 'text/html; charset=utf-8',
-        );
-
-        return new HttpResponse($message, $statusCode, $headers);
     }
 
     /**

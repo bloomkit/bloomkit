@@ -34,18 +34,6 @@ class HttpRedirectResponse extends HttpResponse
     }
 
     /**
-     * Create and return a HttpRedirectResponse with the given redirect-url.
-     *
-     * @param string $url URL to redirect to
-     *
-     * @return HttpRedirectResponse
-     */
-    public static function createResponse($url)
-    {
-        return new HttpRedirectResponse($url);
-    }
-
-    /**
      * Returns the target URL.
      *
      * @return string target URL
