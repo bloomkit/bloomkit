@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Security\User;
 
 /**
- * UserInterface defines how an user object should look like.
+ * Defines how an user object should look like.
  */
 interface UserInterface
 {
