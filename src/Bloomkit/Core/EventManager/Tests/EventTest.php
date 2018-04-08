@@ -1,5 +1,5 @@
 <?php
-namespace Bloomkit\Tests\Application;
+namespace Bloomkit\Core\EventManager\Tests;
 
 use Bloomkit\Core\EventManager\Event;
 use PHPUnit\Framework\TestCase;
