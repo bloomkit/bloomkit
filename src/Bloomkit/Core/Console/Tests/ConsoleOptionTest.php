@@ -18,7 +18,7 @@ class ConsoleOptionTest extends \PHPUnit_Framework_TestCase
         $option = new ConsoleOption($name, $description, $shortcut, $requireValue, $default, $required);
         $this->assertEquals($option->getShortcut(), 'a');
         $this->assertEquals($option->getName(), $name);
-        $this->assertEquals($option->getDescription(), $desc);
+        $this->assertEquals($option->getDescription(), $description);
         $this->assertEquals($option->getRequireValue(), true);
         $this->assertEquals($option->getDefault(), $default);
         $this->assertEquals($option->getIsRequired(), true);
