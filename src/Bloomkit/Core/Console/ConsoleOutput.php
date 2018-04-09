@@ -22,11 +22,11 @@ class ConsoleOutput
     private $directOutput;
 
     /**
-     * Output-Buffer (if $directOutput = false).
+     * Output buffer
      *
      * @var string
      */
-    private $outputString;
+    private $outputBuffer;
 
     /**
      * Constructor.
