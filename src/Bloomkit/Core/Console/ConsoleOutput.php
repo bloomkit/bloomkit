@@ -56,7 +56,7 @@ class ConsoleOutput
      */
     public function getOutputBuffer()
     {
-        return $this->outputBuffer;
+        return str_replace(PHP_EOL, "\n", $this->outputBuffer);
     }
 
     /**
@@ -81,7 +81,7 @@ class ConsoleOutput
     public function writeOutputToFile($path)
     {
         $file = fopen($path, 'w');
-        fwrite($file, $this->outputBuffer);
+        fwrite($file, $this->getOutputBuffer());
         fclose($file);
     }
 }

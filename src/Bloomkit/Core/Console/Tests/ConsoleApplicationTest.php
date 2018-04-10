@@ -64,7 +64,7 @@ class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
         $input = new ConsoleInput($consoleApp);
         $output = new ConsoleOutput($consoleApp, false);
         $consoleApp->run($input, $output);
-        //The following line can be used to generate new output, if it may change sometime
+        //The following line can be used to generate new output - if it may change sometime
         //$output->writeOutputToFile($fixturesPath.'run_output1.txt');
         $this->assertStringEqualsFile($fixturesPath.'run_output1.txt', $output->getOutputBuffer());
 
@@ -72,24 +72,18 @@ class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
         $input = new ConsoleInput($consoleApp);
         $output = new ConsoleOutput($consoleApp, false);
         $consoleApp->run($input, $output);
-        //The following line can be used to generate new output, if it may change sometime
-        //$output->writeOutputToFile($fixturesPath.'run_output2.txt');
         $this->assertStringEqualsFile($fixturesPath.'run_output2.txt', $output->getOutputBuffer());
 
         $_SERVER['argv'] = ['app.php', 'list', '--help'];
         $input = new ConsoleInput($consoleApp);
         $output->clear();
         $consoleApp->run($input, $output);
-        //The following line can be used to generate new output, if it may change sometime
-        //$output->writeOutputToFile($fixturesPath.'run_output2b.txt');
         $this->assertStringEqualsFile($fixturesPath.'run_output2.txt', $output->getOutputBuffer());
 
         $_SERVER['argv'] = ['app.php', 'list'];
         $input = new ConsoleInput($consoleApp);
         $output->clear();
         $consoleApp->run($input, $output);
-        //The following line can be used to generate new output, if it may change sometime
-        //$output->writeOutputToFile($fixturesPath.'run_output3.txt');
         $this->assertStringEqualsFile($fixturesPath.'run_output3.txt', $output->getOutputBuffer());
     }
 }
