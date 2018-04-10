@@ -26,7 +26,7 @@ class ConsoleInput
      *
      * @var ConsoleApplication
      */
-    private $consoleApplication;
+    private $application;
 
     /**
      * Contains all command-options.
@@ -55,7 +55,7 @@ class ConsoleInput
         // Remove first entry (the file-name)
         array_shift($params);
         $this->params = $params;
-        $this->consoleApplication = $consoleApp;
+        $this->application = $consoleApp;
 
         // Parse arguments and options
         $this->parse();
@@ -212,11 +212,11 @@ class ConsoleInput
     {
         //Finding the command
         $commandName = array_shift($this->params);
-        $this->command = $this->consoleApplication->getCommandByName($commandName);
+        $this->command = $this->application->getCommandByName($commandName);
 
         //if this failes, use the "list" command instead and return
         if (is_null($this->command)) {
-            $this->command = $this->consoleApplication->getCommandByName('list');
+            $this->command = $this->application->getCommandByName('list');
 
             return;
         }

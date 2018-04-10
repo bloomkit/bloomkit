@@ -12,7 +12,7 @@ class ConsoleOutput
      *
      * @var ConsoleApplication
      */
-    private $consoleApplication;
+    private $application;
 
     /**
      * If true, every line is printed to stdout.
@@ -36,7 +36,7 @@ class ConsoleOutput
      */
     public function __construct(ConsoleApplication $consoleApp, $directOutput = true)
     {
-        $this->consoleApplication = $consoleApp;
+        $this->application = $consoleApp;
         $this->directOutput = $directOutput;
         $this->outputString = '';
     }
