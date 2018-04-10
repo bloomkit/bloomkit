@@ -1,0 +1,11 @@
+name 1.2.3.4
+
+Usage:
+help [OPTIONS]
+
+Options:
+ -?, --help Display this help message
+
+Help:
+ Displays help for a command
+
