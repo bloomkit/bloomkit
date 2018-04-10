@@ -30,10 +30,10 @@ class ConsoleArgument
     /**
      * Constructor.
      *
-     * @param string name The argument name
-     * @param string description The argument description
-     * @param mixed default The default value of the argument
-     * @param bool isRequired True if the argument is required
+     * @param string $name        The argument name
+     * @param string $description The argument description
+     * @param mixed  $default     The default value of the argument
+     * @param bool   $isRequired  True if the argument is required
      */
     public function __construct($name, $description = '', $default = null, $isRequired = false)
     {

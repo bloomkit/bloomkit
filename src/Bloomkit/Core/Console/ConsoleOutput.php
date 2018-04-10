@@ -22,7 +22,7 @@ class ConsoleOutput
     private $directOutput;
 
     /**
-     * Output buffer
+     * Output buffer.
      *
      * @var string
      */
