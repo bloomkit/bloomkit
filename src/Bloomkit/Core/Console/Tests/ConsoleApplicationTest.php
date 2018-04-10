@@ -57,7 +57,7 @@ class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
     public function testRun()
     {
         $fixturesPath = __DIR__.'/Fixtures/';
-        $consoleApp = new ConsoleApplication('name', '1.2.3.4b');
+        $consoleApp = new ConsoleApplication('name', '1.2.3.4');
         $consoleApp->setScriptName('console.php');
 
         $_SERVER['argv'] = ['app.php', 'help'];
@@ -77,7 +77,7 @@ class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
         $_SERVER['argv'] = ['app.php', 'list', '--help'];
         $input = new ConsoleInput($consoleApp);
         $output->clear();
-        $consoleApp->run($input, $output);
+        $consoleApp->run($input, $output);        
         $this->assertStringEqualsFile($fixturesPath.'run_output2.txt', $output->getOutputBuffer());
 
         $_SERVER['argv'] = ['app.php', 'list'];
