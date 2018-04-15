@@ -60,7 +60,7 @@ class HttpEvent extends Event
     /**
      * Check if a response is set.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasResponse()
     {

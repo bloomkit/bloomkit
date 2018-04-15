@@ -331,7 +331,7 @@ class HttpRequest
     /**
      * Check if a session is set.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasSession()
     {
@@ -341,7 +341,7 @@ class HttpRequest
     /**
      * Check if request is made by https.
      *
-     * @return boolean
+     * @return bool
      */
     public function isSecure()
     {

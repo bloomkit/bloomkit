@@ -82,6 +82,7 @@ class HttpApplication extends Application
         if (!$event->hasResponse()) {
             throw $e;
         }
+
         return $event->getResponse();
     }
 }
