@@ -5,6 +5,9 @@ namespace Bloomkit\Core\Http;
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Http\Exceptions\SuspiciousOperationException;
 
+/**
+ * Representation of a http request
+ */
 class HttpRequest
 {
     /**
@@ -468,17 +471,17 @@ class HttpRequest
      */
     protected function preparePathUrl()
     {
-        // Basis-URL ermitteln (z.B: /myapp/rest.php)
+        // Find base-url (e.g: /myapp/index.php)
         $baseUrl = $this->getBaseUrl();
 
-        // Request-URI ermitteln (z.B: /myapp/rest.php/test/a?param=value)
+        // Find request-URI (e.g: /myapp/index.php/test/a?param=value)
         $requestUri = $this->getRequestUri();
 
         if (is_null($requestUri)) {
             return '/';
         }
 
-        // Evtl. vorhandene URL-Parameter aus Request-URI entfernen
+        // remove url params from request-URI
         if ($pos = strpos($requestUri, '?')) {
             $requestUri = substr($requestUri, 0, $pos);
         }
