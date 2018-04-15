@@ -41,6 +41,8 @@ class RestApplication extends Application
             }
         }
 
+        $this->bind('Psr\Log\LoggerInterface', 'Bloomkit\Core\Application\DummyLogger');
+        
         $this->getEventManager()->addListener(HttpEvents::EXCEPTION, [$this['exception_handler'], 'onException']);
     }
 
