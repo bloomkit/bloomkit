@@ -3,6 +3,7 @@ namespace Bloomkit\Core\Application;
 
 use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
+use Psr\Logger\LoggerInterface;
 
 class Application extends Container implements EventTracerInterface
 {
@@ -21,6 +22,11 @@ class Application extends Container implements EventTracerInterface
      */
     protected $basePath;
 
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+    
     /**
      * @var array
      */
@@ -44,7 +50,7 @@ class Application extends Container implements EventTracerInterface
      * @param string $basePath      The root directory of the application - the config dir should be in here
      * @param array  $config        An optional array with config values
      */
-    public function __construct($appName = 'UNKNOWN', $appVersion = '0.0', $basePath = null, $config = [])
+    public function __construct($appName = 'UNKNOWN', $appVersion = '0.0', $basePath = null, array $config = [])
     {
         $this->startTime = microtime(true);
         $this->appName = $appName;
@@ -70,6 +76,8 @@ class Application extends Container implements EventTracerInterface
         $this->loadConfigFromFiles();
         if (count($config)>0)
             $this->getConfig()->addItems($config);
+        
+        $this->registerFactory('logger', 'Bloomkit\Core\Application\DummyLogger', true);
     }
     
     /**

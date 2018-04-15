@@ -11,7 +11,7 @@ class HttpApplication extends Application
      *
      * {@inheritdoc}
      */
-    public function __construct($appName = 'UNKNOWN', $appVersion = '0.0', $basePath = null, $config = array())
+    public function __construct($appName = 'UNKNOWN', $appVersion = '0.0', $basePath = null, array $config = [])
     {
         parent::__construct($appName, $appVersion, $basePath, $config);
 
