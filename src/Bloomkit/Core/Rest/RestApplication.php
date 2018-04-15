@@ -42,7 +42,7 @@ class RestApplication extends Application
         }
 
         $this->bind('Psr\Log\LoggerInterface', 'Bloomkit\Core\Application\DummyLogger');
-        
+
         $this->getEventManager()->addListener(HttpEvents::EXCEPTION, [$this['exception_handler'], 'onException']);
     }
 
@@ -75,12 +75,11 @@ class RestApplication extends Application
         }
 
         try {
-            $tracer = $this->getTracer();
-
-            $tracer->start('App::findRoute');
+            //$tracer = $this->getTracer();
+            //$tracer->start('App::findRoute');
             $matcher = $this->getUrlMatcher();
             $parameters = $matcher->match($request->getPathUrl(), $request->getHttpMethod());
-            $tracer->stop('App::findRoute');
+            //$tracer->stop('App::findRoute');
 
             // Authentication
             if (isset($parameters['_auth'])) {
@@ -166,9 +165,9 @@ class RestApplication extends Application
             $controller = new $class($this);
             $controller->setRequest($request);
 
-            $tracer->start('App::CallController');
+            //$tracer->start('App::CallController');
             $response = call_user_func_array([$controller, $method], $arguments);
-            $tracer->stop('App::CallController');
+            //$tracer->stop('App::CallController');
 
             $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
             $event->setResponse($response);
@@ -177,12 +176,22 @@ class RestApplication extends Application
 
             return $response;
         } catch (RessourceNotFoundException $e) {
-            $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getFullPathUrl());
+            $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
             throw new HttpNotFoundException($message);
         } catch (MethodNotAllowedException $e) {
-            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getFullPathUrl(), implode(', ', $e->getAllowedMethods()));
+            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
             throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
         }
+    }
+
+    /**
+     * Returns the url matcher.
+     *
+     * @return \Bloomkit\Core\Routing\UrlMatcher
+     */
+    public function getUrlMatcher()
+    {
+        return $this['url_matcher'];
     }
 
     /**
@@ -230,10 +239,18 @@ class RestApplication extends Application
      */
     public function run(RestRequest $request = null)
     {
-        try {
-            if (is_null($request)) {
+        if (is_null($request)) {
+            try {
                 $request = RestRequest::processRequest();
+            } catch (\Exception $e){
+                $this['logger']->warning('Invalid request:'.$e->getMessage());
+                $response = RestResponse::createFault(400, $e->getMessage(), $e->getCode());
+                $response->send();
+                exit;
             }
+        }
+
+        try {
             $response = $this->process($request);
         } catch (\Exception $e) {
             $response = $this->handleException($e, $request);
@@ -245,7 +262,7 @@ class RestApplication extends Application
         $response = $event->getResponse();
         $response->send();
         $this['eventManager']->triggerEvent(HttpEvents::TERMINATE, $event);
-        exit();
+        exit;
     }
 
     /**

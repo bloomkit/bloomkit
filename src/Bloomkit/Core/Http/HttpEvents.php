@@ -9,4 +9,6 @@ final class HttpEvents
     const REQUEST = 'http.request';
 
     const RESPONSE = 'http.response';
+
+    const TERMINATE = 'http.terminate';
 }
