@@ -6,8 +6,6 @@ use Bloomkit\Core\EventManager\EventManager;
 
 interface ModuleInterface
 {
-    public function __construct($moduleName);
-
     public function getEntities();
 
     public function getName();

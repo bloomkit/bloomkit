@@ -1,21 +1,20 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2\Tests;
+namespace Bloomkit\Core\Security\Auth\OAuth2\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Bloomkit\Core\Auth\OAuth2\OAuthServer;
-use Probelix\PbxAuth\OAuthStorage;
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Http\HttpRedirectResponse;
-use Bloomkit\Core\Auth\OAuth2\Exceptions\OAuthServerException;
-use Bloomkit\Core\Auth\OAuth2\Tests\Mockups\MockOAuthStorage;
-use Bloomkit\Core\Auth\OAuth2\Tests\Mockups\MockUser;
+use Bloomkit\Core\Security\Auth\OAuth2\OAuthServer;
+use Bloomkit\Core\Security\Auth\OAuth2\Exceptions\OAuthServerException;
+use Bloomkit\Core\Security\Auth\OAuth2\Tests\Mockups\MockOAuthStorage;
+use Bloomkit\Core\Security\Auth\OAuth2\Tests\Mockups\MockUser;
 
 class OAuthServerTest extends TestCase
 {
     /**
-     * @var Bloomkit\Core\Auth\OAuth2\OAuthServer
+     * @var Bloomkit\Core\Security\Auth\OAuth2\OAuthServer
      */
     private $authServer;
 

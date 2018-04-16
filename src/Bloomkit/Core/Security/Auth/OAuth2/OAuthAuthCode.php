@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2;
+namespace Bloomkit\Core\Security\Auth\OAuth2;
 
 /**
  * Representation of an OAuth AuthCode.

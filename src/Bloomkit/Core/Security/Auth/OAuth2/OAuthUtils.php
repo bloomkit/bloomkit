@@ -1,12 +1,12 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2;
+namespace Bloomkit\Core\Security\Auth\OAuth2;
 
+use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Http\HttpRedirectResponse;
-use Bloomkit\Core\Auth\OAuth2\Exceptions\OAuthServerException;
-use Bloomkit\Core\Http\HttpRequest;
-use Bloomkit\Core\Auth\OAuth2\Exceptions\OAuthRedirectException;
+use Bloomkit\Core\Security\Auth\OAuth2\Exceptions\OAuthServerException;
+use Bloomkit\Core\Security\Auth\OAuth2\Exceptions\OAuthRedirectException;
 
 /**
  * Helper functions for OAuth-Server.

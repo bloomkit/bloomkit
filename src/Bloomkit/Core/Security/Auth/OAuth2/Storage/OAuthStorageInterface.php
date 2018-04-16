@@ -1,11 +1,11 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2\Storage;
+namespace Bloomkit\Core\Security\Auth\OAuth2\Storage;
 
-use Bloomkit\Core\Auth\OAuth2\OAuthClient;
+use Bloomkit\Core\Security\Auth\OAuth2\OAuthClient;
 use Bloomkit\Core\Security\User\UserInterface;
-use Bloomkit\Core\Auth\OAuth2\OAuthToken;
-use Bloomkit\Core\Auth\OAuth2\OAuthAuthCode;
+use Bloomkit\Core\Security\Auth\OAuth2\OAuthToken;
+use Bloomkit\Core\Security\Auth\OAuth2\OAuthAuthCode;
 
 /**
  * Defines how an OAuthStorage Handler should look like.

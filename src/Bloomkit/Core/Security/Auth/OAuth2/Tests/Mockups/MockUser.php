@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2\Tests\Mockups;
+namespace Bloomkit\Core\Security\Auth\OAuth2\Tests\Mockups;
 
 use Bloomkit\Core\Security\User\UserInterface;
 

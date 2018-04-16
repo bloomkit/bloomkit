@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2;
+namespace Bloomkit\Core\Security\Auth\OAuth2;
 
 /**
  * Defines how a OAuthClient object should look like.

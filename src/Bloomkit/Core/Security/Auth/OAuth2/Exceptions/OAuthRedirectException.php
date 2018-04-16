@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2\Exceptions;
+namespace Bloomkit\Core\Security\Auth\OAuth2\Exceptions;
 
 /**
  * Definition of the OAuthRedirectException

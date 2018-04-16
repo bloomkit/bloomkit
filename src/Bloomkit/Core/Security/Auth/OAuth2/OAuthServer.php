@@ -1,14 +1,14 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OAuth2;
+namespace Bloomkit\Core\Security\Auth\OAuth2;
 
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Http\HttpRedirectResponse;
 use Bloomkit\Core\Security\User\UserInterface;
+use Bloomkit\Core\Security\Auth\OAuth2\Exceptions\OAuthServerException;
+use Bloomkit\Core\Security\Auth\OAuth2\Storage\OAuthStorageInterface;
 use Bloomkit\Core\Utilities\GuidUtils;
-use Bloomkit\Core\Auth\OAuth2\Exceptions\OAuthServerException;
-use Bloomkit\Core\Auth\OAuth2\Storage\OAuthStorageInterface;
 
 /**
  * OAuth2.0 rfc6749 server implementation
