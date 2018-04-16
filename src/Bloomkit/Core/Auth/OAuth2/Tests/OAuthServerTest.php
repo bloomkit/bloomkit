@@ -149,7 +149,7 @@ class OAuthServerTest extends TestCase
         $this->assertEquals(86, strlen($authCode['authCode']));
         $this->assertEquals($authCode['redirectUri'], $redirectUri);
         $this->assertEquals($authCode['scope'], $scope);
-        $this->assertEquals($authCode['expire'], time() + 60);
+        $this->assertTrue(time()-$authCode['expire']<10);
         $this->assertTrue($response instanceof HttpRedirectResponse);
         $expRedirUrl = 'https://www.example.com?code='.$authCode['authCode'].'&state='.$state;
         $this->assertEquals($response->getTargetUrl(), $expRedirUrl);
@@ -178,7 +178,7 @@ class OAuthServerTest extends TestCase
         $this->assertEquals($accessToken['client'], $client);
         $this->assertEquals(86, strlen($accessToken['accessToken']));
         $this->assertEquals($accessToken['scope'], $scope);
-        $this->assertEquals($accessToken['expire'], time() + 3600);
+        $this->assertTrue((time() + 3600)-$accessToken['expire']<10);
         $this->assertTrue($response instanceof HttpRedirectResponse);
         $expRedirUrl = 'https://www.example.com#access_token='.$accessToken['accessToken'].'&token_type=bearer&expires_in=3600'.'&scope='.$scope.'&state='.$state;
         $this->assertEquals($response->getTargetUrl(), $expRedirUrl);
@@ -316,7 +316,7 @@ class OAuthServerTest extends TestCase
         $this->assertEquals($accessToken['client'], $client);
         $this->assertEquals(86, strlen($accessToken['accessToken']));
         $this->assertEquals($accessToken['scope'], 'myscope');
-        $this->assertEquals($accessToken['expire'], time() + 3600);
+        $this->assertTrue((time() + 3600)-$accessToken['expire']<10);
         $this->assertTrue($response instanceof HttpResponse);
 
         $expectedToken = json_encode(array(
