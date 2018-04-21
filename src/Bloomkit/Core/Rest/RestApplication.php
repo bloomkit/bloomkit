@@ -10,6 +10,7 @@ use Bloomkit\Core\Http\HttpEvents;
 use Bloomkit\Core\Http\HttpExceptionEvent;
 use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
+use Bloomkit\Core\Routing\RouteCollection;
 
 class RestApplication extends Application
 {
@@ -31,15 +32,7 @@ class RestApplication extends Application
         $this->registerFactory('exception_handler', 'Bloomkit\Core\Rest\ExceptionListener', true);
         $this->registerFactory('url_matcher', 'Bloomkit\Core\Routing\UrlMatcher', true);
 
-        $aliases = [
-            'routes' => ['Bloomkit\Core\Routing\RouteCollection'],
-        ];
-
-        foreach ($aliases as $key => $aliases) {
-            foreach ($aliases as $alias) {
-                $this->setAlias($key, $alias);
-            }
-        }
+        $this->setAlias('Bloomkit\Core\Routing\RouteCollection', 'routes');
 
         $this->bind('Psr\Log\LoggerInterface', 'Bloomkit\Core\Application\DummyLogger');
 
@@ -227,9 +220,9 @@ class RestApplication extends Application
         parent::registerModule($module);
         $routes = $module->getRoutes();
 
-        if ((is_array($routes)) && ($routes->getCount() > 0)) {
+        if (($routes instanceof RouteCollection) && ($routes->getCount() > 0)) {
             $this['routes']->addCollection($routes);
-        }
+        };
     }
 
     /**
