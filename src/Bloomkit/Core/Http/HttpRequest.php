@@ -6,10 +6,15 @@ use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Http\Exceptions\SuspiciousOperationException;
 
 /**
- * Representation of a http request
+ * Representation of a http request.
  */
 class HttpRequest
 {
+    /**
+     * @var Repository
+     */
+    protected $attributes;
+
     /**
      * @var string
      */
@@ -81,6 +86,7 @@ class HttpRequest
         $this->cookies = new Repository($cookies);
         $this->files = new Repository($files);
         $this->serverParams = new Repository($server);
+        $this->attributes = new Repository();
 
         $headers = [];
         foreach ($server as $key => $value) {
@@ -91,6 +97,16 @@ class HttpRequest
             }
         }
         $this->headers = new Repository($headers);
+    }
+
+    /**
+     * Returns the request attributes.
+     *
+     * @return Repository
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 
     /**
