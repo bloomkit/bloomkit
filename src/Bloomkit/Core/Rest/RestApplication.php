@@ -112,7 +112,7 @@ class RestApplication extends Application
                 $this->getSecurityContext()->setToken($token);
             }
 
-            $request->attributes->addItems($parameters);
+            $request->getAttributes()->addItems($parameters);
             $controllerName = $parameters['_controller'];
 
             $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);

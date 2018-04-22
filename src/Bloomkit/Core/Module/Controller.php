@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core;
+namespace Bloomkit\Core\Module;
 
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Application\Application;
