@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Routing;
 
 class RouteCollection
@@ -19,7 +20,7 @@ class RouteCollection
     }
 
     /**
-     * Returns the routes
+     * Returns the routes.
      *
      * @return array
      */
@@ -28,14 +29,12 @@ class RouteCollection
         return $this->routes;
     }
 
-
     public function add($name, Route $route)
     {
         unset($this->routes[$name]);
 
         $this->routes[$name] = $route;
     }
-
 
     public function getRoute($name)
     {
@@ -68,7 +67,7 @@ class RouteCollection
         }
 
         foreach ($this->routes as $route) {
-            $route->setPath('/' . $prefix . $route->getPath());
+            $route->setPath('/'.$prefix.$route->getPath());
             $route->addDefaults($defaults);
             $route->addRequirements($requirements);
         }

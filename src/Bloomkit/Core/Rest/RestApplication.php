@@ -30,7 +30,7 @@ class RestApplication extends Application
 
         $this->registerFactory('routes', 'Bloomkit\Core\Routing\RouteCollection', true);
         $this->registerFactory('exception_handler', 'Bloomkit\Core\Rest\ExceptionListener', true);
-        $this->registerFactory('url_matcher', 'Bloomkit\Core\Routing\UrlMatcher', true);
+        $this->registerFactory('route_matcher', 'Bloomkit\Core\Routing\RouteMatcher', true);
 
         $this->setAlias('Bloomkit\Core\Routing\RouteCollection', 'routes');
 
@@ -70,7 +70,7 @@ class RestApplication extends Application
         try {
             //$tracer = $this->getTracer();
             //$tracer->start('App::findRoute');
-            $matcher = $this->getUrlMatcher();
+            $matcher = $this->getRouteMatcher();
             $parameters = $matcher->match($request->getPathUrl(), $request->getHttpMethod());
             //$tracer->stop('App::findRoute');
 
@@ -180,11 +180,11 @@ class RestApplication extends Application
     /**
      * Returns the url matcher.
      *
-     * @return \Bloomkit\Core\Routing\UrlMatcher
+     * @return \Bloomkit\Core\Routing\RouteMatcher
      */
-    public function getUrlMatcher()
+    public function getRouteMatcher()
     {
-        return $this['url_matcher'];
+        return $this['route_matcher'];
     }
 
     /**

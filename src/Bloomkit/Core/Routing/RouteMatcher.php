@@ -2,10 +2,12 @@
 
 namespace Bloomkit\Core\Routing;
 
+use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
+
 /**
  * Class for finding matching routes for an url.
  */
-class UrlMatcher
+class RouteMatcher
 {
     /**
      * @var RouteCollection
@@ -85,11 +87,11 @@ class UrlMatcher
                 }
             }
 
-            //return the defaults of the matching route
-            $defaults = $route->getDefaults();
-            $defaults['_route'] = $name;
+            //return the data of the matching route
+            $routeAttributes = $route->getAttributes();
+            $routeAttributes['_route'] = $name;
 
-            return $defaults;
+            return $routeAttributes;
         }
     }
 }

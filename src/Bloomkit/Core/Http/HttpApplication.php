@@ -16,7 +16,7 @@ class HttpApplication extends Application
         parent::__construct($appName, $appVersion, $basePath, $config);
 
         $this->registerFactory('routes', 'Bloomkit\Core\Routing\RouteCollection', true);
-        $this->registerFactory('url_matcher', 'Bloomkit\Core\Routing\UrlMatcher', true);
+        $this->registerFactory('route_matcher', 'Bloomkit\Core\Routing\RouteMatcher', true);
 
         $this->setAlias('Bloomkit\Core\Routing\RouteCollection', 'routes');
     }
@@ -24,11 +24,11 @@ class HttpApplication extends Application
     /**
      * Returns the url matcher.
      *
-     * @return \Bloomkit\Core\Routing\UrlMatcher
+     * @return \Bloomkit\Core\Routing\RouteMatcher
      */
-    public function getUrlMatcher()
+    public function getRouteMatcher()
     {
-        return $this['url_matcher'];
+        return $this['route_matcher'];
     }
 
     /**
@@ -54,7 +54,7 @@ class HttpApplication extends Application
                 return $event->getResponse();
             }
 
-            $matcher = $this->getUrlMatcher();
+            $matcher = $this->getRouteMatcher();
             $parameters = $matcher->match($request->getPathUrl(), $request->getHttpMethod());
         } catch (\Exception $e) {
             return $this->handleException($e, $request);

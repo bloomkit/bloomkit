@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Routing;
 
 class CompiledRoute
@@ -7,7 +8,7 @@ class CompiledRoute
      * @var string
      */
     private $hostRegex;
-    
+
     /**
      * @var array
      */
@@ -17,12 +18,12 @@ class CompiledRoute
      * @var array
      */
     private $hostVariables;
-    
+
     /**
      * @var array
      */
     private $pathVariables;
-    
+
     /**
      * @var string
      */
@@ -32,28 +33,28 @@ class CompiledRoute
      * @var string
      */
     private $staticPrefix;
-    
+
     /**
      * @var array
      */
     private $tokens;
-    
+
     /**
      * @var array
      */
     private $variables;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param string        $staticPrefix   The static prefix of the compiled route
-     * @param string        $regex          The regular expression to use to match this route
-     * @param array         $tokens         An array of tokens to use to generate URL for this route
-     * @param array         $pathVariables  An array of path variables
-     * @param string|null   $hostRegex      Host regex
-     * @param array         $hostTokens     Host tokens
-     * @param array         $hostVariables  An array of host variables
-     * @param array         $variables      An array of variables (variables defined in the path and in the host patterns)
+     * @param string      $staticPrefix  The static prefix of the compiled route
+     * @param string      $regex         The regular expression to use to match this route
+     * @param array       $tokens        An array of tokens to use to generate URL for this route
+     * @param array       $pathVariables An array of path variables
+     * @param string|null $hostRegex     Host regex
+     * @param array       $hostTokens    Host tokens
+     * @param array       $hostVariables An array of host variables
+     * @param array       $variables     An array of variables (variables defined in the path and in the host patterns)
      */
     public function __construct($staticPrefix, $regex, array $tokens, array $pathVariables, $hostRegex = null, array $hostTokens = array(), array $hostVariables = array(), array $variables = array())
     {
@@ -68,7 +69,7 @@ class CompiledRoute
     }
 
     /**
-     * Returns the host regex
+     * Returns the host regex.
      *
      * @return string|null
      */
@@ -78,7 +79,7 @@ class CompiledRoute
     }
 
     /**
-     * Returns the host tokens
+     * Returns the host tokens.
      *
      * @return array
      */
@@ -88,7 +89,7 @@ class CompiledRoute
     }
 
     /**
-     * Returns the host variables
+     * Returns the host variables.
      *
      * @return array
      */
@@ -98,7 +99,7 @@ class CompiledRoute
     }
 
     /**
-     * Returns the path variables
+     * Returns the path variables.
      *
      * @return array
      */
@@ -108,7 +109,7 @@ class CompiledRoute
     }
 
     /**
-     * Returns the regex
+     * Returns the regex.
      *
      * @return string
      */
@@ -116,9 +117,9 @@ class CompiledRoute
     {
         return $this->regex;
     }
-    
+
     /**
-     * Returns the static prefix
+     * Returns the static prefix.
      *
      * @return string
      */
@@ -126,9 +127,9 @@ class CompiledRoute
     {
         return $this->staticPrefix;
     }
-    
+
     /**
-     * Returns the tokens
+     * Returns the tokens.
      *
      * @return array
      */
@@ -136,9 +137,9 @@ class CompiledRoute
     {
         return $this->tokens;
     }
-    
+
     /**
-     * Returns the variables
+     * Returns the variables.
      *
      * @return array
      */
