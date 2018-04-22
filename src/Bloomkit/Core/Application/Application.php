@@ -2,6 +2,7 @@
 
 namespace Bloomkit\Core\Application;
 
+use Bloomkit\Core\Module\ModuleInterface;
 use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
 use Psr\Logger\LoggerInterface;

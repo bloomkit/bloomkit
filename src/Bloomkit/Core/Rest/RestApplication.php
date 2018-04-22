@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Rest;
 
 use Bloomkit\Core\Application\Application;
-use Bloomkit\Core\Application\ModuleInterface;
+use Bloomkit\Core\Module\ModuleInterface;
 use Bloomkit\Core\Security\Exceptions\AuthConfigException;
 use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpEvents;

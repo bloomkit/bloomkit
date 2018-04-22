@@ -3,6 +3,7 @@
 namespace Bloomkit\Core\Module;
 
 use Bloomkit\Core\EventManager\EventManager;
+use Bloomkit\Core\Application\Application;
 
 /**
  * Describes all functions a bloomkit module implementation must provide.

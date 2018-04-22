@@ -3,6 +3,7 @@
 namespace Bloomkit\Core\Module;
 
 use Bloomkit\Core\Utilities\Collection;
+use Bloomkit\Core\Application\Application;
 use Bloomkit\Core\EventManager\EventManager;
 use Bloomkit\Core\Routing\RouteCollection;
 
