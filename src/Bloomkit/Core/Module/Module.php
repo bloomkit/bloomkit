@@ -1,11 +1,14 @@
 <?php
 
-namespace Bloomkit\Core\Application;
+namespace Bloomkit\Core\Module;
 
 use Bloomkit\Core\Utilities\Collection;
 use Bloomkit\Core\EventManager\EventManager;
 use Bloomkit\Core\Routing\RouteCollection;
 
+/**
+ * Representation of a bloomkit module.
+ */
 abstract class Module implements ModuleInterface
 {
     /**
@@ -34,9 +37,7 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Get all entities this module provides and return them.
-     *
-     * @return Collection A collection of all entities this module provides
+     * {@inheritdoc}
      */
     public function getEntities()
     {
@@ -60,9 +61,7 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Returns the name of this module.
-     *
-     * @return string The name of this module
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -70,9 +69,7 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Returns the namespace of this module.
-     *
-     * @return string The namespace of this module
+     * {@inheritdoc}
      */
     public function getNamespace()
     {
@@ -84,9 +81,7 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Returns the path of this module.
-     *
-     * @return string The path of this module
+     * {@inheritdoc}
      */
     public function getPath()
     {
@@ -98,9 +93,7 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Get all routes this module provides and return them.
-     *
-     * @return RouteCollection A collection of all routes this module provides
+     * {@inheritdoc}
      */
     public function getRoutes()
     {
@@ -121,15 +114,14 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Lifecycle event. Every module is initialized during registration.
-     * Application is already set here.
+     * {@inheritdoc}
      */
     public function initialize()
     {
     }
 
     /**
-     * Register all console commands of this module.
+     * {@inheritdoc}
      */
     public function registerConsoleCommands()
     {
@@ -149,26 +141,21 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * Register events this module should listen for on the EventManager.
-     *
-     * @param EventManager $eventManager EventManager to register events to
+     * {@inheritdoc}
      */
     public function registerEvents(EventManager $eventManager)
     {
     }
 
     /**
-     * Register further submodules of this module.
-     * Called during registration.
+     * {@inheritdoc}
      */
     public function registerSubmodules()
     {
     }
 
     /**
-     * Set the Application object.
-     *
-     * @param Application $application The application object
+     * {@inheritdoc}
      */
     public function setApplication(Application $application)
     {
@@ -176,7 +163,7 @@ abstract class Module implements ModuleInterface
     }
 
     /**
-     * If the shutdown-function of the application is called, this event is fired for all registered modules.
+     * {@inheritdoc}
      */
     public function shutdown()
     {
