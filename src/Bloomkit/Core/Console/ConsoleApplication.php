@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Console;
 
 use Bloomkit\Core\Application\Application;
-use Bloomkit\Core\Application\ModuleInterface;
+use Bloomkit\Core\Module\ModuleInterface;
 
 /**
  * Application class for building console applications.
