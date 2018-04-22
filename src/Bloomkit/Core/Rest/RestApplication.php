@@ -71,7 +71,7 @@ class RestApplication extends Application
             //$tracer = $this->getTracer();
             //$tracer->start('App::findRoute');
             $matcher = $this->getRouteMatcher();
-            $parameters = $matcher->match($request->getPathUrl(), $request->getHttpMethod());
+            $parameters = $matcher->match($request->getRestUrl(), $request->getHttpMethod());
             //$tracer->stop('App::findRoute');
 
             // Authentication

@@ -74,7 +74,7 @@ class Route
      *
      * @param array $attributes The attributes to add
      */
-    public function addAttribute(array $attributes)
+    public function addAttributes(array $attributes)
     {
         foreach ($attributes as $name => $value) {
             $this->attributes[$name] = $value;
@@ -322,7 +322,7 @@ class Route
     public function setAttributes(array $attributes)
     {
         $this->attributes = [];
-        $this->addAttribues($attributes);
+        $this->addAttributes($attributes);
     }
 
     /**
