@@ -1,11 +1,12 @@
 <?php
-namespace Bloomkit\Core\Entities;
+
+namespace Bloomkit\Core\Entities\Fields;
 
 use Bloomkit\Core\Database;
 use Bloomkit\Core\Database\DbDataType;
 
 /**
- * Class for describing a dataset field
+ * Class for describing a dataset field.
  */
 class Field
 {
@@ -13,62 +14,62 @@ class Field
      * @var string
      */
     protected $columnName;
-    
+
     /**
      * @var mixed
      */
     protected $defaultValue;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $duplicateCheck;
-    
+
     /**
      * @var string
      */
     protected $fieldId;
-    
+
     /**
      * @var string
      */
     protected $fieldName;
-    
+
     /**
      * @var string
      */
     protected $fieldType;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isAbstract;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isHidden;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isMandatory;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isSearchable;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isSystemField;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $mailMerge;
-    
+
     /**
      * @var string
      */
@@ -80,10 +81,10 @@ class Field
     protected $refFieldName;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param string $fieldType
-     * @param string $fieldId
+     * @param string      $fieldType
+     * @param string      $fieldId
      * @param string|null $fieldName
      */
     public function __construct($fieldType, $fieldId, $fieldName = null)
@@ -99,7 +100,7 @@ class Field
     }
 
     /**
-     * Returns the column name
+     * Returns the column name.
      *
      * @return string The column name
      */
@@ -109,7 +110,7 @@ class Field
     }
 
     /**
-     * Returns the default value
+     * Returns the default value.
      *
      * @return mixed The default value
      */
@@ -117,9 +118,9 @@ class Field
     {
         return $this->defaultValue;
     }
-    
+
     /**
-     * Returns the database-type for this field
+     * Returns the database-type for this field.
      *
      * @return string Name of the (generic) database type
      */
@@ -157,9 +158,9 @@ class Field
         }
         throw new InvalidFieldTypeException(sprintf('Invalid FieldType: "%s"', $fieldType));
     }
-    
+
     /**
-     * Returns the field id
+     * Returns the field id.
      *
      * @return string The field id
      */
@@ -167,9 +168,9 @@ class Field
     {
         return $this->fieldId;
     }
-    
+
     /**
-     * Returns the field name
+     * Returns the field name.
      *
      * @return string The field name
      */
@@ -177,9 +178,9 @@ class Field
     {
         return $this->fieldName;
     }
-    
+
     /**
-     * Returns the field type
+     * Returns the field type.
      *
      * @return string The field type
      */
@@ -187,59 +188,59 @@ class Field
     {
         return $this->fieldType;
     }
-    
+
     /**
-     * Returns the isAbstract flag of the field
+     * Returns the isAbstract flag of the field.
      *
-     * @return boolean True if field is abstract, false if not
+     * @return bool True if field is abstract, false if not
      */
     public function getIsAbstract()
     {
         return $this->isAbstract;
     }
-    
+
     /**
-     * Returns the isHidden flag of the field
+     * Returns the isHidden flag of the field.
      *
-     * @return boolean True if field is a system-field, false if not
+     * @return bool True if field is a system-field, false if not
      */
     public function getIsHidden()
     {
         return $this->isHidden;
     }
-    
+
     /**
-     * Returns the isMandatory flag of the field
+     * Returns the isMandatory flag of the field.
      *
-     * @return boolean True if field is mandatory, false if not
+     * @return bool True if field is mandatory, false if not
      */
     public function getIsMandatory()
     {
         return $this->isMandatory;
     }
-    
+
     /**
-     * Returns the isSearchable flag of the field
+     * Returns the isSearchable flag of the field.
      *
-     * @return boolean True if field is searchable, false if not
+     * @return bool True if field is searchable, false if not
      */
     public function getIsSearchable()
     {
         return $this->isSearchable;
     }
-    
+
     /**
-     * Returns the isSystem flag of the field
+     * Returns the isSystem flag of the field.
      *
-     * @return boolean True if field is a system-field, false if not
+     * @return bool True if field is a system-field, false if not
      */
     public function getIsSystemField()
     {
         return $this->isSystemField;
     }
-    
+
     /**
-     * Returns the name of a referenced entity
+     * Returns the name of a referenced entity.
      *
      * @return string|null The name of a referenced entity - or null if not set
      */
@@ -247,9 +248,9 @@ class Field
     {
         return $this->refEntityName;
     }
-    
+
     /**
-     * Returns the name of a referenced field
+     * Returns the name of a referenced field.
      *
      * @return string|null The name of a referenced field - or null if not set
      */
@@ -257,20 +258,20 @@ class Field
     {
         return $this->refFieldName;
     }
-    
+
     /**
-     * Checks if field has a reference to another field
+     * Checks if field has a reference to another field.
      *
-     * @return boolean True if field has a configured reference, false if not
+     * @return bool True if field has a configured reference, false if not
      */
     public function hasReference()
     {
-        return isset($this->refEntityName)&&($this->refEntityName!='')&&
-        isset($this->refFieldName)&&($this->refFieldName!=='');
+        return isset($this->refEntityName) && ('' != $this->refEntityName) &&
+        isset($this->refFieldName) && ('' !== $this->refFieldName);
     }
-    
+
     /**
-     * Sets the default value of the field
+     * Sets the default value of the field.
      *
      * @param mixed $value The value to set
      */
@@ -278,19 +279,19 @@ class Field
     {
         $this->defaultValue = $value;
     }
-    
+
     /**
-     * Sets the dublicate check of the field
+     * Sets the dublicate check of the field.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setDuplicateCheck($value)
     {
         $this->duplicateCheck = $value;
     }
-    
+
     /**
-     * Sets the field name
+     * Sets the field name.
      *
      * @param string $value The field-name to set
      */
@@ -298,72 +299,72 @@ class Field
     {
         $this->fieldName = $value;
     }
-    
+
     /**
-     * Sets the isAbstract flag
+     * Sets the isAbstract flag.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setIsAbstract($value)
     {
         $this->isAbstract = $value;
     }
-    
+
     /**
-     * Sets the isHidden flag
+     * Sets the isHidden flag.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setIsHidden($value)
     {
         $this->isHidden = $value;
     }
-    
+
     /**
-     * Sets the isMandatory flag
+     * Sets the isMandatory flag.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setIsMandatory($value)
     {
         $this->isMandatory = $value;
     }
-    
+
     /**
-     * Sets the isSearchable flag
+     * Sets the isSearchable flag.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setIsSearchable($value)
     {
         $this->isSearchable = $value;
     }
-    
+
     /**
-     * Sets the isSystemField flag
+     * Sets the isSystemField flag.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setIsSystemField($value)
     {
         $this->isSystemField = $value;
     }
-    
+
     /**
-     * Sets the mailMerge flag
+     * Sets the mailMerge flag.
      *
-     * @param boolean $value The value to set
+     * @param bool $value The value to set
      */
     public function setMailMerge($value)
     {
         $this->mailMerge = $value;
     }
-    
+
     /**
-     * Set a field reference
+     * Set a field reference.
      *
      * @param string $refEntityName The referencing entity
-     * @param string $refFieldName The referencing field
+     * @param string $refFieldName  The referencing field
      */
     public function setReference($refEntityName, $refFieldName)
     {

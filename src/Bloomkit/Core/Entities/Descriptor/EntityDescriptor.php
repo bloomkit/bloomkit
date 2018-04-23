@@ -2,7 +2,7 @@
 
 namespace Bloomkit\Core\Entities\Descriptor;
 
-use Bloomkit\Core\Fields\Field;
+use Bloomkit\Core\Entities\Fields\Field;
 
 /**
  * Class for describing an entity.
@@ -14,7 +14,7 @@ class EntityDescriptor
     const IDTYPE_UUID = 'uuid';
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $creationDateLogging;
 
@@ -34,12 +34,12 @@ class EntityDescriptor
     protected $idType;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $modificationDateLogging;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $recoveryMode;
 
