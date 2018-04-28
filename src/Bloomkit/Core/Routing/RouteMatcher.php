@@ -82,7 +82,7 @@ class RouteMatcher
                     $method = 'GET';
                 }
 
-                if (false == in_array($method, $supportedMethods)) {
+                if (!in_array($method, $supportedMethods)) {
                     continue;
                 }
             }
