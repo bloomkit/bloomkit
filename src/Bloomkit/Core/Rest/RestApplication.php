@@ -40,144 +40,6 @@ class RestApplication extends Application
     }
 
     /**
-     * Processing the request.
-     *
-     * @param RestRequest $request The request to process
-     *
-     * @return RestResponse The response to the request
-     */
-    private function process(RestRequest $request)
-    {
-        // Check if version is supported
-        $apiVersion = $request->getApiVersion();
-        if ('' == $apiVersion) {
-            return RestResponse::createFault(400, 'Invalid request: The api version is missing', 31030);
-        }
-        if (false === array_search($apiVersion, $this->supportedVersions)) {
-            return RestResponse::createFault(400, 'The requested api version is not supported by this server.', 31030);
-        }
-
-        $event = new HttpEvent($request);
-        $this['eventManager']->triggerEvent(HttpEvents::REQUEST, $event);
-
-        if ($event->hasResponse()) {
-            $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
-            $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
-
-            return $event->getResponse();
-        }
-
-        try {
-            //$tracer = $this->getTracer();
-            //$tracer->start('App::findRoute');
-            $matcher = $this->getRouteMatcher();
-            $parameters = $matcher->match($request->getRestUrl(), $request->getHttpMethod());
-            //$tracer->stop('App::findRoute');
-
-            // Authentication
-            if (isset($parameters['_auth'])) {
-                $auth = $parameters['_auth'];
-
-                if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
-                    $this->get('firewall')->setAuthEntryPoint(new $auth['authEntryPoint']());
-                }
-
-                if (false == isset($auth['authenticator'])) {
-                    throw new AuthConfigException(sprintf('"authenticator" parameter is missing in route-config for "%s"', $request->getPathUrl()));
-                }
-                if (false == isset($auth['userProvider'])) {
-                    throw new AuthConfigException(sprintf('"userProvider" parameter is missing in route-config for "%s"', $request->getPathUrl()));
-                }
-
-                if (!class_exists($auth['authenticator'])) {
-                    throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['authenticator']));
-                }
-                if (!class_exists($auth['userProvider'])) {
-                    throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['userProvider']));
-                }
-                if (is_subclass_of($auth['userProvider'], 'Bloomkit\Core\Security\User\EntityUserProvider')) {
-                    $userProvider = new $auth['userProvider']($this->entityManager);
-                } else {
-                    $userProvider = new $auth['userProvider']();
-                }
-
-                $authenticator = new $auth['authenticator']($userProvider);
-                $token = $authenticator->createToken($request);
-
-                if (false == $authenticator->supportsToken($token)) {
-                    throw new \Exception('Token is not supported');
-                }
-
-                $token = $authenticator->authenticateToken($token, $userProvider);
-                $this->getSecurityContext()->setToken($token);
-            }
-
-            $request->getAttributes()->addItems($parameters);
-            $controllerName = $parameters['_controller'];
-
-            $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);
-
-            if (false === strpos($controllerName, '::')) {
-                throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controllerName));
-            }
-
-            $controllerInfo = list($class, $method) = explode('::', $controllerName, 2);
-
-            if (!class_exists($class)) {
-                throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
-            }
-
-            if (is_array($controllerInfo)) {
-                $r = new \ReflectionMethod($controllerInfo[0], $controllerInfo[1]);
-            }
-
-            $params = $r->getParameters();
-
-            $attributes = $request->attributes->getItems();
-            $arguments = [];
-
-            foreach ($params as $param) {
-                if (array_key_exists($param->name, $attributes)) {
-                    $arguments[] = $attributes[$param->name];
-                } elseif ($param->getClass() && $param->getClass()->isInstance($request)) {
-                    $arguments[] = $request;
-                } elseif ($param->isDefaultValueAvailable()) {
-                    $arguments[] = $param->getDefaultValue();
-                } else {
-                    if (is_array($controller)) {
-                        $repr = sprintf('%s::%s()', $controller[0], $controller[1]);
-                    } elseif (is_object($controller)) {
-                        $repr = get_class($controller);
-                    } else {
-                        $repr = $controller;
-                    }
-                    throw new \RuntimeException(sprintf('Controller "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $repr, $param->name));
-                }
-            }
-
-            $controller = new $class($this);
-            $controller->setRequest($request);
-
-            //$tracer->start('App::CallController');
-            $response = call_user_func_array([$controller, $method], $arguments);
-            //$tracer->stop('App::CallController');
-
-            $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
-            $event->setResponse($response);
-            $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
-            $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
-
-            return $response;
-        } catch (RessourceNotFoundException $e) {
-            $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
-            throw new HttpNotFoundException($message);
-        } catch (MethodNotAllowedException $e) {
-            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
-            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
-        }
-    }
-
-    /**
      * Returns the url matcher.
      *
      * @return \Bloomkit\Core\Routing\RouteMatcher
@@ -210,6 +72,144 @@ class RestApplication extends Application
         }
 
         return $event->getResponse();
+    }
+    
+    /**
+     * Processing the request.
+     *
+     * @param RestRequest $request The request to process
+     *
+     * @return RestResponse The response to the request
+     */
+    private function process(RestRequest $request)
+    {
+        // Check if version is supported
+        $apiVersion = $request->getApiVersion();
+        if ('' == $apiVersion) {
+            return RestResponse::createFault(400, 'Invalid request: The api version is missing', 31030);
+        }
+        if (false === array_search($apiVersion, $this->supportedVersions)) {
+            return RestResponse::createFault(400, 'The requested api version is not supported by this server.', 31030);
+        }
+    
+        $event = new HttpEvent($request);
+        $this['eventManager']->triggerEvent(HttpEvents::REQUEST, $event);
+    
+        if ($event->hasResponse()) {
+            $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
+            $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
+    
+            return $event->getResponse();
+        }
+    
+        try {
+            //$tracer = $this->getTracer();
+            //$tracer->start('App::findRoute');
+            $matcher = $this->getRouteMatcher();
+            $parameters = $matcher->match($request->getRestUrl(), $request->getHttpMethod());
+            //$tracer->stop('App::findRoute');
+    
+            // Authentication
+            if (isset($parameters['_auth'])) {
+                $auth = $parameters['_auth'];
+    
+                if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
+                    $this->get('firewall')->setAuthEntryPoint(new $auth['authEntryPoint']());
+                }
+    
+                if (false == isset($auth['authenticator'])) {
+                    throw new AuthConfigException(sprintf('"authenticator" parameter is missing in route-config for "%s"', $request->getPathUrl()));
+                }
+                if (false == isset($auth['userProvider'])) {
+                    throw new AuthConfigException(sprintf('"userProvider" parameter is missing in route-config for "%s"', $request->getPathUrl()));
+                }
+    
+                if (!class_exists($auth['authenticator'])) {
+                    throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['authenticator']));
+                }
+                if (!class_exists($auth['userProvider'])) {
+                    throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['userProvider']));
+                }
+                if (is_subclass_of($auth['userProvider'], 'Bloomkit\Core\Security\User\EntityUserProvider')) {
+                    $userProvider = new $auth['userProvider']($this->entityManager);
+                } else {
+                    $userProvider = new $auth['userProvider']();
+                }
+    
+                $authenticator = new $auth['authenticator']($userProvider);
+                $token = $authenticator->createToken($request);
+    
+                if (false == $authenticator->supportsToken($token)) {
+                    throw new \Exception('Token is not supported');
+                }
+    
+                $token = $authenticator->authenticateToken($token, $userProvider);
+                $this->getSecurityContext()->setToken($token);
+            }
+    
+            $request->getAttributes()->addItems($parameters);
+            $controllerName = $parameters['_controller'];
+    
+            $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);
+    
+            if (false === strpos($controllerName, '::')) {
+                throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controllerName));
+            }
+    
+            $controllerInfo = list($class, $method) = explode('::', $controllerName, 2);
+    
+            if (!class_exists($class)) {
+                throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+            }
+    
+            if (is_array($controllerInfo)) {
+                $r = new \ReflectionMethod($controllerInfo[0], $controllerInfo[1]);
+            }
+    
+            $params = $r->getParameters();
+    
+            $attributes = $request->attributes->getItems();
+            $arguments = [];
+    
+            foreach ($params as $param) {
+                if (array_key_exists($param->name, $attributes)) {
+                    $arguments[] = $attributes[$param->name];
+                } elseif ($param->getClass() && $param->getClass()->isInstance($request)) {
+                    $arguments[] = $request;
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $arguments[] = $param->getDefaultValue();
+                } else {
+                    if (is_array($controller)) {
+                        $repr = sprintf('%s::%s()', $controller[0], $controller[1]);
+                    } elseif (is_object($controller)) {
+                        $repr = get_class($controller);
+                    } else {
+                        $repr = $controller;
+                    }
+                    throw new \RuntimeException(sprintf('Controller "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $repr, $param->name));
+                }
+            }
+    
+            $controller = new $class($this);
+            $controller->setRequest($request);
+    
+            //$tracer->start('App::CallController');
+            $response = call_user_func_array([$controller, $method], $arguments);
+            //$tracer->stop('App::CallController');
+    
+            $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
+            $event->setResponse($response);
+            $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
+            $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
+    
+            return $response;
+        } catch (RessourceNotFoundException $e) {
+            $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
+            throw new HttpNotFoundException($message);
+        } catch (MethodNotAllowedException $e) {
+            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
+            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
+        }
     }
 
     /**
