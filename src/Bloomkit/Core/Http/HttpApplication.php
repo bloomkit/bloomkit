@@ -4,9 +4,6 @@ namespace Bloomkit\Core\Http;
 
 use Bloomkit\Core\Application\Application;
 use Bloomkit\Core\Module\ModuleInterface;
-use Bloomkit\Core\Http\HttpEvent;
-use Bloomkit\Core\Http\HttpEvents;
-use Bloomkit\Core\Http\HttpExceptionEvent;
 use Bloomkit\Core\Routing\RouteCollection;
 
 class HttpApplication extends Application
@@ -50,20 +47,80 @@ class HttpApplication extends Application
         try {
             $event = new HttpEvent($request);
             $this->getEventManager()->triggerEvent(HttpEvents::REQUEST, $event);
-    
+
             if ($event->hasResponse()) {
                 $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
-    
+
                 return $event->getResponse();
             }
-    
+
             $matcher = $this->getRouteMatcher();
             $parameters = $matcher->match($request->getPathUrl(), $request->getHttpMethod());
+
+            $request->attributes->addItems($parameters);
+            $controllerName = $parameters['_controller'];
+
+            $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);
+
+            if (false === strpos($controllerName, '::')) {
+                throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controllerName));
+            }
+
+            $controllerInfo = list($class, $method) = explode('::', $controllerName, 2);
+
+            if (!class_exists($class)) {
+                throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+            }
+
+            if (is_array($controllerInfo)) {
+                $r = new \ReflectionMethod($controllerInfo[0], $controllerInfo[1]);
+            }
+
+            $params = $r->getParameters();
+
+            $attributes = $request->attributes->getItems();
+            $arguments = array();
+
+            foreach ($params as $param) {
+                if (array_key_exists($param->name, $attributes)) {
+                    $arguments[] = $attributes[$param->name];
+                } elseif ($param->getClass() && $param->getClass()->isInstance($request)) {
+                    $arguments[] = $request;
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $arguments[] = $param->getDefaultValue();
+                } else {
+                    if (is_array($controller)) {
+                        $repr = sprintf('%s::%s()', $controller[0], $controller[1]);
+                    } elseif (is_object($controller)) {
+                        $repr = get_class($controller);
+                    } else {
+                        $repr = $controller;
+                    }
+                    throw new \RuntimeException(sprintf('Controller "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $repr, $param->name));
+                }
+            }
+
+            $controller = new $class($this);
+            $controller->setRequest($request);
+
+            $tracer->start('App::CallController');
+            $response = call_user_func_array(array(
+                    $controller,
+                    $method,
+                ), $arguments);
+            $tracer->stop('App::CallController');
+
+            $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
+            $event->setResponse($response);
+            $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
+            $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
+
+            return $response;
         } catch (\Exception $e) {
             return $this->handleException($e, $request);
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -74,7 +131,7 @@ class HttpApplication extends Application
 
         if (($routes instanceof RouteCollection) && ($routes->getCount() > 0)) {
             $this['routes']->addCollection($routes);
-        };
+        }
     }
 
     /**
