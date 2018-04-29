@@ -13,8 +13,8 @@ final class HttpEvents
     const RESPONSE = 'http.response';
 
     const TERMINATE = 'http.terminate';
-    
+
     const VIEW = 'http.view';
-    
+
     const FINISH_REQUEST = 'http.finish';
 }

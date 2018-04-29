@@ -177,6 +177,16 @@ class Application extends Container implements EventTracerInterface
     }
     
     /**
+     * Returns the logger.
+     *
+     * @return LoggerInterface;
+     */
+    public function getLogger()
+    {
+        return $this['logger'];
+    }
+    
+    /**
      * Returns the security context.
      *
      * @return \Bloomkit\Core\Security\SecurityContext;
