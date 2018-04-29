@@ -3,6 +3,7 @@
 namespace Bloomkit\Core\Http;
 
 use Bloomkit\Core\Application\Application;
+use Bloomkit\Core\Module\ModuleInterface;
 
 class HttpApplication extends Application
 {
@@ -22,7 +23,7 @@ class HttpApplication extends Application
     }
 
     /**
-     * Returns the url matcher.
+     * Returns the route matcher.
      *
      * @return \Bloomkit\Core\Routing\RouteMatcher
      */
@@ -30,7 +31,20 @@ class HttpApplication extends Application
     {
         return $this['route_matcher'];
     }
-
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function registerModule(ModuleInterface $module)
+    {
+        parent::registerModule($module);
+        $routes = $module->getRoutes();
+    
+        if (($routes instanceof RouteCollection) && ($routes->getCount() > 0)) {
+            $this['routes']->addCollection($routes);
+        };
+    }
+    
     /**
      * Start the application.
      */
