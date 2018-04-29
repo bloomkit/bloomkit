@@ -71,6 +71,7 @@ class Application extends Container implements EventTracerInterface
         $this->register('app', $this);
         $this->registerFactory('config', 'Bloomkit\Core\Utilities\Repository', true);
         $this->registerFactory('eventManager', 'Bloomkit\Core\EventManager\EventManager', true);
+        $this->registerFactory('securityContext', 'Bloomkit\Core\Security\SecurityContext', true);
 
         $this->setAlias('Bloomkit\Core\Application\Application', 'app');
         $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');
@@ -173,6 +174,16 @@ class Application extends Container implements EventTracerInterface
     public function getLongVersion()
     {
         return $this->appName.' '.$this->appVersion;
+    }
+    
+    /**
+     * Returns the security context.
+     *
+     * @return \Bloomkit\Core\Security\SecurityContext;
+     */
+    public function getSecurityContext()
+    {
+        return $this['securityContext'];
     }
 
     /**
