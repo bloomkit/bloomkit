@@ -57,7 +57,7 @@ class HttpApplication extends Application
             $matcher = $this->getRouteMatcher();
             $parameters = $matcher->match($request->getPathUrl(), $request->getHttpMethod());
 
-            $request->attributes->addItems($parameters);
+            $request->getAttributes()->addItems($parameters);
             $controllerName = $parameters['_controller'];
 
             $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);
