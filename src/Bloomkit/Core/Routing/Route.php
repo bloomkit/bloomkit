@@ -46,12 +46,12 @@ class Route
      *
      * @param string       $path         The path pattern to match
      * @param array        $attributes   An array of data - passed to the controller if a route matches
+     * @param string|array $methods      The supported HTTP-methods
      * @param array        $requirements An array of requirements for parameters (regexes)
      * @param string       $host         A host pattern to match
-     * @param string|array $schemes      A required URI scheme or an array of restricted schemes
-     * @param string|array $methods      The supported HTTP-methods
+     * @param string|array $schemes      A required URI scheme or an array of restricted schemes     
      */
-    public function __construct($path, array $attributes = [], array $methods = [], array $requirements = [], $host = '', $schemes = [])
+    public function __construct($path, array $attributes = [], $methods = [], array $requirements = [], $host = '', $schemes = [])
     {
         $this->setPath($path);
         $this->setAttributes($attributes);
