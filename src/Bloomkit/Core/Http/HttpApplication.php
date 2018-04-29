@@ -49,7 +49,7 @@ class HttpApplication extends Application
             $this->getEventManager()->triggerEvent(HttpEvents::REQUEST, $event);
 
             if ($event->hasResponse()) {
-                $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
+                $this->getEventManager()->triggerEvent(HttpEvents::RESPONSE, $event);
 
                 return $event->getResponse();
             }
@@ -60,7 +60,7 @@ class HttpApplication extends Application
             $request->getAttributes()->addItems($parameters);
             $controllerName = $parameters['_controller'];
 
-            $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);
+            $this->getEventManager()->triggerEvent(HttpEvents::CONTROLLER, $event);
 
             if (false === strpos($controllerName, '::')) {
                 throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controllerName));
@@ -103,17 +103,12 @@ class HttpApplication extends Application
             $controller = new $class($this);
             $controller->setRequest($request);
 
-            $tracer->start('App::CallController');
-            $response = call_user_func_array(array(
-                    $controller,
-                    $method,
-                ), $arguments);
-            $tracer->stop('App::CallController');
+            $response = call_user_func_array([$controller,$method], $arguments);
 
-            $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
+            $this->getEventManager()->triggerEvent(HttpEvents::VIEW, $event);
             $event->setResponse($response);
-            $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
-            $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
+            $this->getEventManager()->triggerEvent(HttpEvents::RESPONSE, $event);
+            $this->getEventManager()->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
 
             return $response;
         } catch (\Exception $e) {
@@ -142,6 +137,12 @@ class HttpApplication extends Application
         $request = HttpRequest::processRequest();
         $response = $this->process($request);
 
+        $event = new HttpEvent($request);
+        $event->setResponse($response);
+        $this->getEventManager()->triggerEvent(HttpEvents::RESPONSE, $event);
+        $response = $event->getResponse();
+        $response->send();
+        $this->getEventManager()->triggerEvent(HttpEvents::TERMINATE, $event);
         return $response;
     }
 
