@@ -78,7 +78,7 @@ class HttpApplication extends Application
 
             $params = $r->getParameters();
 
-            $attributes = $request->attributes->getItems();
+            $attributes = $request->getAttributes()->getItems();
             $arguments = array();
 
             foreach ($params as $param) {
