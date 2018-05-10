@@ -8,7 +8,7 @@ use Bloomkit\Core\Http\HttpEvents;
 use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpExceptionEvent;
 use Bloomkit\Core\Http\HttpResponse;
-use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
+use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 
 class HttpApplicationTest extends TestCase
 {
@@ -27,13 +27,13 @@ class HttpApplicationTest extends TestCase
         $eventManager = $app->getEventManager();
         $eventManager->addListener(HttpEvents::REQUEST, array($this, 'onRequestTest1'));
         $eventManager->addListener(HttpEvents::EXCEPTION, array($this, 'onHttpException'));
-        $response = $app->run();
+        $response = $app->run(false);
         $this->assertEquals('foo', $response->getContent());
     }
 
     public function testNotFound()
     {
-        $this->expectException(RessourceNotFoundException::class);
+        $this->expectException(HttpNotFoundException::class);
         $_SERVER = [];
         $_SERVER['SCRIPT_FILENAME'] = '/htdocs/index.php';
         $_SERVER['SCRIPT_NAME'] = '/foo/index.php';

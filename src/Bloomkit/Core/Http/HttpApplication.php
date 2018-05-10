@@ -200,7 +200,7 @@ class HttpApplication extends Application
     /**
      * Start the application.
      */
-    public function run()
+    public function run($sendResponse = true)
     {
         $request = HttpRequest::processRequest();
         $response = $this->process($request);
@@ -209,7 +209,8 @@ class HttpApplication extends Application
         $event->setResponse($response);
         $this->getEventManager()->triggerEvent(HttpEvents::RESPONSE, $event);
         $response = $event->getResponse();
-        $response->send();
+        if($sendResponse)
+            $response->send();
         $this->getEventManager()->triggerEvent(HttpEvents::TERMINATE, $event);
 
         return $response;
