@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Security\Auth\OAuth2;
+namespace Bloomkit\Core\Security\OAuth2;
 
 /**
  * Representation of a generic OAuth token (authCode, authToken & refreshToken).

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="../../../../../../vendor/autoload.php"
+         bootstrap="../../../../../vendor/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -13,7 +13,7 @@
          verbose="true"
 >
     <testsuites>
-        <testsuite name="Bloomkit/Auth/Oauth2 Test Suite">            
+        <testsuite name="Bloomkit/Oauth2 Test Suite">            
             <directory suffix="Test.php">./Tests/</directory>
         </testsuite>
     </testsuites>

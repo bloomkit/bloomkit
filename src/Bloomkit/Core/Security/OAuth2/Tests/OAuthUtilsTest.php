@@ -1,11 +1,11 @@
 <?php
 
-namespace Bloomkit\Core\Security\Auth\OAuth2\Tests;
+namespace Bloomkit\Core\Security\OAuth2\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Bloomkit\Core\Security\Auth\OAuth2\OAuthUtils;
-use Bloomkit\Core\Security\Auth\OAuth2\Exceptions\OAuthServerException;
-use Bloomkit\Core\Security\Auth\OAuth2\Exceptions\OAuthRedirectException;
+use Bloomkit\Core\Security\OAuth2\OAuthUtils;
+use Bloomkit\Core\Security\OAuth2\Exceptions\OAuthServerException;
+use Bloomkit\Core\Security\OAuth2\Exceptions\OAuthRedirectException;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Http\HttpRedirectResponse;
 use Bloomkit\Core\Http\HttpRequest;

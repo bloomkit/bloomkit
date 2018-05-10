@@ -1,9 +1,9 @@
 <?php
 
-namespace Bloomkit\Core\Security\Auth\OAuth2\Tests;
+namespace Bloomkit\Core\Security\OAuth2\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Bloomkit\Core\Security\Auth\OAuth2\OAuthToken;
+use Bloomkit\Core\Security\OAuth2\OAuthToken;
 
 class OAuthTokenTest extends TestCase
 {

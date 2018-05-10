@@ -1,12 +1,12 @@
 <?php
 
-namespace Bloomkit\Core\Security\Auth\OAuth2\Tests\Mockups;
+namespace Bloomkit\Core\Security\OAuth2\Tests\Mockups;
 
 use Bloomkit\Core\Security\User\UserInterface;
 use Bloomkit\Core\Security\User\User;
-use Bloomkit\Core\Security\Auth\OAuth2\OAuthClient;
-use Bloomkit\Core\Security\Auth\OAuth2\Storage\OAuthStorageInterface;
-use Bloomkit\Core\Security\Auth\OAuth2\OAuthToken;
+use Bloomkit\Core\Security\OAuth2\OAuthClient;
+use Bloomkit\Core\Security\OAuth2\Storage\OAuthStorageInterface;
+use Bloomkit\Core\Security\OAuth2\OAuthToken;
 
 class MockOAuthStorage implements OAuthStorageInterface
 {
@@ -21,7 +21,7 @@ class MockOAuthStorage implements OAuthStorageInterface
     }
 
     /**
-     * @return Bloomkit\Core\Security\Auth\OAuth2\OAuthClient
+     * @return OAuthClient
      */
     public function getClient($clientId)
     {
