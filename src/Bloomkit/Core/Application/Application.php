@@ -5,6 +5,7 @@ namespace Bloomkit\Core\Application;
 use Bloomkit\Core\Module\ModuleInterface;
 use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
+use Bloomkit\Core\Application\Container;
 use Psr\Logger\LoggerInterface;
 
 class Application extends Container implements EventTracerInterface
