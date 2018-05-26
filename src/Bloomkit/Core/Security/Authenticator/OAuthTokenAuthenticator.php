@@ -13,18 +13,10 @@ use Bloomkit\Core\Security\Exceptions\BadCredentialsException;
 use Bloomkit\Core\Security\OAuth2\OAuthUtils;
 
 /**
- * Auhenticator for OAuthTokens.
+ * Authenticator for OAuthTokens.
  */
 class OAuthTokenAuthenticator implements AuthenticatorInterface
 {
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct('LoginFormAuthenticator');
-    }
-
     /**
      * {@inheritdoc}
      */

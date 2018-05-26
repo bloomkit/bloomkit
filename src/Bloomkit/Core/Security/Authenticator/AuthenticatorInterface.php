@@ -12,13 +12,6 @@ use Bloomkit\Core\Http\HttpRequest;
 interface AuthenticatorInterface
 {
     /**
-     * Constructor.
-     *
-     * @param string $name The name of the authenticator
-     */
-    public function __construct($name);
-
-    /**
      * Find and authenticate a user for this token.
      *
      * @param Token                 $token        The token to authenticate

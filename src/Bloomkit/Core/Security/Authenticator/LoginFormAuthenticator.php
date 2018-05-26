@@ -11,18 +11,10 @@ use Bloomkit\Core\Security\Exceptions\AuthFailedException;
 use Bloomkit\Core\Security\Exceptions\CredentialsMissingException;
 
 /**
- * Auhenticator for LoginForms.
+ * Authenticator for LoginForms.
  */
 class LoginFormAuthenticator implements AuthenticatorInterface
 {
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct('LoginFormAuthenticator');
-    }
-
     /**
      * {@inheritdoc}
      */
