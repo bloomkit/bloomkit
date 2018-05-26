@@ -10,12 +10,12 @@ use Bloomkit\Core\Security\User\UserInterface;
 class Token
 {
     /**
-     * @var boolean
+     * @var bool
      */
     private $authenticated;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $isStateful;
 

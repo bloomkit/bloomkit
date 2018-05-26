@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Security\Authentication;
+namespace Bloomkit\Core\Security\Authenticator;
 
 use Bloomkit\Core\Security\User\UserProviderInterface;
 use Bloomkit\Core\Security\Token\Token;
