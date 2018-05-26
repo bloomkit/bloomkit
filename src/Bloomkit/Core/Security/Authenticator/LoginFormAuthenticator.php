@@ -11,12 +11,12 @@ use Bloomkit\Core\Security\Exceptions\AuthFailedException;
 use Bloomkit\Core\Security\Exceptions\CredentialsMissingException;
 
 /**
- * Auhenticator for LoginForms
+ * Auhenticator for LoginForms.
  */
 class LoginFormAuthenticator implements AuthenticatorInterface
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -56,6 +56,7 @@ class LoginFormAuthenticator implements AuthenticatorInterface
         if ((is_null($username)) || (is_null($password))) {
             throw new CredentialsMissingException('No credentials found in request');
         }
+
         return new UsernamePasswordToken($username, $password);
     }
 
