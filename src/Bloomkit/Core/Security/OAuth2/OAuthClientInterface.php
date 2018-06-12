@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Security\OAuth2;
 
 /**
- * Defines how a OAuthClient object should look like.
+ * Defines how an OAuthClient object should look like.
  */
 interface OAuthClientInterface
 {
