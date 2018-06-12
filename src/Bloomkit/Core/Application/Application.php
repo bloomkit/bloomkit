@@ -65,23 +65,15 @@ class Application extends Container implements EventTracerInterface
             } else {
                 $this->basePath = rtrim($basePath, '\/');
             }
-        }
+        }        
 
-        $this->bind('Bloomkit\Core\EventManager\EventTracerInterface', 'Bloomkit\Core\Application\Application', true);
-
-        $this->register('app', $this);
-        $this->registerFactory('config', 'Bloomkit\Core\Utilities\Repository', true);
-        $this->registerFactory('eventManager', 'Bloomkit\Core\EventManager\EventManager', true);
-        $this->registerFactory('securityContext', 'Bloomkit\Core\Security\SecurityContext', true);
-
-        $this->setAlias('Bloomkit\Core\Application\Application', 'app');
-        $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');
-
+        $this->registerBaseBindings();
+        
         $this->loadConfigFromFiles();
         if (count($config) > 0) {
             $this->getConfig()->addItems($config);
         }
-
+        
         $this->registerFactory('logger', 'Bloomkit\Core\Application\DummyLogger', true);
     }
 
@@ -290,6 +282,29 @@ class Application extends Container implements EventTracerInterface
         }
 
         $event->setTracerEvent($this->tracer->start($eventName, 'event_listener'));
+    }
+    
+    /**
+     * Register the core bindings of the application
+     */
+    protected function registerBaseBindings()
+    {
+        //register the app itself in the container
+        $this->register('app', $this);
+        
+        //Add a DI-binding. If someone requests A, B is returned
+        $this->bind('Bloomkit\Core\EventManager\EventTracerInterface', 'Bloomkit\Core\Application\Application', true);
+        
+        //register lazy-loading application objects in the container 
+        $this->registerFactory('config', 'Bloomkit\Core\Utilities\Repository', true);
+        $this->registerFactory('eventManager', 'Bloomkit\Core\EventManager\EventManager', true);
+        $this->registerFactory('entityManager', 'Bloomkit\Core\Entities\EntityManager', true);
+        $this->registerFactory('securityContext', 'Bloomkit\Core\Security\SecurityContext', true);
+        
+        //set aliases - e.g. allow the application to know, which object is meant, if "app", "eventManager", etc. is used
+        $this->setAlias('Bloomkit\Core\Application\Application', 'app');
+        $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');        
+        $this->setAlias('Bloomkit\Core\Entities\EntityManager', 'entityManager');               
     }
 
     /**

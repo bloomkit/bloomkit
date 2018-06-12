@@ -107,7 +107,7 @@ class Container implements \ArrayAccess
     }
 
     /**
-     * Add a binding (eg register a closure for an interface).
+     * Add a binding (e.g. register a closure for an interface).
      *
      * @param string $abstract
      * @param string $concrete

@@ -100,6 +100,7 @@ class HttpApplication extends Application
                     if (!class_exists($auth['userProvider'])) {
                         throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['userProvider']));
                     }
+                    
                     if (is_subclass_of($auth['userProvider'], 'Bloomkit\Core\Security\User\EntityUserProvider')) {
                         $userProvider = new $auth['userProvider']($this->entityManager);
                     } else {
