@@ -211,21 +211,21 @@ class EntityDescriptor
     {
         $this->modificationDateLogging = $mode;
     }
-    
+
     /**
-     * Sets the recovery-mode. Used to decide if datasets can be deleted or have to be marked as deleted. 
+     * Sets the recovery-mode. Used to decide if datasets can be deleted or have to be marked as deleted.
      *
-     * @param boolean $value True if datasets of this kind should be able to be recovered, else if not
+     * @param bool $value True if datasets of this kind should be able to be recovered, else if not
      */
     public function setRecoveryMode($value)
     {
         $this->recoveryMode = $value;
     }
-    
+
     /**
-     * Sets the table name (used for persistance)
+     * Sets the table name (used for persistance).
      *
-     * @param string $tableName The name of the (db)-table to persist entities to (in lowercase) 
+     * @param string $tableName The name of the (db)-table to persist entities to (in lowercase)
      */
     public function setTableName($tableName)
     {

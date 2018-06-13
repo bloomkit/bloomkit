@@ -1,5 +1,6 @@
 <?php
-namespace Bloomkit\Tests;
+
+namespace Bloomkit\Core\Entities\Tests;
 
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Entities\Fields\Field;
@@ -15,7 +16,7 @@ class EntityDescriptorTest extends \PHPUnit_Framework_TestCase
         $descriptor->setTableName('BarFoo');
         $this->assertEquals('barfoo', $descriptor->getTableName());
     }
-    
+
     public function testRecoveryMode()
     {
         $descriptor = new EntityDescriptor('FooBar');
@@ -23,15 +24,15 @@ class EntityDescriptorTest extends \PHPUnit_Framework_TestCase
         $descriptor->setRecoveryMode(true);
         $this->assertEquals(true, $descriptor->getRecoveryMode());
     }
-    
+
     public function testIdType()
     {
         $descriptor = new EntityDescriptor('FooBar');
         $this->assertEquals(EntityDescriptor::IDTYPE_SERIAL, $descriptor->getIdType());
-        $descriptor = new EntityDescriptor('FooBar',EntityDescriptor::IDTYPE_UUID);        
+        $descriptor = new EntityDescriptor('FooBar', EntityDescriptor::IDTYPE_UUID);
         $this->assertEquals(EntityDescriptor::IDTYPE_UUID, $descriptor->getIdType());
     }
-    
+
     public function testAddAndCount()
     {
         $descriptor = new EntityDescriptor('test');
@@ -89,11 +90,11 @@ class EntityDescriptorTest extends \PHPUnit_Framework_TestCase
         $descriptor->addField($field2);
         $compare = array(
             'fieldid1' => $field1,
-            'fieldid2' => $field2
+            'fieldid2' => $field2,
         );
         $this->assertEquals($compare, $descriptor->getFields());
     }
-    
+
     public function testSetLogging()
     {
         $descriptor = new EntityDescriptor('test');
@@ -105,4 +106,3 @@ class EntityDescriptorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $descriptor->getModificationDateLogging());
     }
 }
-?>
