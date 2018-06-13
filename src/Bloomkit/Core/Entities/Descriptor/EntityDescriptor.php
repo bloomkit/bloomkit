@@ -5,7 +5,7 @@ namespace Bloomkit\Core\Entities\Descriptor;
 use Bloomkit\Core\Entities\Fields\Field;
 
 /**
- * Class for describing an entity.
+ * Class for describing an Entity.
  */
 class EntityDescriptor
 {
@@ -77,7 +77,7 @@ class EntityDescriptor
      */
     public function getCreationDateLogging()
     {
-        return $this->logCreationDate;
+        return $this->creationDateLogging;
     }
 
     /**
@@ -141,7 +141,7 @@ class EntityDescriptor
      */
     public function getModificationDateLogging()
     {
-        return $this->logModificationDate;
+        return $this->modificationDateLogging;
     }
 
     /**
@@ -210,5 +210,25 @@ class EntityDescriptor
     public function setModificationDateLogging($mode)
     {
         $this->modificationDateLogging = $mode;
+    }
+    
+    /**
+     * Sets the recovery-mode. Used to decide if datasets can be deleted or have to be marked as deleted. 
+     *
+     * @param boolean $value True if datasets of this kind should be able to be recovered, else if not
+     */
+    public function setRecoveryMode($value)
+    {
+        $this->recoveryMode = $value;
+    }
+    
+    /**
+     * Sets the table name (used for persistance)
+     *
+     * @param string $tableName The name of the (db)-table to persist entities to (in lowercase) 
+     */
+    public function setTableName($tableName)
+    {
+        $this->tableName = strtolower($tableName);
     }
 }
