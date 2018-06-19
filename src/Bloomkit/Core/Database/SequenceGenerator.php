@@ -51,16 +51,6 @@ class SequenceGenerator
      */
     public function nextValue($sequenceName)
     {
-        if (isset($this->sequences[$sequenceName])) {
-            $value = $this->sequences[$sequenceName]['value'];
-            ++$this->sequences[$sequenceName]['value'];
-            if ($this->sequences[$sequenceName]['value'] >= $this->sequences[$sequenceName]['max']) {
-                unset($this->sequences[$sequenceName]);
-            }
-
-            return $value;
-        }
-
         $this->dbCon->beginTransaction();
 
         try {
@@ -68,38 +58,31 @@ class SequenceGenerator
             $sql = 'SELECT sequence_value, sequence_increment_by FROM '.
                 $platform->appendLockHint($this->generatorTableName, \Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE).
                 ' WHERE sequence_name = ? '.$platform->getWriteLockSQL();
-            $stmt = $this->dbCon->executeQuery($sql, [$sequenceName]);
+                $stmt = $this->dbCon->executeQuery($sql, [$sequenceName]);
 
-            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $row = array_change_key_case($row, CASE_LOWER);
+                if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $row = array_change_key_case($row, CASE_LOWER);
 
-                $value = $row['sequence_value'];
-                ++$value;
+                    $value = $row['sequence_value'];
+                    $value++;
 
-                if ($row['sequence_increment_by'] > 1) {
-                    $this->sequences[$sequenceName] = [
-                        'value' => $value,
-                        'max' => $row['sequence_value'] + $row['sequence_increment_by'],
-                    ];
+                    $sql = 'UPDATE '.$this->generatorTableName.' SET sequence_value = sequence_value + sequence_increment_by '.
+                        'WHERE sequence_name = ? AND sequence_value = ?';
+                    $rows = $this->dbCon->executeUpdate($sql, [$sequenceName, $row['sequence_value']]);
+
+                    if ($rows != 1) {
+                        throw new DbException('Race-condition detected while updating sequence. Aborting generation');
+                    }
+                } else {
+                    $this->dbCon->insert($this->generatorTableName, [
+                        'sequence_name' => $sequenceName,
+                        'sequence_value' => 1,
+                        'sequence_increment_by' => 1,
+                    ]);
+                    $value = 1;
                 }
 
-                $sql = 'UPDATE '.$this->generatorTableName.' SET sequence_value = sequence_value + sequence_increment_by '.
-                    'WHERE sequence_name = ? AND sequence_value = ?';
-                $rows = $this->dbCon->executeUpdate($sql, [$sequenceName, $row['sequence_value']]);
-
-                if ($rows != 1) {
-                    throw new DbException('Race-condition detected while updating sequence. Aborting generation');
-                }
-            } else {
-                $this->dbCon->insert($this->generatorTableName, [
-                    'sequence_name' => $sequenceName,
-                    'sequence_value' => 1,
-                    'sequence_increment_by' => 1,
-                ]);
-                $value = 1;
-            }
-
-            $this->dbCon->commit();
+                $this->dbCon->commit();
         } catch (\Exception $e) {
             $this->dbCon->rollback();
             throw new DbException('Error generating sequence generator id, aborted generation: '.$e->getMessage(), 0, $e);
