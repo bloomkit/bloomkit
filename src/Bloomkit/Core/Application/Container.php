@@ -307,7 +307,7 @@ class Container implements \ArrayAccess
      *
      * @throws DiInstantiationException If target is not instantiable
      */
-    protected function createObject($class, array $parameters = [])
+    public function createObject($class, array $parameters = [])
     {
         $r = new \ReflectionClass($class);
 
