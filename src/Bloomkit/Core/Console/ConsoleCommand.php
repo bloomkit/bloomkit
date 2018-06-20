@@ -10,6 +10,13 @@ use Bloomkit\Core\Console\Exceptions\InvalidCommandNameException;
 class ConsoleCommand
 {
     /**
+     * The ConsoleApplication object.
+     *
+     * @var ConsoleApplication
+     */
+    protected $application;
+    
+    /**
      * Arguments accepted by the command.
      *
      * @var ConsoleArgument[]
@@ -31,9 +38,23 @@ class ConsoleCommand
     protected $help;
 
     /**
+     * The console input (command line parameters)
+     *
+     * @var ConsoleInput
+     */
+    protected $input;
+    
+    /**
+     * Possibility to disable commands
+     *
+     * @var boolean
+     */
+    protected $disabled = false;
+    
+    /**
      * Command name.
      *
-     * @var array
+     * @var string
      */
     protected $name;
 
@@ -45,26 +66,12 @@ class ConsoleCommand
     protected $options = [];
 
     /**
-     * Das übergeordnete ConsoleApplication-Objekt.
-     *
-     * @var ConsoleApplication
-     */
-    protected $application;
-
-    /**
-     * Übergebene Kommandozeilen-Parameter.
-     *
-     * @var ConsoleInput
-     */
-    protected $input;
-
-    /**
-     * Objekt für die Text-Ausgabe.
+     * Object for console output
      *
      * @var ConsoleOutput
      */
     protected $output;
-
+    
     /**
      * Constructor.
      *
@@ -264,6 +271,16 @@ class ConsoleCommand
     }
 
     /**
+     * Returns the disabled-state of the command
+     * 
+     * @return boolean The disable state of the command
+     */
+    public function isDisabled()
+    {
+        return $this->disabled;
+    }
+    
+    /**
      * Print help-text to output.
      */
     public function printHelp()
@@ -357,7 +374,7 @@ class ConsoleCommand
     }
 
     /**
-     * Start the application.
+     * Process the console command.
      *
      * @param ConsoleInput  $input  The input to process
      * @param ConsoleOutput $output The output to write to
@@ -368,7 +385,6 @@ class ConsoleCommand
         $this->output = $output;
         if ($this->application->getHelpStatus()) {
             $this->printHelp();
-
             return 0;
         }
         $input->validate();

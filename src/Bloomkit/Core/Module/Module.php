@@ -135,7 +135,8 @@ abstract class Module implements ModuleInterface
                 $className = $this->getNamespace().'\\Console\\'.ucfirst($baseName);
                 if ((class_exists($className)) && (is_subclass_of($className, 'Bloomkit\Core\Console\ConsoleCommand'))) {
                     $consoleCommand = new $className($this->application);
-                    $this->application->registerCommand($consoleCommand);
+                    if (!$consoleCommand->isDisabled())
+                        $this->application->registerCommand($consoleCommand);
                 }
             }
         }
