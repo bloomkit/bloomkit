@@ -64,7 +64,7 @@ class RouteMatcher
             if (!preg_match($compiledRoute->getRegex(), $path, $matches)) {
                 continue;
             }
-
+       
             //check if host matches
             $hostMatches = [];
             if (isset($host)) {
@@ -87,8 +87,10 @@ class RouteMatcher
                 }
             }
 
-            //return the data of the matching route
-            $routeAttributes = $route->getAttributes();
+            //return the data of the matching route            
+            $routeAttributes = $route->getAttributes();            
+            $routeAttributes = array_merge($matches, $routeAttributes);
+            
             $routeAttributes['_route'] = $name;
 
             return $routeAttributes;
