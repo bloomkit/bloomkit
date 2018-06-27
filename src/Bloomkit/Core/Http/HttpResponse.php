@@ -256,6 +256,6 @@ class HttpResponse
      */
     public function setStatusCode($code)
     {
-        $this->statusCode = $statusCode;
+        $this->statusCode = $code;
     }
 }

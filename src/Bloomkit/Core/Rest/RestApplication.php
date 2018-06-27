@@ -107,7 +107,7 @@ class RestApplication extends Application
             //$tracer->start('App::findRoute');
             $matcher = $this->getRouteMatcher();
             $parameters = $matcher->match($request->getRestUrl(), $request->getHttpMethod());
-            //$tracer->stop('App::findRoute');
+            //$tracer->stop('App::findRoute');            
     
             // Authentication
             if (isset($parameters['_auth'])) {
@@ -168,9 +168,12 @@ class RestApplication extends Application
     
             $params = $r->getParameters();
     
-            $attributes = $request->attributes->getItems();
+            $attributes = $request->getAttributes()->getItems();
             $arguments = [];
-    
+            
+            $controller = new $class($this);
+            $controller->setRequest($request);            
+                
             foreach ($params as $param) {
                 if (array_key_exists($param->name, $attributes)) {
                     $arguments[] = $attributes[$param->name];
@@ -189,10 +192,7 @@ class RestApplication extends Application
                     throw new \RuntimeException(sprintf('Controller "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $repr, $param->name));
                 }
             }
-    
-            $controller = new $class($this);
-            $controller->setRequest($request);
-    
+       
             //$tracer->start('App::CallController');
             $response = call_user_func_array([$controller, $method], $arguments);
             //$tracer->stop('App::CallController');
