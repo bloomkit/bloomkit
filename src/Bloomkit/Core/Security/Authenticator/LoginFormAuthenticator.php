@@ -43,8 +43,8 @@ class LoginFormAuthenticator implements AuthenticatorInterface
      */
     public function createToken(HttpRequest $request)
     {
-        $username = trim($request->getPostParams()->getValue('login'), null);
-        $password = $request->getPostParams()->getValue('password', null);
+        $username = trim($request->getPostParams()->get('login'), null);
+        $password = $request->getPostParams()->get('password', null);
         if ((is_null($username)) || (is_null($password))) {
             throw new CredentialsMissingException('No credentials found in request');
         }

@@ -49,7 +49,7 @@ class OAuthTokenAuthenticator implements AuthenticatorInterface
     {
         $tokenCode = OAuthUtils::getBearerTokenFromRequest($request);
         if (is_null($tokenCode)) {
-            $tokenCode = $request->getGetParams()->getValue('access_code', null);
+            $tokenCode = $request->getGetParams()->get('access_code', null);
         }
         if (is_null($tokenCode)) {
             throw new CredentialsMissingException('No token found in request');
