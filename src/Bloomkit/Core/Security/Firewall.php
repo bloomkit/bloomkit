@@ -8,13 +8,20 @@ use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Security\EntryPoint\AuthenticationEntryPointInterface;
 use Bloomkit\Core\Http\HttpExceptionEvent;
+use Psr\Logger\LoggerInterface;
 
 class Firewall
 {
     private $authEntryPoint;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * @var array
+     */
     private $listeners = [];
 
     private $context;
@@ -24,7 +31,7 @@ class Firewall
     /**
      * Constructor.
      */
-    public function __construct(SecurityContext $context, $logger = null)
+    public function __construct(SecurityContext $context,  LoggerInterface $logger = null)
     {
         $this->logger = $logger;
         $this->context = $context;
@@ -65,15 +72,9 @@ class Firewall
     public function handleRequestEvent(HttpEvent $event)
     {
         $request = $event->getRequest();
-        // $session = $request->hasPreviousSession() ? $request->getSession() : null;
 
         $session = $request->getSession();
         $token = $session->get('_security_'.$this->contextKey);
-
-        // if (null === $session || null === $token = $session->get('_security_'.$this->contextKey)) {
-        // $this->context->setToken(null);
-        // return;
-        // }
 
         $token = unserialize($token);
         if ($token == false) {
@@ -83,15 +84,6 @@ class Firewall
         if (null !== $this->logger) {
             $this->logger->debug('Read SecurityContext from the session');
         }
-
-        // if ($token instanceof TokenInterface) {
-        // $token = $this->refreshUser($token);
-        // } elseif (null !== $token) {
-        // if (null !== $this->logger) {
-        // $this->logger->warning(sprintf('Session includes a "%s" where a security token is expected', is_object($token) ? get_class($token) : gettype($token)));
-        // }
-        // $token = null;
-        // }
 
         $this->context->setToken($token);
 
@@ -142,11 +134,6 @@ class Firewall
 
         if (null !== $this->logger) {
             $this->logger->debug('Calling Authentication entry point');
-        }
-
-        if ($authException instanceof AccountStatusException) {
-            // remove the security token to prevent infinite redirect loops
-            $this->context->setToken(null);
         }
 
         return $this->authEntryPoint->start($request, $authException);

@@ -8,6 +8,7 @@ use Bloomkit\Core\Routing\RouteCollection;
 use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
 use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Security\Exceptions\AuthConfigException;
+use Bloomkit\Core\Http\Session\SessionListener;
 
 class HttpApplication extends Application
 {
@@ -40,6 +41,9 @@ class HttpApplication extends Application
         $this->setAlias('Bloomkit\Core\Routing\RouteCollection', 'routes');
 
         $this->bind('Psr\Log\LoggerInterface', 'Bloomkit\Core\Application\DummyLogger');
+
+        $this->getEventManager()->addSubscriber(new SessionListener($this));
+        $this->getEventManager()->addSubscriber(new FirewallListener($this));
     }
 
     /**
@@ -100,7 +104,7 @@ class HttpApplication extends Application
                     if (!class_exists($auth['userProvider'])) {
                         throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['userProvider']));
                     }
-                    
+
                     if (is_subclass_of($auth['userProvider'], 'Bloomkit\Core\Security\User\EntityUserProvider')) {
                         $userProvider = new $auth['userProvider']($this->entityManager);
                     } else {
@@ -210,8 +214,9 @@ class HttpApplication extends Application
         $event->setResponse($response);
         $this->getEventManager()->triggerEvent(HttpEvents::RESPONSE, $event);
         $response = $event->getResponse();
-        if($sendResponse)
+        if ($sendResponse) {
             $response->send();
+        }
         $this->getEventManager()->triggerEvent(HttpEvents::TERMINATE, $event);
 
         return $response;

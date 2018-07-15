@@ -2,7 +2,6 @@
 namespace Bloomkit\Core\EventManager;
 
 use Bloomkit\Core\EventManager\EventSubscriberInterface;
-use Bloomkit\Core\Application\Application;
 
 class EventManager
 {      
@@ -24,7 +23,7 @@ class EventManager
     /**
      * Constructor
      *
-     * @param Application $app The
+     * @param EventTracerInterface $eventTracer
      */
     public function __construct(EventTracerInterface $eventTracer = null)
     {
