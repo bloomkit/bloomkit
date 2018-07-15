@@ -2,11 +2,11 @@
 
 namespace Bloomkit\Core\Security;
 
-use Bloomkit\Core\Security\Exceptions\AuthenticationException;
+use Bloomkit\Core\Security\Exceptions\AuthException;
 use Bloomkit\Core\Security\Exceptions\CredentialsMissingException;
 use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpRequest;
-use Bloomkit\Core\Security\EntryPoint\AuthenticationEntryPointInterface;
+use Bloomkit\Core\Security\EntryPoint\AuthEntryPointInterface;
 use Bloomkit\Core\Http\HttpExceptionEvent;
 use Psr\Log\LoggerInterface;
 
@@ -56,7 +56,7 @@ class Firewall
         }
     }
 
-    public function handleAuthenticationException(HttpExceptionEvent $event, AuthenticationException $exception)
+    public function handleAuthenticationException(HttpExceptionEvent $event, AuthException $exception)
     {
         if (null !== $this->logger) {
             $this->logger->info(sprintf('Authentication exception occurred; redirecting to authentication entry point (%s)', $exception->getMessage()));
@@ -121,12 +121,12 @@ class Firewall
     {
     }
 
-    public function setAuthEntryPoint(AuthenticationEntryPointInterface $authEntryPoint)
+    public function setAuthEntryPoint(AuthEntryPointInterface $authEntryPoint)
     {
         $this->authEntryPoint = $authEntryPoint;
     }
 
-    private function startAuthentication(HttpRequest $request, AuthenticationException $authException)
+    private function startAuthentication(HttpRequest $request, AuthException $authException)
     {
         if (null === $this->authEntryPoint) {
             throw $authException;

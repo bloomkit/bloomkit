@@ -5,6 +5,6 @@ namespace Bloomkit\Core\Security\Exceptions;
 /**
  * Definition of the AuthFailedException.
  */
-class AuthFailedException extends AuthenticationException
+class AuthFailedException extends AuthException
 {
 }
