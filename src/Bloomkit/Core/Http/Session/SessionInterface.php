@@ -8,7 +8,7 @@ interface SessionInterface
 
 //    public function clear();
 
-//    public function get($name, $default = null);
+    public function get($name, $default = null);
 
 //    public function getBag($name);
 
@@ -40,5 +40,5 @@ interface SessionInterface
 
 //    public function setName($name);
 
-//    public function start();
+    public function start();
 }

@@ -11,4 +11,9 @@ class Session implements SessionInterface
     public function start()
     {
     }
+    
+    public function get($name, $default = null)
+    {
+        return $default;
+    }
 }

@@ -8,7 +8,7 @@ use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Security\EntryPoint\AuthenticationEntryPointInterface;
 use Bloomkit\Core\Http\HttpExceptionEvent;
-use Psr\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class Firewall
 {

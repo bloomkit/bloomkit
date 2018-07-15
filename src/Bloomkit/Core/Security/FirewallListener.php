@@ -8,6 +8,7 @@ use Bloomkit\Core\EventManager\EventSubscriberInterface;
 use Bloomkit\Core\Http\HttpEvents;
 use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpExceptionEvent;
+use Bloomkit\Core\Http\HttpApplication;
 use Bloomkit\Core\Security\Exceptions\AuthFailedException;
 
 /**
@@ -52,13 +53,13 @@ class FirewallListener implements EventSubscriberInterface
         $exception = $event->getException();
         do {
             if ($exception instanceof AuthFailedException) {
-                return $this->firewall->handleAuthenticationException($event, $exception);
+                return $this->app->firewall->handleAuthenticationException($event, $exception);
             } elseif ($exception instanceof CredentialsMissingException) {
-                return $this->firewall->handleCredentialsMissingException($event, $exception);
+                return $this->app->firewall->handleCredentialsMissingException($event, $exception);
             } elseif ($exception instanceof BadCredentialsException) {
-                return $this->firewall->handleAuthenticationException($event, $exception);
+                return $this->app->firewall->handleAuthenticationException($event, $exception);
             } elseif ($exception instanceof LogoutException) {
-                return $this->firewall->handleLogoutException($event, $exception);
+                return $this->app->firewall->handleLogoutException($event, $exception);
             }
             $exception = $exception->getPrevious();
         } while (!is_null($exception));
@@ -69,7 +70,7 @@ class FirewallListener implements EventSubscriberInterface
      */
     public function onKernelFinishRequest(HttpEvent $event)
     {
-        $this->firewall->handleRequestFinishEvent($event);
+        $this->app->firewall->handleRequestFinishEvent($event);
     }
 
     /**
@@ -77,7 +78,7 @@ class FirewallListener implements EventSubscriberInterface
      */
     public function onKernelRequest(HttpEvent $event)
     {
-        $this->firewall->handleRequestEvent($event);
+        $this->app->firewall->handleRequestEvent($event);
     }
 
     /**
@@ -85,6 +86,6 @@ class FirewallListener implements EventSubscriberInterface
      */
     public function onKernelResponse(HttpEvent $event)
     {
-        $this->firewall->handleResponseEvent($event);
+        $this->app->firewall->handleResponseEvent($event);
     }
 }

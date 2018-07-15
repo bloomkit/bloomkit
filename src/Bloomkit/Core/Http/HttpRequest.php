@@ -4,6 +4,7 @@ namespace Bloomkit\Core\Http;
 
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Http\Exceptions\SuspiciousOperationException;
+use Bloomkit\Core\Http\Session\SessionInterface;
 
 /**
  * Representation of a http request.

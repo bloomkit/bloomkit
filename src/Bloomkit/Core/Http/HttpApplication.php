@@ -8,7 +8,10 @@ use Bloomkit\Core\Routing\RouteCollection;
 use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
 use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Security\Exceptions\AuthConfigException;
+use Bloomkit\Core\Security\FirewallListener;
+use Bloomkit\Core\Security\Firewall;
 use Bloomkit\Core\Http\Session\SessionListener;
+use Bloomkit\Core\Http\Session\Session;
 
 class HttpApplication extends Application
 {
