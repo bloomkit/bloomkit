@@ -237,7 +237,7 @@ class HttpRequest
      */
     public function getParamStr()
     {
-        return $this->getServerParams()->getValue('QUERY_STRING', '');
+        return $this->getServerParams()->get('QUERY_STRING', '');
     }
     
 
