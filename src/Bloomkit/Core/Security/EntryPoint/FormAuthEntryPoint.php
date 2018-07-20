@@ -26,11 +26,11 @@ class FormAuthEntryPoint implements AuthEntryPointInterface
 
         if (isset($e)) {
             if ($e instanceof BadCredentialsException) {
-                $session->getFlashBag()->add('error', 'Login failed. Please check username and password');
+                $session->getMessages()->add('error', 'Login failed. Please check username and password');
             } else if ($e instanceof \Bloomkit\Core\Security\Exceptions\CredentialsMissingException) {
                 //
             } else if ($e instanceof \Exception) {
-                $session->getFlashBag()->add('error', 'Login currently not available. Please try again later');
+                $session->getMessages()->add('error', 'Login currently not available. Please try again later');
             }
         }
 

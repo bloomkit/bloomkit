@@ -148,6 +148,16 @@ class Application extends Container implements EventTracerInterface
     {
         return $this->basePath.'/config';
     }
+    
+    /**
+     * Returns the entity manager.
+     *
+     * @return \Bloomkit\Core\Entities\EntityManager;
+     */
+    public function getEntityManager()
+    {
+        return $this['entityManager'];
+    }
 
     /**
      * Returns the event manager.
