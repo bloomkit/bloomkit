@@ -228,6 +228,18 @@ class HttpRequest
 
         return $this->httpMethod;
     }
+    
+
+    /**
+     * Returns the QUERY_STRING Parameter
+     *
+     * @return string
+     */
+    public function getParamStr()
+    {
+        return $this->getServerParams()->getValue('QUERY_STRING', '');
+    }
+    
 
     /**
      * Returns the path being requested relative to the executed script.
