@@ -2,6 +2,7 @@
 namespace Bloomkit\Core\Security\EntryPoint;
 
 use Bloomkit\Core\Http\HttpRequest;
+use Bloomkit\Core\Http\HttpRedirectResponse;
 use Bloomkit\Core\Security\Exceptions\AuthException;
 use Bloomkit\Core\Security\Exceptions\BadCredentialsException;
 
