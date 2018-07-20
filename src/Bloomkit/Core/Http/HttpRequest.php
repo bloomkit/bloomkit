@@ -160,6 +160,32 @@ class HttpRequest
     }
 
     /**
+     * Returns the full Request-URL withoud url parameters - e.g. http://localhost:8081/mysite
+     *
+     * @return string Request url
+     */
+    public function getFullUrl($forcePorts = false)
+    {
+        $serverPort = $this->serverParams->get('SERVER_PORT', '80');
+        $serverName = $this->serverParams->get('SERVER_NAME', '');
+        $requestUri = $this->serverParams->get('REQUEST_URI', '');
+        $urlParts = parse_url($requestUri);
+        $requestUri = $urlParts['path'];
+    
+        if (($this->serverParams->get('HTTPS', NULL) == "on") || ($serverPort == '443'))
+            $pageUrl = 'https://';
+        else
+            $pageUrl = 'http://';
+
+        // Ignore default ports if forcePorts != true
+        if (($forcePorts == true) || (($serverPort != "80") && ($serverPort != '443')))
+            $pageUrl .= $serverName . ":" . $serverPort . $requestUri;
+        else
+            $pageUrl .= $serverName . $requestUri;
+        return $pageUrl;
+    }
+    
+    /**
      * Returns the GET parameters.
      *
      * @return Repository
