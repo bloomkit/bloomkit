@@ -1,7 +1,6 @@
 <?php
 namespace Bloomkit\Core\Security\EntryPoint;
 
-use Bloomkit\Core\Http\Utils\HttpUtils;
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Security\Exceptions\AuthException;
 use Bloomkit\Core\Security\Exceptions\BadCredentialsException;
@@ -42,8 +41,10 @@ class FormAuthEntryPoint implements AuthEntryPointInterface
                 $paramStr = '?' . $paramStr;
             $continue = $request->getFullUrl() . $paramStr;
         }
-        
-        $response = HttpUtils::createRedirectResponse($request, $this->loginPath . '?continue=' . urlencode($continue));
-        return $response;
+                
+        $path = $this->loginPath . '?continue=' . urlencode($continue);        
+        if ($path[0] = '/')
+            $path .= $request->getBaseUrl() . $path;
+        return new HttpRedirectResponse($path, 302);
     }
 }
