@@ -6,7 +6,7 @@ use Bloomkit\Core\Database\DbDataType;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Database\PbxQl\Exceptions\SearchQueryParsingException;
 use Bloomkit\Core\Fields\Field;
-use Doctrine\DBAL\Connection;
+use Bloomkit\Core\Database\DbMaster;
 
 /**
  * Class for generating SQL queries from PbxQl statements.
@@ -14,7 +14,7 @@ use Doctrine\DBAL\Connection;
 class Filter
 {
     /**
-     * @var Connection
+     * @var DbMaster
      */
     private $dbCon;
 
@@ -43,9 +43,9 @@ class Filter
      *
      * @param EntityDescriptor $entityDesc Description for the entity to filter
      * @param string           $query      PbxQl Query to use
-     * @param Connection       $dbCon      Database connection to use
+     * @param DbMaster         $dbCon      Database connection to use
      */
-    public function __construct(EntityDescriptor $entityDesc, $query, Connection $dbCon)
+    public function __construct(EntityDescriptor $entityDesc, $query, DbMaster $dbCon)
     {
         $this->dbCon = $dbCon;
         $this->entityDesc = $entityDesc;
