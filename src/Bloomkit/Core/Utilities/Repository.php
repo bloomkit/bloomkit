@@ -1,23 +1,21 @@
 <?php
+
 namespace Bloomkit\Core\Utilities;
 
 class Repository implements \ArrayAccess, \Iterator
 {
-
     /**
-     *
      * @var array
      */
     protected $items = [];
 
     /**
-     *
      * @var int
      */
     protected $position = 0;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param array $items List of items to initialize
      */
@@ -28,9 +26,10 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Check if the given value is either an array or implements ArrayAccess
+     * Check if the given value is either an array or implements ArrayAccess.
      *
      * @param mixed $value
+     *
      * @return bool
      */
     private function accessible($value)
@@ -39,7 +38,7 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Expand/Replace the item list with the given one
+     * Expand/Replace the item list with the given one.
      *
      * @param array $items Items to add/replace
      */
@@ -49,7 +48,7 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Resets the item array
+     * Resets the item array.
      */
     public function clear()
     {
@@ -57,32 +56,35 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Iterator function: Get the item at the current position
+     * Iterator function: Get the item at the current position.
      */
-    function current()
+    public function current()
     {
         return array_values($this->items)[$this->position];
     }
 
     /**
-     * Get the an repository item by its key
+     * Get the an repository item by its key.
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
     {
-        if (is_null($key))
+        if (is_null($key)) {
             return $default;
-        
-        if (array_key_exists($key, $this->items))
+        }
+
+        if (array_key_exists($key, $this->items)) {
             return $this->items[$key];
-        
+        }
+
         $array = $this->items;
-        
+
         $keys = explode('.', $key);
-        
+
         foreach ($keys as $segment) {
             if ($this->accessible($array) && array_key_exists($segment, $array)) {
                 $array = $array[$segment];
@@ -90,12 +92,12 @@ class Repository implements \ArrayAccess, \Iterator
                 return $default;
             }
         }
-        
+
         return $array;
     }
 
     /**
-     * Return all items as an array
+     * Return all items as an array.
      *
      * @return array
      */
@@ -105,20 +107,23 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Check if a repository item can be found by the given keys
+     * Check if a repository item can be found by the given keys.
      *
      * @param string $key
+     *
      * @return bool
      */
     public function has($key)
     {
-        if (is_null($key))
+        if (is_null($key)) {
             return false;
-        
+        }
+
         $array = $this->items;
-        if (array_key_exists($key, $array))
+        if (array_key_exists($key, $array)) {
             return true;
-        
+        }
+
         $keys = explode('.', $key);
         foreach ($keys as $segment) {
             if ($this->accessible($array) && array_key_exists($segment, $array)) {
@@ -127,27 +132,28 @@ class Repository implements \ArrayAccess, \Iterator
                 return false;
             }
         }
+
         return true;
     }
 
     /**
-     * Iterator function: Return the current positon
+     * Iterator function: Return the current positon.
      */
-    function key()
+    public function key()
     {
         return $this->position;
     }
 
     /**
-     * Iterator function: Increase the current position
+     * Iterator function: Increase the current position.
      */
-    function next()
+    public function next()
     {
-        ++ $this->position;
+        ++$this->position;
     }
 
     /**
-     * ArrayAccess function: Check if repository item exists - Mapper for "has" function
+     * ArrayAccess function: Check if repository item exists - Mapper for "has" function.
      *
      * @param string $key
      */
@@ -157,7 +163,7 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * ArrayAccess function: Returns an item - Mapper for "get" function
+     * ArrayAccess function: Returns an item - Mapper for "get" function.
      *
      * @param string $key
      */
@@ -167,10 +173,10 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * ArrayAccess function: Set an item - Mapper for "set" function
+     * ArrayAccess function: Set an item - Mapper for "set" function.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function offsetSet($key, $value)
     {
@@ -178,7 +184,7 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * ArrayAccess function: Unset an item - Mapper for "set" function
+     * ArrayAccess function: Unset an item - Mapper for "set" function.
      *
      * @param string $key
      */
@@ -188,10 +194,10 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Insert a value as the first child into an existing or new array configuration value
+     * Insert a value as the first child into an existing or new array configuration value.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function prepend($key, $value)
     {
@@ -201,10 +207,10 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Insert a value as the last child into an existing or new array configuration value
+     * Insert a value as the last child into an existing or new array configuration value.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function push($key, $value)
     {
@@ -214,7 +220,7 @@ class Repository implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Remove an item from the repository
+     * Remove an item from the repository.
      *
      * @param string $key The key of the item to remove
      *
@@ -222,17 +228,19 @@ class Repository implements \ArrayAccess, \Iterator
      */
     public function remove($key)
     {
-        if (is_null($key))
+        if (is_null($key)) {
             return false;
-        
+        }
+
         if (array_key_exists($key, $this->items)) {
             unset($this->items[$key]);
+
             return true;
         }
-        
+
         $array = &$this->items;
         $keys = explode('.', $key);
-        
+
         foreach ($keys as $segment) {
             if ($this->accessible($array) && array_key_exists($segment, $array)) {
                 $parent = &$array;
@@ -242,54 +250,56 @@ class Repository implements \ArrayAccess, \Iterator
                 return false;
             }
         }
-        
+
         unset($parent[$key]);
+
         return true;
     }
 
     /**
-     * Iterator function: Set position to 0
+     * Iterator function: Set position to 0.
      */
-    function rewind()
+    public function rewind()
     {
         $this->position = 0;
     }
 
     /**
      * Set a repository item with key -> value.
-     * A key can also be an array or an delimeted value ('foo.bar')
+     * A key can also be an array or an delimeted value ('foo.bar').
      *
      * @param array|string $key
-     * @param mixed $value
-     * @return void
+     * @param mixed        $value
      */
     public function set($key, $value = null)
     {
-        if (is_null($key))
+        if (is_null($key)) {
             return;
-        
+        }
+
         if (is_array($key)) {
             foreach ($key as $innerKey => $innerValue) {
                 $this->set($innerKey, $innerValue);
             }
         } else {
             $keys = explode('.', $key);
-            
+
             while (count($keys) > 1) {
                 $key = array_shift($keys);
-                
-                if (! isset($this->items[$key]) || ! is_array($this->items[$key]))
+
+                if (!isset($this->items[$key]) || !is_array($this->items[$key])) {
                     $this->items[$key] = array();
+                }
             }
-            
+
             $this->items[array_shift($keys)] = $value;
         }
     }
 
     /**
-     * Iterator function: Check if there is an item at the current position
+     * Iterator function: Check if there is an item at the current position.
      */
-    function valid()
+    public function valid()
     {
         return isset(array_values($this->items)[$this->position]);
     }
