@@ -4,41 +4,67 @@ namespace Bloomkit\Core\Http\Session;
 
 interface SessionInterface
 {
-//    public function all();
+    /**
+     * Clears all session values.
+     */
+    public function clear();
 
-//    public function clear();
-
+    /**
+     * Returns a session value
+     *
+     * @param string $name The name of the value
+     * @param mixed $default The default value if not found.
+     *
+     * @return mixed The requested session value
+     */
     public function get($name, $default = null);
 
-//    public function getBag($name);
-
-//    public function getId();
-
-//    public function getMetadataBag();
-
-//    public function getName();
-
-//    public function has($name);
-
-//    public function invalidate($lifetime = null);
-
-//    public function isStarted();
-
-//    public function migrate($destroy = false, $lifetime = null);
-
-//    public function registerBag(SessionBagInterface $bag);
-
-//    public function remove($name);
-
-//    public function replace(array $attributes);
-
-//    public function save();
-
-//    public function set($name, $value);
-
-//    public function setId($id);
-
-//    public function setName($name);
-
+    /**
+     * Returns the session ID.
+     *
+     * @return string The session ID.
+     */
+    public function getId();
+    
+    /**
+     * Returns the session name.
+     *
+     * @return string The session name.
+     */
+    public function getName();    
+    
+    /**
+     * Save and close the session (normally not required as sessions 
+     * will be automatically saved
+     */
+    public function save();
+    
+    /**
+     * Sets a session value
+     *
+     * @param string $name The name of the value
+     * @param mixed $value The value to set
+     */
+    public function set($name, $value);          
+    
+    /**
+     * Sets the session ID
+     *
+     * @param string $id The id to set
+     */
+    public function setId($id);
+    
+    /**
+     * Sets the session name.
+     *
+     * @param string $name The name to set
+     */    
+    public function setName($name);
+    
+    /**
+     * Starts the session
+     *
+     * @return bool True if session started.
+     */
     public function start();
 }
