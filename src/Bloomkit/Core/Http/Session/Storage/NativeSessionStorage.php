@@ -1,47 +1,45 @@
 <?php
 namespace Bloomkit\Core\Http\Session\Storage;
 
-use Bloomkit\Core\Utilities\Repository;
-
 class NativeSessionStorage implements SessionStorageInterface
-{    
+{
     /**
-     * @var Repository
+     * @var SessionRepository
      */
     private $sessionData;
-    
+
     /**
      * @var boolean
      */
     private $isClosed;
-    
+
     /**
      * @var boolean
      */
     private $isStarted;
-    
+
     /**
      * @var string;
      */
     private $storageKey;
-        
+
     /**
      * Constructor
-     * 
+     *
      * @param mixed $handler SessionHandler
      * @param string $storageKey Key for saving session data
      */
     public function __construct($handler = null, $storageKey = '_bk_session_data')
     {
-        $this->sessionData = new Repository();
+        $this->sessionData = new SessionRepository();
         $this->storageKey = $storageKey;
-        
+
         session_cache_limiter('');
-        ini_set('session.use_cookies', 1);    
+        ini_set('session.use_cookies', 1);
         session_register_shutdown();
         $this->setSaveHandler($handler);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -49,7 +47,7 @@ class NativeSessionStorage implements SessionStorageInterface
     {
         $this->sessionData->clear();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -65,17 +63,17 @@ class NativeSessionStorage implements SessionStorageInterface
     {
         return $this->saveHandler->getName();
     }
-    
+
     /**
      * Returns the SessionData object
-     * 
+     *
      * @return Repository SessionData object
      */
     public function getSessionData()
     {
         return $this->sessionData;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -85,7 +83,7 @@ class NativeSessionStorage implements SessionStorageInterface
     }
 
     /**
-     * Load the session 
+     * Load the session
      *
      * @param array|null $session
      */
@@ -93,24 +91,26 @@ class NativeSessionStorage implements SessionStorageInterface
     {
         if (is_null($session))
             $session = &$_SESSION;
-        
-        if(isset($session[$this->storageKey]))
-            $this->sessionData->addItems($session[$this->storageKey]);
-        
-        $this->isStarted = true;
-        $this->isClosed = false;
+
+            if(!isset($session[$this->storageKey]))
+                $session[$this->storageKey] = [];
+                 
+                $this->sessionData->linkSessionData($session[$this->storageKey]);
+
+                $this->isStarted = true;
+                $this->isClosed = false;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function save()
     {
-        session_write_close();    
+        session_write_close();
         $this->isClosed = true;
         $this->isStarted = false;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -118,18 +118,18 @@ class NativeSessionStorage implements SessionStorageInterface
     {
         $this->saveHandler->setId($id);
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function setName($name)
     {
         $this->saveHandler->setName($name);
-    }    
-    
+    }
+
     /**
      * Set the SaveHandler
-     * 
+     *
      * @param mixed $saveHandler The SaveHandler to use
      */
     public function setSaveHandler($saveHandler = null)
@@ -137,37 +137,37 @@ class NativeSessionStorage implements SessionStorageInterface
         if (!is_null($saveHandler) && !$saveHandler instanceof \SessionHandlerInterface) {
             throw new \InvalidArgumentException('Invalid handler provided');
         }
-    
+
         if (is_null($saveHandler))
             $this->saveHandler = new SessionHandlerProxy(new \SessionHandler());
 
-        if ($this->saveHandler instanceof \SessionHandlerInterface) {
-            session_set_save_handler($this->saveHandler, false);
-        }
+            if ($this->saveHandler instanceof \SessionHandlerInterface) {
+                session_set_save_handler($this->saveHandler, false);
+            }
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function start()
     {
-        if ($this->isStarted && ! $this->isClosed) {
+        if ($this->isStarted && !$this->isClosed) {
             return true;
         }
-    
+
         if (session_status() === \PHP_SESSION_ACTIVE) {
             throw new \RuntimeException('Session already started.');
         }
-        
-        //if (ini_get('session.use_cookies') && headers_sent($file, $line)) {
-            //throw new \RuntimeException(sprintf('Failed to start the session: Headers have already been sent by "%s" at line %d.', $file, $line));
-        //}
-    
+
+        if (ini_get('session.use_cookies') && headers_sent($file, $line)) {
+            throw new \RuntimeException(sprintf('Failed to start the session: Headers have already been sent by "%s" at line %d.', $file, $line));
+        }
+
         if (! session_start()) {
             throw new \RuntimeException('Failed to start the session');
         }
-    
-        $this->loadSession();    
+
+        $this->loadSession();
         return true;
     }
 }
