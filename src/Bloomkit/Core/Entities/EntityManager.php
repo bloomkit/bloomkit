@@ -3,9 +3,9 @@
 namespace Bloomkit\Core\Entities;
 
 use Bloomkit\Core\Database\DbMaster;
-use Bloomkit\Core\Utilities\Collection;
 use Bloomkit\Core\Database\PbxQL\Filter;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
+use Bloomkit\Core\Utilities\Repository;
 
 /**
  * Provides CRUD functions for Entities.
@@ -353,12 +353,12 @@ class EntityManager
      * @param string|null $orderBy The id of the Field to order by
      * @param boolean $orderAsc Order ascending if true, descending if false 
      *
-     * @return Collection A Collection containing the loaded Entities
+     * @return Repository A Repository containing the loaded Entities
      */
     public function loadList(EntityDescriptor $entityDesc, Filter $filter = null, $limit = 10, $offset = 0, $orderBy = null, $orderAsc = true)
     {
         $fields = $entityDesc->getFields();
-        $result = new Collection();
+        $result = new Repository();
         $tblCnt = 1;
     
         $sql = 'select bt.id ';
@@ -495,7 +495,7 @@ class EntityManager
                     $entity->$fieldCol = $row[$fieldCol];
                 }
             }
-            $result->add($entity->getDatasetId(), $entity);
+            $result->set($entity->getDatasetId(), $entity);
         }
     
         return $result;
