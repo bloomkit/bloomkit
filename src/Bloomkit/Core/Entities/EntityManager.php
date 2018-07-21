@@ -319,7 +319,7 @@ class EntityManager
         if (count($result) == 0) {
             return false;
         } else {
-            return $result[0];
+            return reset($result);
         }
     }
     

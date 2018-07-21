@@ -1,5 +1,5 @@
 <?php
-namespace Bloomkit\Core\Http\Utils;
+namespace Bloomkit\Core\Http;
 
 use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Http\HttpRedirectResponse;
