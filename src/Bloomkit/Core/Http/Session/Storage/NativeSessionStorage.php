@@ -1,6 +1,8 @@
 <?php
 namespace Bloomkit\Core\Http\Session\Storage;
 
+use Bloomkit\Core\Http\Session\SessionRepository;
+
 class NativeSessionStorage implements SessionStorageInterface
 {
     /**
