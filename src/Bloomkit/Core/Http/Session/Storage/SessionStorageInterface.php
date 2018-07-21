@@ -16,18 +16,18 @@ interface SessionStorageInterface
     public function getId();
     
     /**
+     * Checks if the session is started.
+     *
+     * @return bool True if started, false if not
+     */
+    public function getIsStarted();
+    
+    /**
      * Returns the session name.
      *
      * @return string The session name.
      */
     public function getName();    
-
-    /**
-     * Checks if the session is started.
-     *
-     * @return bool True if started, false if not
-     */
-    public function isStarted();
     
     /**
      * Save and close the session (normally not required as sessions
