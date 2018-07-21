@@ -180,7 +180,7 @@ class EntityManager
             $values[] = $this->dbCon->quoteValue($dsId, DbDataType::UUID);
         }
     
-        if ($entityDesc->getLogCreationDate()) {
+        if ($entityDesc->getCreationDateLogging()) {
             $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::ColNameCreationStamp);
             if (is_null($entity->getCreationDate())) {
                 $values[] = 'now()';
@@ -189,7 +189,7 @@ class EntityManager
             }
         }
     
-        if ($entityDesc->getLogModificationDate()) {
+        if ($entityDesc->getModificationDateLogging()) {
             $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::ColNameModificationStamp);
             if (is_null($entity->getModificationDate())) {
                 $values[] = 'now()';
@@ -236,7 +236,7 @@ class EntityManager
         $items = [];
         $replacements = [];
     
-        if ($entityDesc->getLogModificationDate()) {
+        if ($entityDesc->getModificationDateLogging()) {
             $items[$this->dbCon->quoteColumnName(EntityDescriptor::ColNameModificationStamp)] = 'now()';
         }
     
@@ -363,11 +363,11 @@ class EntityManager
     
         $sql = 'select bt.id ';
     
-        if ($entityDesc->getLogCreationDate()) {
+        if ($entityDesc-> getCreationDateLogging()) {
             $sql .= ',bt.creation_date ';
         }
     
-        if ($entityDesc->getLogModificationDate()) {
+        if ($entityDesc->getModificationDateLogging()) {
             $sql .= ',bt.modification_date ';
         }
     
@@ -455,7 +455,7 @@ class EntityManager
                 $sql .= ' DESC ';
             }
         } else {
-            if ($entityDesc->getLogCreationDate()) {
+            if ($entityDesc->getCreationDateLogging()) {
                 $sql .= ' order by bt.creation_date DESC ';
             }
         }
@@ -478,11 +478,11 @@ class EntityManager
                 $entity->setDatasetId($row['id']);
             }
     
-            if ($entityDesc->getLogCreationDate()) {
+            if ($entityDesc->getCreationDateLogging()) {
                 $entity->setCreationDate($row['creation_date']);
             }
     
-            if ($entityDesc->getLogModificationDate()) {
+            if ($entityDesc->getModificationDateLogging()) {
                 $entity->setModificationDate($row['modification_date']);
             }
     
