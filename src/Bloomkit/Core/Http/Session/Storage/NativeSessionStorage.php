@@ -73,7 +73,7 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function getSessionData()
     {
-        return $this->sessionData();
+        return $this->sessionData;
     }
     
     /**
