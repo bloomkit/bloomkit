@@ -315,7 +315,7 @@ class EntityManager
     public function load(EntityDescriptor $entityDesc, Filter $filter = null)
     {
         $result = $this->loadList($entityDesc, $filter, 1);
-        $result = $result->getAllItems();
+        $result = $result->getItems();
         if (count($result) == 0) {
             return false;
         } else {
