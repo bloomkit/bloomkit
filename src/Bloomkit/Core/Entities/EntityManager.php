@@ -125,6 +125,17 @@ class EntityManager
         }
     }
 
+
+    /**
+     * Returns the database connection
+     *
+     * @return DbMaster The database connection 
+     */
+    public function getDatabaseConnection()
+    {
+        return $this->dbCon;
+    }
+    
     /**
      * Create (if not already done) and returns an EntityDescriptor object based on the class name
      *
