@@ -31,7 +31,7 @@ class Firewall
     /**
      * Constructor.
      */
-    public function __construct(SecurityContext $context,  LoggerInterface $logger = null)
+    public function __construct(SecurityContext $context, LoggerInterface $logger = null)
     {
         $this->logger = $logger;
         $this->context = $context;

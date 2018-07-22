@@ -149,8 +149,9 @@ class OAuthServer
 
             if (false !== array_search('id_token', $responseType)) {
                 $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), time() + $lifetime, time());
-                if($nonce !== '')
+                if ($nonce !== '') {
                     $idToken->setCustomClaim('nonce', $nonce);
+                }
                 $params['id_token'] = $idToken->getToken();
             }
 

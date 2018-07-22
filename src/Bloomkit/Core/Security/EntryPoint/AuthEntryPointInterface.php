@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Security\EntryPoint;
 
 use Bloomkit\Core\Security\Exceptions\AuthException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Probelix\PbxAuth\Security\Authentication;
+namespace Probelix\PbxAuth\Security\Authenticator;
 
 use Bloomkit\Core\Security\Token\OAuthBearerToken;
 use Bloomkit\Core\Security\Token\Token;

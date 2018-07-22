@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Security\EntryPoint;
 
 use Bloomkit\Core\Http\HttpRequest;
@@ -27,9 +28,8 @@ class FormAuthEntryPoint implements AuthEntryPointInterface
         if (isset($e)) {
             if ($e instanceof BadCredentialsException) {
                 $session->getMessages()->add('error', 'Login failed. Please check username and password');
-            } else if ($e instanceof \Bloomkit\Core\Security\Exceptions\CredentialsMissingException) {
-                //
-            } else if ($e instanceof \Exception) {
+            } elseif ($e instanceof \Bloomkit\Core\Security\Exceptions\CredentialsMissingException) {
+            } elseif ($e instanceof \Exception) {
                 $session->getMessages()->add('error', 'Login currently not available. Please try again later');
             }
         }
@@ -38,15 +38,17 @@ class FormAuthEntryPoint implements AuthEntryPointInterface
 
         if (is_null($continue)) {
             $paramStr = $request->getParamStr();
-            if ($paramStr !== '')
-                $paramStr = '?' . $paramStr;
-                $continue = $request->getFullUrl() . $paramStr;
+            if ($paramStr !== '') {
+                $paramStr = '?'.$paramStr;
+            }
+            $continue = $request->getFullUrl().$paramStr;
         }
 
-        $path = $this->loginPath . '?continue=' . urlencode($continue);
-        if ($path[0] == '/')
-            $path = $request->getBaseUrl() . $path;
+        $path = $this->loginPath.'?continue='.urlencode($continue);
+        if ($path[0] == '/') {
+            $path = $request->getBaseUrl().$path;
+        }
 
-            return new HttpRedirectResponse($path, 302);
+        return new HttpRedirectResponse($path, 302);
     }
 }
