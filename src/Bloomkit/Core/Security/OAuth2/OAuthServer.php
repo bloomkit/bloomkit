@@ -9,6 +9,7 @@ use Bloomkit\Core\Security\User\UserInterface;
 use Bloomkit\Core\Security\OAuth2\Exceptions\OAuthServerException;
 use Bloomkit\Core\Security\OAuth2\Storage\OAuthStorageInterface;
 use Bloomkit\Core\Utilities\GuidUtils;
+use Bloomkit\Core\Security\OpenId\JsonWebToken;
 
 /**
  * OAuth2.0 rfc6749 server implementation
@@ -146,7 +147,7 @@ class OAuthServer
             $params['expires_in'] = $lifetime;
 
             if (false !== array_search('id_token', $responseType)) {
-                $idToken = new JWTToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), time() + $lifetime, time());
+                $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), time() + $lifetime, time());
                 $params['id_token'] = $idToken->getToken();
             }
 
