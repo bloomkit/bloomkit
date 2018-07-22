@@ -108,6 +108,9 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function save()
     {
+        if (!$this->started || $this->closed) {
+            throw new \RuntimeException('Trying to save a session that was not started yet or was already closed');
+        }
         session_write_close();
         $this->isClosed = true;
         $this->isStarted = false;

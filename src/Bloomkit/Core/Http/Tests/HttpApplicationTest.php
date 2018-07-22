@@ -9,6 +9,8 @@ use Bloomkit\Core\Http\HttpEvent;
 use Bloomkit\Core\Http\HttpExceptionEvent;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
+use Bloomkit\Core\Http\Session\Session;
+use Bloomkit\Core\Http\Session\Storage\MockSessionStorage;
 
 class HttpApplicationTest extends TestCase
 {
@@ -16,6 +18,7 @@ class HttpApplicationTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $app = new HttpApplication();
+        $app->session = new Session(new MockSessionStorage());
         $eventManager = $app->getEventManager();
         $eventManager->addListener(HttpEvents::REQUEST, array($this, 'onRequestTest1'));
         $app->run();
@@ -24,6 +27,7 @@ class HttpApplicationTest extends TestCase
     public function testHandledExceptionEvent()
     {
         $app = new HttpApplication();
+        $app->session = new Session(new MockSessionStorage());
         $eventManager = $app->getEventManager();
         $eventManager->addListener(HttpEvents::REQUEST, array($this, 'onRequestTest1'));
         $eventManager->addListener(HttpEvents::EXCEPTION, array($this, 'onHttpException'));
@@ -39,7 +43,8 @@ class HttpApplicationTest extends TestCase
         $_SERVER['SCRIPT_NAME'] = '/foo/index.php';
         $_SERVER['REQUEST_URI'] = '/foo/bar';
         $app = new HttpApplication();
-        $app->run();
+        $app->session = new Session(new MockSessionStorage());
+        $app->run(false);
     }
 
     public function onRequestTest1(HttpEvent $event)
