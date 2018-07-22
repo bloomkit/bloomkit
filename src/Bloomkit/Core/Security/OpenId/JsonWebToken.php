@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Auth\OpenId;
+namespace Bloomkit\Core\Security\OpenId;
 
 class JsonWebToken
 {
