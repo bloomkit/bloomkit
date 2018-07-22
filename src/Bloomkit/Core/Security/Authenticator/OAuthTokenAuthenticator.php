@@ -1,13 +1,12 @@
 <?php
 
-namespace Probelix\PbxAuth\Security\Authenticator;
+namespace Bloomkit\Core\Security\Authenticator;
 
+use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Security\Token\OAuthBearerToken;
 use Bloomkit\Core\Security\Token\Token;
-use Bloomkit\Core\Security\AuthenticatorInterface;
 use Bloomkit\Core\Security\Exceptions\AuthFailedException;
 use Bloomkit\Core\Security\Exceptions\CredentialsMissingException;
-use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Security\User\UserProviderInterface;
 use Bloomkit\Core\Security\Exceptions\BadCredentialsException;
 use Bloomkit\Core\Security\OAuth2\OAuthUtils;
