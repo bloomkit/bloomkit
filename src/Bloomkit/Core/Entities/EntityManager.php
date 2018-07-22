@@ -334,7 +334,7 @@ class EntityManager
     public function loadById(EntityDescriptor $entityDesc, $id)
     {
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
-            $value = '\''.GUIDUtils::decompressGUID($id).'\'';
+            $value = '\''.GuidUtils::decompressGUID($id).'\'';
         } else {
             $value = $id;
         }
