@@ -86,6 +86,7 @@ class OAuthServer
         $redirectUri = filter_var($params->get('redirect_uri', ''), FILTER_SANITIZE_URL);
         $scope = filter_var($params->get('scope', ''), FILTER_SANITIZE_STRING);
         $state = filter_var($params->get('state', ''), FILTER_SANITIZE_STRING);
+        $nonce = filter_var($params->get('nonce', ''), FILTER_SANITIZE_STRING);
 
         // try to find the client by the client_id
         try {
@@ -148,6 +149,8 @@ class OAuthServer
 
             if (false !== array_search('id_token', $responseType)) {
                 $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), time() + $lifetime, time());
+                if($nonce !== '')
+                    $idToken->setCustomClaim('nonce', $nonce);
                 $params['id_token'] = $idToken->getToken();
             }
 
