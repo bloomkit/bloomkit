@@ -6,6 +6,7 @@ use Bloomkit\Core\Database\DbMaster;
 use Bloomkit\Core\Database\PbxQL\Filter;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Utilities\Repository;
+use Bloomkit\Core\Utilities\GuidUtils;
 
 /**
  * Provides CRUD functions for Entities.
