@@ -162,6 +162,10 @@ class OAuthServer
             if ((isset($state)) && ('' != $state)) {
                 $params['state'] = $state;
             }
+            
+            if ((isset($nonce)) && ('' != $nonce)) {
+                $params['nonce'] = $nonce;
+            }
 
             $uri_parts['fragment'] = http_build_query($params);
             $redirectUri = OAuthUtils::buildUrl($uri_parts);
