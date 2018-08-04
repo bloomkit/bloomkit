@@ -25,8 +25,7 @@ class HttpApplication extends Application
         parent::__construct($appName, $appVersion, $basePath, $config);
 
         $this->registerFactory('routes', 'Bloomkit\Core\Routing\RouteCollection', true);
-        $this->registerFactory('routeMatcher', 'Bloomkit\Core\Routing\RouteMatcher', true);
-        $this->registerFactory('templateManager', 'Bloomkit\Core\Template\TemplateManager', true);
+        $this->registerFactory('routeMatcher', 'Bloomkit\Core\Routing\RouteMatcher', true);        
 
         $this->registerFactory('session', function (Application $application) {
             $session = new Session();
@@ -59,16 +58,6 @@ class HttpApplication extends Application
     public function getRouteMatcher()
     {
         return $this['routeMatcher'];
-    }
-
-    /**
-     * Returns the template manager
-     *
-     * @return \Bloomkit\Core\Template\TemplateManager;
-     */
-    public function getTemplateManager()
-    {
-        return $this['templateManager'];
     }
     
     /**

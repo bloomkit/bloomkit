@@ -210,6 +210,16 @@ class Application extends Container implements EventTracerInterface
     }
 
     /**
+     * Returns the template manager
+     *
+     * @return \Bloomkit\Core\Template\TemplateManager;
+     */
+    public function getTemplateManager()
+    {
+        return $this['templateManager'];
+    }
+    
+    /**
      * Check the config-dir for configuration files and load them into the config repo.
      */
     protected function loadConfigFromFiles()
@@ -310,11 +320,13 @@ class Application extends Container implements EventTracerInterface
         $this->registerFactory('eventManager', 'Bloomkit\Core\EventManager\EventManager', true);
         $this->registerFactory('entityManager', 'Bloomkit\Core\Entities\EntityManager', true);
         $this->registerFactory('securityContext', 'Bloomkit\Core\Security\SecurityContext', true);
+        $this->registerFactory('templateManager', 'Bloomkit\Core\Template\TemplateManager', true);
         
         //set aliases - e.g. allow the application to know, which object is meant, if "app", "eventManager", etc. is used
         $this->setAlias('Bloomkit\Core\Application\Application', 'app');
         $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');        
-        $this->setAlias('Bloomkit\Core\Entities\EntityManager', 'entityManager');               
+        $this->setAlias('Bloomkit\Core\Entities\EntityManager', 'entityManager');
+        $this->setAlias('Bloomkit\Core\Entities\TemplateManager', 'templateManager');
     }
 
     /**
