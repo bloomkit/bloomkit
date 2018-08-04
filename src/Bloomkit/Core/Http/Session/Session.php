@@ -6,21 +6,22 @@ use Bloomkit\Core\Http\Session\Storage\SessionStorageInterface;
 use Bloomkit\Core\Http\Session\Storage\NativeSessionStorage;
 
 class Session implements SessionInterface
-{    
+{
     /**
      * @var SessionStorageInterface
      */
     protected $storage;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param SessionStorageInterface $storage Storage object to save session data
      */
     public function __construct(SessionStorageInterface $storage = null)
     {
-        if(is_null($storage))
+        if (is_null($storage)) {
             $storage = new NativeSessionStorage();
+        }
 
         $this->storage = $storage;
     }
@@ -29,10 +30,10 @@ class Session implements SessionInterface
      * {@inheritdoc}
      */
     public function clear()
-    {    
+    {
         $this->storage->getSessionData()->clear();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +41,7 @@ class Session implements SessionInterface
     {
         $this->storage->getSessionData()->set($name, $value);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -48,7 +49,7 @@ class Session implements SessionInterface
     {
         return $this->storage->getSessionData()->get($name, $default);
     }
-   
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +57,15 @@ class Session implements SessionInterface
     {
         return $this->storage->getName();
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessages()
+    {
+        return $this->storage->getSessionMessages();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -64,7 +73,7 @@ class Session implements SessionInterface
     {
         $this->storage->setName($name);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -72,7 +81,7 @@ class Session implements SessionInterface
     {
         return $this->storage->getId();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -80,7 +89,7 @@ class Session implements SessionInterface
     {
         $this->storage->setId($id);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -88,7 +97,7 @@ class Session implements SessionInterface
     {
         return $this->storage->start();
     }
-              
+
     /**
      * {@inheritdoc}
      */
@@ -96,5 +105,4 @@ class Session implements SessionInterface
     {
         $this->storage->save();
     }
-    
 }

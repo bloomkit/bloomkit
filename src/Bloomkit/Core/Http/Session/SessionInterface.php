@@ -10,10 +10,10 @@ interface SessionInterface
     public function clear();
 
     /**
-     * Returns a session value
+     * Returns a session value.
      *
-     * @param string $name The name of the value
-     * @param mixed $default The default value if not found.
+     * @param string $name    The name of the value
+     * @param mixed  $default the default value if not found
      *
      * @return mixed The requested session value
      */
@@ -22,49 +22,49 @@ interface SessionInterface
     /**
      * Returns the session ID.
      *
-     * @return string The session ID.
+     * @return string the session ID
      */
     public function getId();
-    
+
     /**
      * Returns the session name.
      *
-     * @return string The session name.
+     * @return string the session name
      */
-    public function getName();    
-    
+    public function getName();
+
     /**
-     * Save and close the session (normally not required as sessions 
-     * will be automatically saved
+     * Save and close the session (normally not required as sessions
+     * will be automatically saved.
      */
     public function save();
-    
+
     /**
-     * Sets a session value
+     * Sets a session value.
      *
-     * @param string $name The name of the value
-     * @param mixed $value The value to set
+     * @param string $name  The name of the value
+     * @param mixed  $value The value to set
      */
-    public function set($name, $value);          
-    
+    public function set($name, $value);
+
     /**
-     * Sets the session ID
+     * Sets the session ID.
      *
      * @param string $id The id to set
      */
     public function setId($id);
-    
+
     /**
      * Sets the session name.
      *
      * @param string $name The name to set
-     */    
+     */
     public function setName($name);
-    
+
     /**
-     * Starts the session
+     * Starts the session.
      *
-     * @return bool True if session started.
+     * @return bool true if session started
      */
     public function start();
 }

@@ -1,16 +1,15 @@
 <?php
+
 namespace Bloomkit\Core\Http\Session\Storage;
 
 class SessionHandlerProxy implements \SessionHandlerInterface
-{   
+{
     /**
-     *
      * @var bool
      */
     protected $active = false;
-    
+
     /**
-     *
      * @var \SessionHandlerInterface
      */
     protected $handler;
@@ -31,6 +30,7 @@ class SessionHandlerProxy implements \SessionHandlerInterface
     public function close()
     {
         $this->active = false;
+
         return (bool) $this->handler->close();
     }
 
@@ -49,7 +49,7 @@ class SessionHandlerProxy implements \SessionHandlerInterface
     {
         return (bool) $this->handler->gc($maxlifetime);
     }
-    
+
     /**
      * Returns the session ID.
      *
@@ -59,7 +59,7 @@ class SessionHandlerProxy implements \SessionHandlerInterface
     {
         return session_id();
     }
-    
+
     /**
      * Returns the session name.
      *
@@ -69,27 +69,29 @@ class SessionHandlerProxy implements \SessionHandlerInterface
     {
         return session_name();
     }
-    
+
     /**
-     * Is the session started
+     * Is the session started.
      *
      * @return bool True if session is started false if not
      */
     public function isActive()
     {
         $this->active = session_status() === \PHP_SESSION_ACTIVE;
+
         return $this->active;
-    }    
-    
+    }
+
     /**
      * {@inheritdoc}
      */
     public function open($savePath, $sessionName)
     {
         $this->active = (bool) $this->handler->open($savePath, $sessionName);
+
         return $this->active;
-    }    
-    
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -97,7 +99,7 @@ class SessionHandlerProxy implements \SessionHandlerInterface
     {
         return (string) $this->handler->read($sessionId);
     }
-    
+
     /**
      * Sets the session ID.
      *
@@ -105,11 +107,12 @@ class SessionHandlerProxy implements \SessionHandlerInterface
      */
     public function setId($id)
     {
-        if ($this->isActive())
+        if ($this->isActive()) {
             throw new \LogicException('Cannot change the ID of an active session');
+        }
         session_id($id);
     }
-    
+
     /**
      * Sets the session name.
      *
@@ -117,11 +120,12 @@ class SessionHandlerProxy implements \SessionHandlerInterface
      */
     public function setName($name)
     {
-        if ($this->isActive())
+        if ($this->isActive()) {
             throw new \LogicException('Cannot change the name of an active session');
+        }
         session_name($name);
     }
-    
+
     /**
      * {@inheritdoc}
      */

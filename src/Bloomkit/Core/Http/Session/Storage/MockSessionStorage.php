@@ -1,14 +1,16 @@
 <?php
+
 namespace Bloomkit\Core\Http\Session\Storage;
 
 use Bloomkit\Core\Http\Session\SessionRepository;
+use Bloomkit\Core\Http\Session\SessionMessages;
 
 class MockSessionStorage implements SessionStorageInterface
 {
     /**
-     * @var SessionRepository
+     * @var string;
      */
-    private $sessionData;
+    private $id;
 
     /**
      * @var boolean
@@ -24,14 +26,19 @@ class MockSessionStorage implements SessionStorageInterface
      * @var string;
      */
     private $name;
-    
-    /**
-     * @var string;
-     */
-    private $id;
 
     /**
-     * Constructor
+     * @var SessionRepository
+     */
+    private $sessionData;
+
+    /**
+     * @var SessionMessages
+     */
+    private $sessionMessages;
+
+    /**
+     * Constructor.
      *
      * @param string $name The name of the session
      */
@@ -39,6 +46,7 @@ class MockSessionStorage implements SessionStorageInterface
     {
         $this->name = $name;
         $this->sessionData = new SessionRepository();
+        $this->sessionMessages = new SessionMessages();
     }
 
     /**
@@ -47,6 +55,17 @@ class MockSessionStorage implements SessionStorageInterface
     public function clear()
     {
         $this->sessionData->clear();
+        $this->sessionMessages->clear();
+    }
+
+    /**
+     * Generates a session ID (just a mock).
+     *
+     * @return string
+     */
+    protected function generateId()
+    {
+        return hash('sha256', uniqid('bk_mock_', true));
     }
 
     /**
@@ -66,17 +85,7 @@ class MockSessionStorage implements SessionStorageInterface
     }
 
     /**
-     * Generates a session ID (just a mock)
-     *
-     * @return string
-     */
-    protected function generateId()
-    {
-        return hash('sha256', uniqid('bk_mock_', true));
-    }
-    
-    /**
-     * Returns the SessionData object
+     * Returns the SessionData object.
      *
      * @return Repository SessionData object
      */
@@ -88,13 +97,21 @@ class MockSessionStorage implements SessionStorageInterface
     /**
      * {@inheritdoc}
      */
+    public function getSessionMessages()
+    {
+        return $this->sessionMessages;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getIsStarted()
     {
         return $this->isStarted;
     }
 
     /**
-     * Load the session
+     * Load the session.
      */
     protected function loadSession()
     {
@@ -141,12 +158,13 @@ class MockSessionStorage implements SessionStorageInterface
         if ($this->isStarted && !$this->isClosed) {
             return true;
         }
-        
+
         if (empty($this->id)) {
             $this->id = $this->generateId();
         }
-        
+
         $this->loadSession();
+
         return true;
     }
 }

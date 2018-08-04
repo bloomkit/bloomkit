@@ -1,7 +1,9 @@
 <?php
+
 namespace Bloomkit\Core\Http\Session\Storage;
 
 use Bloomkit\Core\Http\Session\SessionRepository;
+use Bloomkit\Core\Http\Session\SessionMessages;
 
 class NativeSessionStorage implements SessionStorageInterface
 {
@@ -9,6 +11,11 @@ class NativeSessionStorage implements SessionStorageInterface
      * @var SessionRepository
      */
     private $sessionData;
+
+    /**
+     * @var SessionMessages
+     */
+    private $sessionMessages;
 
     /**
      * @var boolean
@@ -26,14 +33,15 @@ class NativeSessionStorage implements SessionStorageInterface
     private $storageKey;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param mixed $handler SessionHandler
+     * @param mixed  $handler    SessionHandler
      * @param string $storageKey Key for saving session data
      */
     public function __construct($handler = null, $storageKey = '_bk_session_data')
     {
         $this->sessionData = new SessionRepository();
+        $this->sessionMessages = new SessionMessages();
         $this->storageKey = $storageKey;
 
         session_cache_limiter('');
@@ -48,6 +56,7 @@ class NativeSessionStorage implements SessionStorageInterface
     public function clear()
     {
         $this->sessionData->clear();
+        $this->sessionMessages->clear();
     }
 
     /**
@@ -67,7 +76,7 @@ class NativeSessionStorage implements SessionStorageInterface
     }
 
     /**
-     * Returns the SessionData object
+     * Returns the SessionData object.
      *
      * @return Repository SessionData object
      */
@@ -79,28 +88,39 @@ class NativeSessionStorage implements SessionStorageInterface
     /**
      * {@inheritdoc}
      */
+    public function getSessionMessages()
+    {
+        return  $this->sessionMessages;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getIsStarted()
     {
         return $this->isStarted;
     }
 
     /**
-     * Load the session
+     * Load the session.
      *
      * @param array|null $session
      */
     protected function loadSession(array &$session = null)
     {
-        if (is_null($session))
+        if (is_null($session)) {
             $session = &$_SESSION;
+        }
 
-            if(!isset($session[$this->storageKey]))
-                $session[$this->storageKey] = [];
-                 
-                $this->sessionData->linkSessionData($session[$this->storageKey]);
+        if (!isset($session[$this->storageKey])) {
+            $session[$this->storageKey] = [];
+        }
 
-                $this->isStarted = true;
-                $this->isClosed = false;
+        $this->sessionData->linkSessionData($session[$this->storageKey]);
+        $this->sessionMessages->linkSessionData($session['_bk_session_messages']);
+
+        $this->isStarted = true;
+        $this->isClosed = false;
     }
 
     /**
@@ -133,7 +153,7 @@ class NativeSessionStorage implements SessionStorageInterface
     }
 
     /**
-     * Set the SaveHandler
+     * Set the SaveHandler.
      *
      * @param mixed $saveHandler The SaveHandler to use
      */
@@ -143,12 +163,13 @@ class NativeSessionStorage implements SessionStorageInterface
             throw new \InvalidArgumentException('Invalid handler provided');
         }
 
-        if (is_null($saveHandler))
+        if (is_null($saveHandler)) {
             $this->saveHandler = new SessionHandlerProxy(new \SessionHandler());
+        }
 
-            if ($this->saveHandler instanceof \SessionHandlerInterface) {
-                session_set_save_handler($this->saveHandler, false);
-            }
+        if ($this->saveHandler instanceof \SessionHandlerInterface) {
+            session_set_save_handler($this->saveHandler, false);
+        }
     }
 
     /**
@@ -168,11 +189,12 @@ class NativeSessionStorage implements SessionStorageInterface
             throw new \RuntimeException(sprintf('Failed to start the session: Headers have already been sent by "%s" at line %d.', $file, $line));
         }
 
-        if (! session_start()) {
+        if (!session_start()) {
             throw new \RuntimeException('Failed to start the session');
         }
 
         $this->loadSession();
+
         return true;
     }
 }
