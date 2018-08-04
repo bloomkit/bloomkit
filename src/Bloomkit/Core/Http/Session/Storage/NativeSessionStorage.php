@@ -115,6 +115,10 @@ class NativeSessionStorage implements SessionStorageInterface
         if (!isset($session[$this->storageKey])) {
             $session[$this->storageKey] = [];
         }
+        
+        if (!isset($session['_bk_session_messages'])) {
+            $session['_bk_session_messages'] = [];
+        }
 
         $this->sessionData->linkSessionData($session[$this->storageKey]);
         $this->sessionMessages->linkSessionData($session['_bk_session_messages']);
