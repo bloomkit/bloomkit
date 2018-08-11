@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Security\Token;
 
 /**
- * Representation of a OAuth Bearer token.
+ * Representation of an OAuth Bearer token.
  */
 class OAuthBearerToken extends Token
 {
