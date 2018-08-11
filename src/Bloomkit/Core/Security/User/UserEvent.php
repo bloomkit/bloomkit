@@ -1,5 +1,5 @@
 <?php
-namespace Bloomkit\Core\Security\Users;
+namespace Bloomkit\Core\Security\User;
 
 use Bloomkit\Core\EventManager\Event;
 
