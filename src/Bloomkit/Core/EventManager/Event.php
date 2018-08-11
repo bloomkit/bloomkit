@@ -9,6 +9,11 @@ class Event
     protected $eventManager;
 
     /**
+     * @var mixed
+     */
+    private $data;
+
+    /**
      * @var string
      */
     private $name = '';     
@@ -27,6 +32,16 @@ class Event
      * @var mixed
      */
     private $tracerListener;
+    
+    /**
+     * Return the data property
+     * 
+     * @result mixed
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
     
     /**
      * Return the event name
@@ -66,6 +81,16 @@ class Event
     public function getTracerListenerEvent()
     {
         return $this->tracerListener;
+    }
+    
+    /**
+     * Set the data property
+     *
+     * @param mixed $data The data to set
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
     
     /**
