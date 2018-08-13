@@ -13,12 +13,12 @@ class MockSessionStorage implements SessionStorageInterface
     private $id;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $isClosed;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $isStarted;
 

@@ -14,7 +14,7 @@ interface SessionStorageInterface
     /**
      * Returns the session ID.
      *
-     * @return string The session ID.
+     * @return string the session ID
      */
     public function getId();
 
@@ -28,14 +28,14 @@ interface SessionStorageInterface
     /**
      * Returns the session name.
      *
-     * @return string The session name.
+     * @return string the session name
      */
     public function getName();
 
     /**
      * Returns the SessionMessages object.
      *
-     * @return Repository The SessionMessages object.
+     * @return Repository the SessionMessages object
      */
     public function getSessionMessages();
 
@@ -64,7 +64,7 @@ interface SessionStorageInterface
      *
      * @throws \RuntimeException If session failed to start
      *
-     * @return bool True if started.
+     * @return bool true if started
      */
     public function start();
 }

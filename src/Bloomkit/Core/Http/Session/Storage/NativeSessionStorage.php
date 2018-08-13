@@ -18,12 +18,12 @@ class NativeSessionStorage implements SessionStorageInterface
     private $sessionMessages;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $isClosed;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $isStarted;
 
@@ -115,7 +115,7 @@ class NativeSessionStorage implements SessionStorageInterface
         if (!isset($session[$this->storageKey])) {
             $session[$this->storageKey] = [];
         }
-        
+
         if (!isset($session['_bk_session_messages'])) {
             $session['_bk_session_messages'] = [];
         }

@@ -72,7 +72,7 @@ class SessionMessages implements \IteratorAggregate
     {
         return new \ArrayIterator($this->all());
     }
-    
+
     /**
      * Returns a list of all defined types.
      *

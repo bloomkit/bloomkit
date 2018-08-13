@@ -47,6 +47,11 @@ class HttpRequest
     protected $httpMethod;
 
     /**
+     * @var array
+     */
+    protected $languages;
+
+    /**
      * @var string
      */
     protected $pathUrl;
@@ -160,7 +165,7 @@ class HttpRequest
     }
 
     /**
-     * Returns the full Request-URL withoud url parameters - e.g. http://localhost:8081/mysite
+     * Returns the full Request-URL withoud url parameters - e.g. http://localhost:8081/mysite.
      *
      * @return string Request url
      */
@@ -171,20 +176,23 @@ class HttpRequest
         $requestUri = $this->serverParams->get('REQUEST_URI', '');
         $urlParts = parse_url($requestUri);
         $requestUri = $urlParts['path'];
-    
-        if (($this->serverParams->get('HTTPS', NULL) == "on") || ($serverPort == '443'))
+
+        if (($this->serverParams->get('HTTPS', null) == 'on') || ($serverPort == '443')) {
             $pageUrl = 'https://';
-        else
+        } else {
             $pageUrl = 'http://';
+        }
 
         // Ignore default ports if forcePorts != true
-        if (($forcePorts == true) || (($serverPort != "80") && ($serverPort != '443')))
-            $pageUrl .= $serverName . ":" . $serverPort . $requestUri;
-        else
-            $pageUrl .= $serverName . $requestUri;
+        if (($forcePorts == true) || (($serverPort != '80') && ($serverPort != '443'))) {
+            $pageUrl .= $serverName.':'.$serverPort.$requestUri;
+        } else {
+            $pageUrl .= $serverName.$requestUri;
+        }
+
         return $pageUrl;
     }
-    
+
     /**
      * Returns the GET parameters.
      *
@@ -254,10 +262,33 @@ class HttpRequest
 
         return $this->httpMethod;
     }
-    
 
     /**
-     * Returns the QUERY_STRING Parameter
+     * Gets a list of languages accepted by the client browser.
+     *
+     * @return array List of languages
+     */
+    public function getLanguages()
+    {
+        if (!is_null($this->languages)) {
+            return $this->languages;
+        }
+
+        $languages = [];
+        $value = trim($this->getHeaders()->get('ACCEPT_LANGUAGE', ''));
+        $values = explode(',', $value);
+        foreach ($values as $tmpVal) {
+            $items = explode(';', $tmpVal);
+            $languages[] = $items[0];
+        }
+
+        $this->languages = $languages;
+
+        return $this->languages;
+    }
+
+    /**
+     * Returns the QUERY_STRING Parameter.
      *
      * @return string
      */
@@ -265,7 +296,6 @@ class HttpRequest
     {
         return $this->getServerParams()->get('QUERY_STRING', '');
     }
-    
 
     /**
      * Returns the path being requested relative to the executed script.

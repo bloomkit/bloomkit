@@ -25,7 +25,7 @@ class HttpApplication extends Application
         parent::__construct($appName, $appVersion, $basePath, $config);
 
         $this->registerFactory('routes', 'Bloomkit\Core\Routing\RouteCollection', true);
-        $this->registerFactory('routeMatcher', 'Bloomkit\Core\Routing\RouteMatcher', true);        
+        $this->registerFactory('routeMatcher', 'Bloomkit\Core\Routing\RouteMatcher', true);
 
         $this->registerFactory('session', function (Application $application) {
             $session = new Session();
@@ -33,7 +33,6 @@ class HttpApplication extends Application
 
             return $session;
         }, true);
-                
 
         $this->registerFactory('firewall', function (Application $application) {
             //$listener = new LoginFormAuthenticationListener();
@@ -59,7 +58,7 @@ class HttpApplication extends Application
     {
         return $this['routeMatcher'];
     }
-    
+
     /**
      * Processing the request.
      *
