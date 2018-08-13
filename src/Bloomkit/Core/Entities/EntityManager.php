@@ -182,7 +182,7 @@ class EntityManager
         }
     
         if ($entityDesc->getCreationDateLogging()) {
-            $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::ColNameCreationStamp);
+            $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_CREATION_STAMP);
             if (is_null($entity->getCreationDate())) {
                 $values[] = 'now()';
             } else {
@@ -191,7 +191,7 @@ class EntityManager
         }
     
         if ($entityDesc->getModificationDateLogging()) {
-            $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::ColNameModificationStamp);
+            $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_MODIFICATION_STAMP);
             if (is_null($entity->getModificationDate())) {
                 $values[] = 'now()';
             } else {
@@ -238,7 +238,7 @@ class EntityManager
         $replacements = [];
     
         if ($entityDesc->getModificationDateLogging()) {
-            $items[$this->dbCon->quoteColumnName(EntityDescriptor::ColNameModificationStamp)] = 'now()';
+            $items[$this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_MODIFICATION_STAMP)] = 'now()';
         }
     
         foreach ($fields as $field) {
@@ -535,7 +535,7 @@ class EntityManager
         $dsId = $entity->getDatasetId();
     
         $sql = 'UPDATE '.$this->dbCon->quoteTableName($entityDesc->getTableName()).' SET ';
-        $sql .= $this->dbCon->quoteColumnName(EntityDescriptor::ColNameModificationStamp).'= now()';
+        $sql .= $this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_MODIFICATION_STAMP).'= now()';
         $sql .= ' where '.$this->dbCon->quoteColumnName('id').'= ?;';
     
         $stmt = $this->dbCon->prepare($sql);

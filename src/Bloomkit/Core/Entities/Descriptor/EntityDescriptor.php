@@ -9,10 +9,14 @@ use Bloomkit\Core\Entities\Fields\Field;
  */
 class EntityDescriptor
 {
+    const COL_NAME_CREATION_STAMP = 'creation_date';
+    
+    const COL_NAME_MODIFICATION_STAMP = 'modification_date';
+    
     const IDTYPE_SERIAL = 'serial';
 
     const IDTYPE_UUID = 'uuid';
-
+    
     /**
      * @var bool
      */
