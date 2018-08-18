@@ -102,7 +102,7 @@ class SessionMessages implements \IteratorAggregate
      */
     public function linkSessionData(array &$sessionData)
     {
-        $this->items = &$sessionData;
+        $this->messages = &$sessionData;
     }
 
     /**

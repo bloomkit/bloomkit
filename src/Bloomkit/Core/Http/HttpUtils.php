@@ -13,11 +13,21 @@ class HttpUtils
      * @param Request $request A Request instance
      * @param string  $path    An absolute path or an absolute URL
      * @param int     $status  The status code
+     * @param array   $params  An array with url-params (optional)
      *
      * @return RedirectResponse A RedirectResponse instance
      */
-    public static function createRedirectResponse(HttpRequest $request, $path, $status = 302)
+    public static function createRedirectResponse(HttpRequest $request, $path, $status = 302, $params = [])
     {
+        $params = '';
+        foreach ($params as $key => $value){
+           if (!empty($params))
+               $params .= '&';
+           $params .= $key.'='.urlencode($value);
+        }
+        if(!empty($params))
+            $path .= '?'.$params;
+            
         return new HttpRedirectResponse(self::generateUri($request, $path), $status);
     }
 
