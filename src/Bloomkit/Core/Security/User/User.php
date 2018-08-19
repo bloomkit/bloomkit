@@ -134,11 +134,8 @@ class User implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function validatePassword($password, $pepper = '')
+    public function validatePassword($password)
     {
-        $hash = hash_hmac('sha512', $password, $pepper, true);
-        $a = crypt($hash, substr($this->password, 0, 30));
-
-        return $a == $this->password;
+        return password_verify($password, $this->password);
     }
 }

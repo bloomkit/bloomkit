@@ -71,5 +71,5 @@ interface UserInterface
      * @return string $pepper An optional pepper to use for the verification
      * @return bool   true if password match, false if not
      */
-    public function validatePassword($password, $pepper = '');
+    public function validatePassword($password);
 }
