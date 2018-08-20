@@ -19,14 +19,17 @@ class HttpUtils
      */
     public static function createRedirectResponse(HttpRequest $request, $path, $status = 302, $params = [])
     {
-        $params = '';
-        foreach ($params as $key => $value){
-           if (!empty($params))
-               $params .= '&';
-           $params .= $key.'='.urlencode($value);
+        $paramStr = '';
+        if (is_array($params))
+        {
+            foreach ($params as $key => $value){
+               if (!empty($params))
+                   $paramStr .= '&';
+               $paramStr .= $key.'='.urlencode($value);
+            }
         }
-        if(!empty($params))
-            $path .= '?'.$params;
+        if(!empty($paramStr))
+            $path .= '?'.$paramStr;
             
         return new HttpRedirectResponse(self::generateUri($request, $path), $status);
     }
