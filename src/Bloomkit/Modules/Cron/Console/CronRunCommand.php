@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Module\Cron\Console;
+namespace Bloomkit\Modules\Cron\Console;
 
 use Bloomkit\Core\Console\ConsoleCommand;
 use Bloomkit\Core\EventManager\EventManager;
