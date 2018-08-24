@@ -6,7 +6,7 @@ use Bloomkit\Core\EventManager\Event;
 
 class CronEvent extends Event
 {
-    const CRONRUN = 'cron.run';
+    const CRONRUN = 'bloomkit.cron.run';
 
     public function __construct()
     {
