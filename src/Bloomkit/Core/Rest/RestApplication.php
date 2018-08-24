@@ -73,7 +73,7 @@ class RestApplication extends Application
 
         return $event->getResponse();
     }
-    
+
     /**
      * Processing the request.
      *
@@ -91,39 +91,39 @@ class RestApplication extends Application
         if (false === array_search($apiVersion, $this->supportedVersions)) {
             return RestResponse::createFault(400, 'The requested api version is not supported by this server.', 31030);
         }
-    
+
         $event = new HttpEvent($request);
         $this['eventManager']->triggerEvent(HttpEvents::REQUEST, $event);
-    
+
         if ($event->hasResponse()) {
             $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
             $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
-    
+
             return $event->getResponse();
         }
-    
+
         try {
             //$tracer = $this->getTracer();
             //$tracer->start('App::findRoute');
             $matcher = $this->getRouteMatcher();
             $parameters = $matcher->match($request->getRestUrl(), $request->getHttpMethod());
-            //$tracer->stop('App::findRoute');            
-    
+            //$tracer->stop('App::findRoute');
+
             // Authentication
             if (isset($parameters['_auth'])) {
                 $auth = $parameters['_auth'];
-    
+
                 if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
                     $this->get('firewall')->setAuthEntryPoint(new $auth['authEntryPoint']());
                 }
-    
+
                 if (false == isset($auth['authenticator'])) {
                     throw new AuthConfigException(sprintf('"authenticator" parameter is missing in route-config for "%s"', $request->getPathUrl()));
                 }
                 if (false == isset($auth['userProvider'])) {
                     throw new AuthConfigException(sprintf('"userProvider" parameter is missing in route-config for "%s"', $request->getPathUrl()));
                 }
-    
+
                 if (!class_exists($auth['authenticator'])) {
                     throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $auth['authenticator']));
                 }
@@ -135,45 +135,45 @@ class RestApplication extends Application
                 } else {
                     $userProvider = new $auth['userProvider']();
                 }
-    
+
                 $authenticator = new $auth['authenticator']($userProvider);
                 $token = $authenticator->createToken($request);
-    
+
                 if (false == $authenticator->supportsToken($token)) {
                     throw new \Exception('Token is not supported');
                 }
-    
+
                 $token = $authenticator->authenticateToken($token, $userProvider);
                 $this->getSecurityContext()->setToken($token);
             }
-    
+
             $request->getAttributes()->addItems($parameters);
             $controllerName = $parameters['_controller'];
-    
+
             $this['eventManager']->triggerEvent(HttpEvents::CONTROLLER, $event);
-    
+
             if (false === strpos($controllerName, '::')) {
                 throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controllerName));
             }
-    
+
             $controllerInfo = list($class, $method) = explode('::', $controllerName, 2);
-    
+
             if (!class_exists($class)) {
                 throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
             }
-    
+
             if (is_array($controllerInfo)) {
                 $r = new \ReflectionMethod($controllerInfo[0], $controllerInfo[1]);
             }
-    
+
             $params = $r->getParameters();
-    
+
             $attributes = $request->getAttributes()->getItems();
             $arguments = [];
-            
+
             $controller = new $class($this);
-            $controller->setRequest($request);            
-                
+            $controller->setRequest($request);
+
             foreach ($params as $param) {
                 if (array_key_exists($param->name, $attributes)) {
                     $arguments[] = $attributes[$param->name];
@@ -192,16 +192,16 @@ class RestApplication extends Application
                     throw new \RuntimeException(sprintf('Controller "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $repr, $param->name));
                 }
             }
-       
+
             //$tracer->start('App::CallController');
             $response = call_user_func_array([$controller, $method], $arguments);
             //$tracer->stop('App::CallController');
-    
+
             $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
             $event->setResponse($response);
             $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
             $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
-    
+
             return $response;
         } catch (RessourceNotFoundException $e) {
             $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
@@ -222,7 +222,7 @@ class RestApplication extends Application
 
         if (($routes instanceof RouteCollection) && ($routes->getCount() > 0)) {
             $this['routes']->addCollection($routes);
-        };
+        }
     }
 
     /**
@@ -235,7 +235,7 @@ class RestApplication extends Application
         if (is_null($request)) {
             try {
                 $request = RestRequest::processRequest();
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 $this['logger']->warning('Invalid request:'.$e->getMessage());
                 $response = RestResponse::createFault(400, $e->getMessage(), $e->getCode());
                 $response->send();
