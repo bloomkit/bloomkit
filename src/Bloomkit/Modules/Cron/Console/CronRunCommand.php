@@ -15,10 +15,35 @@ class CronRunCommand extends ConsoleCommand
         $this->setHelp('');        
     }
     
+    protected function beforeExecute()
+    {
+        $tracer = $this->application->getTracer();
+        $tracer->start('Cron:Run');
+    }
+    
     protected function execute()
     {
-        $eventManager = new EventManager();
+        $eventManager = $this->application->getEventManager();
         $event = new CronEvent();
-        $eventManager->triggerEvent(CronEvent::CRONRUN, $event);        
+        $eventManager->triggerEvent(CronEvent::CRONRUN, $event);                    
+    }
+    
+    protected function getOutput()
+    {
+        $tracer     = $this->application->getTracer();
+        $event      = $tracer->stop('Cron:Run');
+        $duration   = $event->getDuration();
+        $memory     = $event->getMemory() / 1024;
+        $output		= $this->commandId."\r\n";
+        $output		.= date('Y-m-d H:i:s')."\r\n";
+        $output     .= "runtime: $duration ms; memory-usage: $memory kb"."\r\n";
+        return $output;
+    }
+
+    protected function afterExecute($sendMail=TRUE)
+    {
+        $output = $this->getMailBody();
+        echo $output;
+        echo "\r\n";
     }
 }
