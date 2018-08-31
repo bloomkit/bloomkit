@@ -34,7 +34,7 @@ class RestCrudController extends Controller
         $entityManager = $this->application->getEntityManager();
 
         $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
-        $filter = new Filter($entityDesc, $query, $entityDesc->getDatabaseConnection());
+        $filter = new Filter($entityDesc, $query, $entityManager->getDatabaseConnection());
         $entities = $entityManager->loadList($entityDesc, $filter, 1);
         $entities = $entities->getItems();
 
