@@ -5,7 +5,6 @@ namespace Bloomkit\Core\Application;
 use Bloomkit\Core\Module\ModuleInterface;
 use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
-use Bloomkit\Core\Application\Container;
 use Psr\Logger\LoggerInterface;
 
 class Application extends Container implements EventTracerInterface
@@ -65,15 +64,15 @@ class Application extends Container implements EventTracerInterface
             } else {
                 $this->basePath = rtrim($basePath, '\/');
             }
-        }        
+        }
 
         $this->registerBaseBindings();
-        
+
         $this->loadConfigFromFiles();
         if (count($config) > 0) {
             $this->getConfig()->addItems($config);
         }
-        
+
         $this->registerFactory('logger', 'Bloomkit\Core\Application\DummyLogger', true);
     }
 
@@ -148,7 +147,7 @@ class Application extends Container implements EventTracerInterface
     {
         return $this->basePath.'/config';
     }
-    
+
     /**
      * Returns the entity manager.
      *
@@ -178,7 +177,7 @@ class Application extends Container implements EventTracerInterface
     {
         return $this->appName.' '.$this->appVersion;
     }
-    
+
     /**
      * Returns the logger.
      *
@@ -188,7 +187,7 @@ class Application extends Container implements EventTracerInterface
     {
         return $this['logger'];
     }
-    
+
     /**
      * Returns the security context.
      *
@@ -210,7 +209,7 @@ class Application extends Container implements EventTracerInterface
     }
 
     /**
-     * Returns the template manager
+     * Returns the template manager.
      *
      * @return \Bloomkit\Core\Template\TemplateManager;
      */
@@ -218,7 +217,17 @@ class Application extends Container implements EventTracerInterface
     {
         return $this['templateManager'];
     }
-    
+
+    /**
+     * Returns the tracer.
+     *
+     * @return \Bloomkit\Core\Tracer\Tracer;
+     */
+    public function getTracer()
+    {
+        return $this['tracer'];
+    }
+
     /**
      * Check the config-dir for configuration files and load them into the config repo.
      */
@@ -303,30 +312,32 @@ class Application extends Container implements EventTracerInterface
 
         $event->setTracerEvent($this->tracer->start($eventName, 'event_listener'));
     }
-    
+
     /**
-     * Register the core bindings of the application
+     * Register the core bindings of the application.
      */
     protected function registerBaseBindings()
     {
         //register the app itself in the container
         $this->register('app', $this);
-        
+
         //Add a DI-binding. If someone requests A, B is returned
         $this->bind('Bloomkit\Core\EventManager\EventTracerInterface', 'Bloomkit\Core\Application\Application', true);
-        
-        //register lazy-loading application objects in the container 
+
+        //register lazy-loading application objects in the container
         $this->registerFactory('config', 'Bloomkit\Core\Utilities\Repository', true);
         $this->registerFactory('eventManager', 'Bloomkit\Core\EventManager\EventManager', true);
         $this->registerFactory('entityManager', 'Bloomkit\Core\Entities\EntityManager', true);
         $this->registerFactory('securityContext', 'Bloomkit\Core\Security\SecurityContext', true);
         $this->registerFactory('templateManager', 'Bloomkit\Core\Template\TemplateManager', true);
-        
+        $this->registerFactory('tracer', 'Bloomkit\Core\Tracer\Tracer', true);
+
         //set aliases - e.g. allow the application to know, which object is meant, if "app", "eventManager", etc. is used
         $this->setAlias('Bloomkit\Core\Application\Application', 'app');
-        $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');        
+        $this->setAlias('Bloomkit\Core\EventManager\EventManager', 'eventManager');
         $this->setAlias('Bloomkit\Core\Entities\EntityManager', 'entityManager');
         $this->setAlias('Bloomkit\Core\Entities\TemplateManager', 'templateManager');
+        $this->setAlias('Bloomkit\Core\Tracer\Tracer', 'tracer');
     }
 
     /**

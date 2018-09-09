@@ -6,6 +6,7 @@ use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
+use Bloomkit\Core\Utilities\GuidUtils;
 
 /**
  * Representation of a REST response.
