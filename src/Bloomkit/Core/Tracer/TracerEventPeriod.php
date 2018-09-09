@@ -29,10 +29,10 @@ class TracerEventPeriod
      * @param int    $start    An end-time in milliseconds
      * @param string $category Optional category of the event to trace (e.g. "database")
      */
-    public function __construct(int $start, int $end)
+    public function __construct($start, $end)
     {
-        $this->start = $start;
-        $this->end = $end;
+        $this->start = (int)$start;
+        $this->end = (int)$end;
         $this->memory = memory_get_usage(true);
     }
 
