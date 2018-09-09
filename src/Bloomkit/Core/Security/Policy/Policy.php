@@ -35,7 +35,7 @@ class Policy
     {
         $this->setVersion($version);
     }
-
+    
     /**
      * Check if an action is allowed by the policy.
      *
@@ -99,6 +99,16 @@ class Policy
         $this->statements[] = $statement;
     }
 
+    /**
+     * Add a policy version to the supported versions
+     *
+     * @param string $version The version to support
+     */
+    public function addSupportedVersion($version)
+    {
+        $this->supportedVersions[] = $version;
+    }
+    
     /**
      * Clears all statements of this policy.
      */
