@@ -189,7 +189,7 @@ class TracerEvent
         if (count($this->started) == 0) {
             throw new \LogicException('there are no started events');
         }
-        $this->periods[] = new TracerEventPeriod(array_pop($this->started), $this->getRuntime());
+        $this->periods[] = new TracerEventPeriod((int)array_pop($this->started), (int)$this->getRuntime());
     }
 
     /**
