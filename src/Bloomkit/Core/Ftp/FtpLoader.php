@@ -600,12 +600,12 @@ class FtpLoader
     public function login()
     {
         if ($this->ftpType == self::FTP_TYPE_FTP) {
-            if (!ftp_login($this->connection, $this->username, $this->password)) {
-                throw new FtpException("FTP Login failed, wrong credentials? Username: $this->username");
+            if (!ftp_login($this->connection, $this->user, $this->password)) {
+                throw new FtpException("FTP Login failed, wrong credentials? Username: $this->user");
             }
         } else {
-            if (!ssh2_auth_password($this->connection, $this->username, $this->password)) {
-                throw new FtpException("SFTP Login failed, wrong credentials or key based authorization needed. Username: $this->username");
+            if (!ssh2_auth_password($this->connection, $this->user, $this->password)) {
+                throw new FtpException("SFTP Login failed, wrong credentials or key based authorization needed. Username: $this->user");
             }
             if (!$this->ftpResource = ssh2_sftp($this->connection)) {
                 throw new FtpException('Unable to create SFTP connection.');
