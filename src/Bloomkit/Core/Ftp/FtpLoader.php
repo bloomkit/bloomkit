@@ -219,27 +219,27 @@ class FtpLoader
         return true;
     }
 
-    public function export($mapping, $sIdent)
+    public function export($mapping, $ident)
     {
         $this->openConnection();
         $blLoggedIn = $this->login();
-        $this->exportFiles($this->connection, $sIdent, $mapping);
+        $this->exportFiles($this->connection, $ident, $mapping);
     }
 
     /* Export and move local files after success
      * @param $con connection resource object
-     * @param $sIdent ( i.e. sapbw-order )
+     * @param $ident ( i.e. sapbw-order )
      * @param $sToDir directory on FTP Server to upload files to
      * @return TRUE on success */
-    protected function exportFiles($con, $sIdent, $aSettings)
+    protected function exportFiles($con, $ident, $settings)
     {
-        if (!isset($aSettings['toDir'])) {
-            $this->addErrorAndLog('aSettings[toDir] not set');
+        if (!isset($settings['toDir'])) {
+            $this->addErrorAndLog('settings[toDir] not set');
 
             return false;
         }
 
-        $sToDir = $aSettings['toDir'];
+        $sToDir = $settings['toDir'];
 
         // Save filenames which where successfully downloaded/uploaded or not
         $aProcessInfo = array(
@@ -249,7 +249,7 @@ class FtpLoader
             'moveErrorRemote' => array(),
         );
 
-        $sLocalDir = getShopBasePath().'export/'.$sIdent;
+        $sLocalDir = getShopBasePath().'export/'.$ident;
         $aFiles = $this->getFiles($this->connection, 'export', $sLocalDir);
 
         $aFilteredFiles = array();
@@ -263,8 +263,8 @@ class FtpLoader
                 }
 
                 $sFileName = basename($sFile);
-                if ($aSettings['filename'] != '') {
-                    if (stripos($sFileName, $aSettings['filename']) !== false) {
+                if ($settings['filename'] != '') {
+                    if (stripos($sFileName, $settings['filename']) !== false) {
                         $aFilteredFiles[$mKey] = $sFile;
                     }
                 } else {
@@ -328,7 +328,7 @@ class FtpLoader
             $sHowmany = 'ONLYSOME';
         }
 
-        $this->addInfoAndLog("Job export:$sIdent => uploaded and processed `$sHowmany` files. cnt=`".count($aProcessInfo['success']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['success']);
+        $this->addInfoAndLog("Job export:$ident => uploaded and processed `$sHowmany` files. cnt=`".count($aProcessInfo['success']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['success']);
 
         if (count($aProcessInfo['error'])) {
             $this->addInfoAndLog('some files could not be uploaded. cnt=`'.count($aProcessInfo['error']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['error']);
@@ -471,19 +471,19 @@ class FtpLoader
     }
 
     /* Import and move files
-     * @param $con connection resource object
-     * @param $sIdent ( i.e. sapbw-order )
+     * @param $connection connection resource object
+     * @param $ident identifier for the job
      * @param $sFromDir directory on FTP Server to fetch files from
      * @return TRUE on success */
-    protected function importFiles($connection, $sIdent, $aSettings)
+    protected function importFiles($connection, $ident, array $settings)
     {
-        if (!isset($aSettings['fromDir'])) {
-            $this->addErrorAndLog('aSettings[fromDir] not set');
+        if (!isset($settings['fromDir'])) {
+            $this->addErrorAndLog('settings[fromDir] not set');
             return false;
         }
 
-        $fromDir = $aSettings['fromDir'];
-        $remoteMove = $aSettings['remoteMove'];
+        $fromDir = $settings['fromDir'];
+        $remoteMove = $settings['remoteMove'];
 
         $aProcessInfo = [
             'success' => [],
@@ -509,8 +509,8 @@ class FtpLoader
         if (is_array($tmpFiles)) {
             foreach ($tmpFiles as $key => $file) {
                 $fileName = basename($file);
-                if ($aSettings['filename'] != '') {
-                    if (stripos($fileName, $aSettings['filename']) !== false)
+                if ($settings['filename'] != '') {
+                    if (stripos($fileName, $settings['filename']) !== false)
                         $files[$key] = $file;
                 } else {
                     $files[$key] = $file;
