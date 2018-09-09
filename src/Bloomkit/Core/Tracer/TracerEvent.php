@@ -33,7 +33,7 @@ class TracerEvent
      * @param float $originTime  The unix-time in miliseconds, this event is created
      * @param string $category  Optional category of the event to trace (e.g. "database")
      */
-    public function __construct(float $originTime, $category = 'default')
+    public function __construct($originTime, $category = 'default')
     {
         $this->originTime = round($originTime, 1);
         $this->category = $category;
