@@ -7,7 +7,6 @@ namespace Bloomkit\Core\Utilities;
  */
 class GuidUtils
 {
-
     /**
      * Compress a GUID (remove dashes and braces).
      *
@@ -15,7 +14,7 @@ class GuidUtils
      */
     public static function compressGuid($guid)
     {
-        return str_replace(['{','}','-',], '', $guid);
+        return str_replace(['{', '}', '-'], '', $guid);
     }
 
     /**
@@ -46,7 +45,7 @@ class GuidUtils
 
         return strtoupper($result);
     }
-    
+
     /**
      * Validates a dataset-ID (GUID).
      *
@@ -66,7 +65,7 @@ class GuidUtils
             return false;
         }
     }
-    
+
     /**
      * Generate a GUID.
      *
@@ -81,7 +80,7 @@ class GuidUtils
         } else {
             $pattern = '{%04x%04x-%04x-%04x-%04x-%04x%04x%04x}';
         }
-    
+
         return strtoupper(sprintf($pattern, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)));
-    }    
+    }
 }
