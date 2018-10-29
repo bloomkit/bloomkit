@@ -403,7 +403,8 @@ class FtpLoader
                             }
                         }
                     }
-                }
+                    closedir($dirHandle);
+                }                               
 
                 return $aList;
                 break;

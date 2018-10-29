@@ -117,7 +117,7 @@ class RestCrudController extends Controller
             }
         }
 
-        $entityManager->save($entity);
+        $entityManager->insert($entity);
 
         $result['success'] = true;
         $result['id'] = $entity->getDatasetId();
