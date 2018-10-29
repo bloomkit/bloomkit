@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Entities;
 
 use Bloomkit\Core\Database\DbMaster;
-use Bloomkit\Core\Database\PbxQL\Filter;
+use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Utilities\GuidUtils;
