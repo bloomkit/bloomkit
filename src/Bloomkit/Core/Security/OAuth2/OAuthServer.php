@@ -111,6 +111,10 @@ class OAuthServer
         // Parse RedirectUrl
         $uri_parts = parse_url($redirectUri);
         $params = [];
+        
+        //take original url query parts
+        if (isset($uri_parts['query']))
+            parse_str($uri_parts['query'], $params);
 
         // the response type must be 'code' (Authorization Code Grant) or 'token' (Implicit Grant)
         if (false !== array_search('code', $responseType)) {
