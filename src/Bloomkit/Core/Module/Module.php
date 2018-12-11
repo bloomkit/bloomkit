@@ -2,7 +2,7 @@
 
 namespace Bloomkit\Core\Module;
 
-use Bloomkit\Core\Utilities\Collection;
+use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Application\Application;
 use Bloomkit\Core\EventManager\EventManager;
 use Bloomkit\Core\Routing\RouteCollection;
@@ -42,7 +42,7 @@ abstract class Module implements ModuleInterface
      */
     public function getEntities()
     {
-        $result = new Collection();
+        $result = new Repository();
         $entityDir = $this->getPath().'/Entities';
         if (is_dir($entityDir)) {
             $entityFiles = glob($entityDir.'/*Entity.php');
@@ -53,7 +53,7 @@ abstract class Module implements ModuleInterface
                 $className = $this->getNamespace().'\\Entities\\'.ucfirst($baseName);
                 if ((class_exists($className)) && (is_subclass_of($className, 'Bloomkit\Core\Entities\Descriptor\EntityDescriptor'))) {
                     $entity = new $className();
-                    $result->add($entity->getEntityName(), $entity);
+                    $result->set($entity->getEntityName(), $entity);
                 }
             }
         }

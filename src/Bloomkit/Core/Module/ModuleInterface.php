@@ -4,6 +4,7 @@ namespace Bloomkit\Core\Module;
 
 use Bloomkit\Core\EventManager\EventManager;
 use Bloomkit\Core\Application\Application;
+use Bloomkit\Core\Utilities\Repository;
 
 /**
  * Describes all functions a bloomkit module implementation must provide.
@@ -13,7 +14,7 @@ interface ModuleInterface
     /**
      * Get all entities this module provides and return them.
      *
-     * @return Collection A collection of all entities this module provides
+     * @return Repository A list of all entities this module provides
      */
     public function getEntities();
 
