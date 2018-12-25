@@ -20,6 +20,11 @@ use Bloomkit\Core\Security\OpenId\JsonWebToken;
 class OAuthServer
 {
     /**
+     * @var array
+     */
+    private $defaultScopes = ['openid'];
+
+    /**
      * @var OAuthStorageInterface
      */
     private $storage;
@@ -98,6 +103,22 @@ class OAuthServer
         $state = filter_var($params->get('state', ''), FILTER_SANITIZE_STRING);
         $nonce = filter_var($params->get('nonce', ''), FILTER_SANITIZE_STRING);
 
+        $scopeList = explode(' ', $scope);
+        $permissionScopes = [];
+        $userScopes = $user->getScopes();
+        while (count($scopeList) > 0) {
+            $scopeItm = array_shift($scopeList);
+            if (!in_array($scopeItm, $this->defaultScopes)) {
+                $permissionScopes[] = $scopeItm;
+            }
+        }
+
+        foreach ($permissionScopes as $permScope) {
+            if (!in_array($permScope, $userScopes)) {
+                throw new OAuthServerException(403, 'insufficient permissions', 'You are not allowed to access this ressource');
+            }
+        }
+
         // try to find the client by the client_id
         try {
             $client = $this->storage->getClient($clientId);
@@ -163,10 +184,11 @@ class OAuthServer
             $params['expires_in'] = $lifetime;
 
             if (false !== array_search('id_token', $responseType)) {
-                $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), 
-					time() + $lifetime, time(), $this->jwtSignAlgorithm);
+                $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(),
+                        time() + $lifetime, time(), $this->jwtSignAlgorithm);
                 if ($nonce !== '') {
                     $idToken->setCustomClaim('nonce', $nonce);
+                    $idToken->setCustomClaim('scopes', $permissionScopes);
                 }
                 $params['id_token'] = $idToken->getTokenString($this->jwtSignKey);
             }
