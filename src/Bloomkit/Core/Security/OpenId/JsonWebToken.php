@@ -338,8 +338,8 @@ class JsonWebToken
      */
     public function getTokenString($signKey)
     {
-        if (!array_key_exists($algorithm, static::$supportedAlgorithms)) {
-            throw new \DomainException('Algorithm not supported: '.$algorithm);
+        if (!array_key_exists($this->algorithm, static::$supportedAlgorithms)) {
+            throw new \DomainException('Algorithm not supported: '.$this->algorithm);
         }
         $token = [];
         $token['iss'] = $this->iss;
