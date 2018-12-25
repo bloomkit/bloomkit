@@ -131,7 +131,7 @@ class User implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function setScopes(array $roles)
+    public function setScopes(array $scopes)
     {
     	$this->scopes = $scopes;
     }
