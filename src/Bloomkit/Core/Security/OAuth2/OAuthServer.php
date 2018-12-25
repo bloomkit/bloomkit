@@ -30,6 +30,16 @@ class OAuthServer
     private $forceSsl;
 
     /**
+     * @var string
+     */
+    private $jwtSignAlgorithm = 'HS256';
+
+    /**
+     * @var string
+     */
+    private $jwtSignKey;
+
+    /**
      * Constructor.
      *
      * @param OAuthStorageInterface $storage  StorageHandler to access tokens, clients etc
@@ -111,10 +121,11 @@ class OAuthServer
         // Parse RedirectUrl
         $uri_parts = parse_url($redirectUri);
         $params = [];
-        
+
         //take original url query parts
-        if (isset($uri_parts['query']))
+        if (isset($uri_parts['query'])) {
             parse_str($uri_parts['query'], $params);
+        }
 
         // the response type must be 'code' (Authorization Code Grant) or 'token' (Implicit Grant)
         if (false !== array_search('code', $responseType)) {
@@ -156,7 +167,7 @@ class OAuthServer
                 if ($nonce !== '') {
                     $idToken->setCustomClaim('nonce', $nonce);
                 }
-                $params['id_token'] = $idToken->getToken();
+                $params['id_token'] = $idToken->getTokenString($this->jwtSignKey, $this->jwtSignAlgorithm);
             }
 
             if ((isset($scope)) && ('' != $scope)) {
@@ -166,7 +177,7 @@ class OAuthServer
             if ((isset($state)) && ('' != $state)) {
                 $params['state'] = $state;
             }
-            
+
             if ((isset($nonce)) && ('' != $nonce)) {
                 $params['nonce'] = $nonce;
             }
@@ -261,11 +272,11 @@ class OAuthServer
         }
 
         $token = array(
-            'access_token' => $accessTokenCode,
-            'refresh_token' => $refreshTokenCode,
-            'token_type' => 'Bearer',
-            'expires_in' => $lifetime,
-            'scopes' => $scopes,
+                'access_token' => $accessTokenCode,
+                'refresh_token' => $refreshTokenCode,
+                'token_type' => 'Bearer',
+                'expires_in' => $lifetime,
+                'scopes' => $scopes,
         );
 
         return $token;
@@ -329,10 +340,10 @@ class OAuthServer
         }
 
         $token = array(
-            'access_token' => $accessTokenCode,
-            'token_type' => 'Bearer',
-            'expires_in' => $lifetime,
-            'scopes' => $scopes,
+                'access_token' => $accessTokenCode,
+                'token_type' => 'Bearer',
+                'expires_in' => $lifetime,
+                'scopes' => $scopes,
         );
 
         return $token;
@@ -412,5 +423,25 @@ class OAuthServer
         unset($token['scopes']);
 
         return new HttpResponse(json_encode($token), 200, OAuthUtils::getResponseHeader());
+    }
+
+    /**
+     * Set the algorithm for signing Jason Web Tokens.
+     *
+     * @param string $signAlgorithm The Algorithm to set (HS256, RS512, etc)
+     */
+    public function setJwtSignAlgorithm($signAlgorithm)
+    {
+        $this->jwtSignAlgorithm = $signAlgorithm;
+    }
+
+    /**
+     * Set the key for signing Jason Web Tokens.
+     *
+     * @param string $signKey The key to sign the token
+     */
+    public function setJwtSignKey($signKey)
+    {
+        $this->jwtSignKey = $signKey;
     }
 }
