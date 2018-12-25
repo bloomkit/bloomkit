@@ -163,11 +163,12 @@ class OAuthServer
             $params['expires_in'] = $lifetime;
 
             if (false !== array_search('id_token', $responseType)) {
-                $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), time() + $lifetime, time());
+                $idToken = new JsonWebToken($request->getFullUrl(), $user->getUserId(), $client->getClientId(), 
+					time() + $lifetime, time(), $this->jwtSignAlgorithm);
                 if ($nonce !== '') {
                     $idToken->setCustomClaim('nonce', $nonce);
                 }
-                $params['id_token'] = $idToken->getTokenString($this->jwtSignKey, $this->jwtSignAlgorithm);
+                $params['id_token'] = $idToken->getTokenString($this->jwtSignKey);
             }
 
             if ((isset($scope)) && ('' != $scope)) {

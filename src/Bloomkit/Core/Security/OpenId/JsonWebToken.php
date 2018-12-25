@@ -369,7 +369,7 @@ class JsonWebToken
             $token[$key] = $value;
         }
 
-        $header = ['alg' => $algorithm, 'typ' => 'JWT'];
+        $header = ['alg' => $this->algorithm, 'typ' => 'JWT'];
         $parts = [];
         $parts[] = str_replace('=', '', strtr(base64_encode(json_encode($header)), '+/', '-_'));
         $parts[] = str_replace('=', '', strtr(base64_encode(json_encode($token)), '+/', '-_'));
