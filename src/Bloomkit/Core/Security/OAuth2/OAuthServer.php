@@ -188,7 +188,7 @@ class OAuthServer
                         time() + $lifetime, time(), $this->jwtSignAlgorithm);
                 if ($nonce !== '') {
                     $idToken->setCustomClaim('nonce', $nonce);
-                    $idToken->setCustomClaim('scopes', $permissionScopes);
+                    $idToken->setCustomClaim('scp', implode(' ',$permissionScopes));                    
                 }
                 $params['id_token'] = $idToken->getTokenString($this->jwtSignKey);
             }

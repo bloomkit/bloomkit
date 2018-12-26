@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Console\Exceptions;
+namespace Bloomkit\Core\Database\Exceptions;
 
 /**
  * Definition of the DbException.

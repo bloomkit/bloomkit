@@ -3,6 +3,7 @@
 namespace Bloomkit\Core\Database;
 
 use Doctrine\DBAL\DriverManager;
+use Bloomkit\Core\Database\Exceptions\DbException;
 
 final class DbMaster
 {
