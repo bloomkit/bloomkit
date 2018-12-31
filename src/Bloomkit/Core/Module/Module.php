@@ -16,6 +16,11 @@ abstract class Module implements ModuleInterface
      * @var string
      */
     protected $name;
+    
+    /**
+     * @var array
+     */
+    protected $options = [];
 
     /**
      * @var \ReflectionObject
@@ -32,8 +37,12 @@ abstract class Module implements ModuleInterface
      *
      * @param string $moduleName The name of the module
      */
-    public function __construct($moduleName)
+    public function __construct($moduleName, $options = [])
     {
+    	$this->options['registerRoutes'] = true;
+    	$this->options['registerEntites'] = true;
+    	$this->options['registerConsole'] = true;
+    	array_merge($this->options, $options);
         $this->name = $moduleName;
     }
 
@@ -43,6 +52,9 @@ abstract class Module implements ModuleInterface
     public function getEntities()
     {
         $result = new Repository();
+        if ((isset($this->options['registerEntities'])) && ($this->options['registerEntities']===false))
+        	return $result;
+        
         $entityDir = $this->getPath().'/Entities';
         if (is_dir($entityDir)) {
             $entityFiles = glob($entityDir.'/*Entity.php');
@@ -99,6 +111,9 @@ abstract class Module implements ModuleInterface
     public function getRoutes()
     {
         $result = new RouteCollection();
+        if ((isset($this->options['registerRoutes'])) && ($this->options['registerRoutes']===false))
+        	return $result;
+        
         $routeDir = $this->getPath().'/Routing';
         if (is_dir($routeDir)) {
             $routeFiles = glob($routeDir.'/*.Routing.php');
@@ -126,6 +141,9 @@ abstract class Module implements ModuleInterface
      */
     public function registerConsoleCommands()
     {
+    	if ((isset($this->options['registerConsole'])) && ($this->options['registerConsole']===false))
+    		return;
+    	
         $consoleDir = $this->getPath().'/Console';
         if (is_dir($consoleDir)) {
             $consoleFiles = glob($consoleDir.'/*Command.php');
