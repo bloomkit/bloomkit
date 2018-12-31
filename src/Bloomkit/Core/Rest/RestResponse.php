@@ -7,6 +7,7 @@ use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Utilities\GuidUtils;
+use Bloomkit\Core\Entities\Fields\FieldType;
 
 /**
  * Representation of a REST response.
@@ -68,7 +69,11 @@ class RestResponse extends HttpResponse
         $fields = $entityDesc->getFields();
         foreach ($fields as $field) {
             $fieldId = $field->getFieldId();
-            $datasetItem[$fieldId] = $entity->$fieldId;
+            if ($field->getFieldType() == FieldType::PDynFTPassword) {
+                $datasetItem[$fieldId] = '';
+            } else {
+                $datasetItem[$fieldId] = $entity->$fieldId;
+            }
         }
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
             $datasetItem['id'] = GuidUtils::decompressGuid($entity->getDatasetId());
@@ -98,7 +103,11 @@ class RestResponse extends HttpResponse
             $fields = $entityDesc->getFields();
             foreach ($fields as $field) {
                 $fieldId = $field->getFieldId();
-                $datasetItem[$fieldId] = $entity->$fieldId;
+                if ($field->getFieldType() == FieldType::PDynFTPassword) {
+                    $datasetItem[$fieldId] = '';
+                } else {
+                    $datasetItem[$fieldId] = $entity->$fieldId;
+                }
             }
             if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
                 $datasetItem['id'] = GuidUtils::decompressGuid($entity->getDatasetId());
