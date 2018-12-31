@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\EventManager;
 
 class Event
@@ -16,12 +17,12 @@ class Event
     /**
      * @var string
      */
-    private $name = '';     
-    
+    private $name = '';
+
     /**
      * @var bool
      */
-    private $stopProcessing = FALSE;    
+    private $stopProcessing = false;
 
     /**
      * @var mixed
@@ -32,19 +33,19 @@ class Event
      * @var mixed
      */
     private $tracerListener;
-    
+
     /**
-     * Return the data property
-     * 
+     * Return the data property.
+     *
      * @result mixed
      */
     public function getData()
     {
         return $this->data;
     }
-    
+
     /**
-     * Return the event name
+     * Return the event name.
      *
      * @result string
      */
@@ -52,9 +53,9 @@ class Event
     {
         return $this->name;
     }
-    
+
     /**
-     * Return the status of the stopProcessing flag
+     * Return the status of the stopProcessing flag.
      *
      * @return boolean
      */
@@ -62,9 +63,9 @@ class Event
     {
         return $this->stopProcessing;
     }
-    
+
     /**
-     * Return the tracer event
+     * Return the tracer event.
      *
      * @return mixed
      */
@@ -72,9 +73,9 @@ class Event
     {
         return $this->tracerEvent;
     }
-    
+
     /**
-     * Return the tracer listener event
+     * Return the tracer listener event.
      *
      * @return mixed
      */
@@ -82,9 +83,9 @@ class Event
     {
         return $this->tracerListener;
     }
-    
+
     /**
-     * Set the data property
+     * Set the data property.
      *
      * @param mixed $data The data to set
      */
@@ -92,9 +93,9 @@ class Event
     {
         $this->data = $data;
     }
-    
+
     /**
-     * Set the event manager
+     * Set the event manager.
      *
      * @param EventManager $eventManager
      */
@@ -104,7 +105,7 @@ class Event
     }
 
     /**
-     * Set the event name
+     * Set the event name.
      *
      * @param string $name
      */
@@ -112,9 +113,9 @@ class Event
     {
         $this->name = $name;
     }
-    
+
     /**
-     * Set the tracer event
+     * Set the tracer event.
      *
      * @param mixed $tracerEvent
      */
@@ -122,9 +123,9 @@ class Event
     {
         $this->tracerEvent = $tracerEvent;
     }
-    
+
     /**
-     * Set the tracer listener event
+     * Set the tracer listener event.
      *
      * @param mixed $tracerEvent
      */
@@ -132,12 +133,12 @@ class Event
     {
         $this->tracerEvent = $tracerListener;
     }
-    
+
     /**
-     * Set the stopProcessing flag
+     * Set the stopProcessing flag.
      */
     public function stopProcessing()
     {
-        $this->stopProcessing = TRUE;
+        $this->stopProcessing = true;
     }
 }

@@ -11,5 +11,4 @@ class CronEvent extends Event
     public function __construct()
     {
     }
-
 }

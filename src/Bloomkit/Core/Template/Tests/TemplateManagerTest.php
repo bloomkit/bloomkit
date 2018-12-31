@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Template\Tests;
 
 use PHPUnit\Framework\TestCase;

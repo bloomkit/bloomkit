@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\EventManager\Tests;
 
 use Bloomkit\Core\EventManager\EventManager;
@@ -12,13 +13,13 @@ class EventManagerTest extends TestCase
 
     public function testRegisterListener()
     {
-        $eventType = 'foo:event';        
+        $eventType = 'foo:event';
         $eventManager = new EventManager();
         $this->assertFalse($eventManager->hasListeners($eventType));
         $eventManager->addListener($eventType, array($this, 'onEventForListener'));
         $this->assertTrue($eventManager->hasListeners($eventType));
     }
-    
+
     public function testRegisterSubscriber()
     {
         $eventType = 'foo:event';
@@ -28,9 +29,9 @@ class EventManagerTest extends TestCase
         $subscriber->eventValue = false;
         $event = new Event();
         $eventManager->triggerEvent($eventType, $event);
-        $this->assertTrue($subscriber->eventValue);        
+        $this->assertTrue($subscriber->eventValue);
     }
-    
+
     public function testHandleEvent()
     {
         $eventType = 'foo:event';
@@ -38,7 +39,7 @@ class EventManagerTest extends TestCase
         $eventManager->addListener($eventType, array($this, 'onEventForListener'));
         $this->eventValue = false;
         $event = new Event();
-        $eventManager->triggerEvent($eventType, $event);        
+        $eventManager->triggerEvent($eventType, $event);
         $this->assertTrue($this->eventValue);
     }
 
@@ -53,19 +54,19 @@ class EventManagerTest extends TestCase
         $eventManager->triggerEvent($eventType, $event);
         $this->assertFalse($this->eventValue);
     }
-    
+
     public function testEventPriority()
     {
         $eventType = 'foo:event';
         $eventManager = new EventManager();
-        
+
         $this->eventValue = '';
         $eventManager->addListener($eventType, array($this, 'onEventForListenerA'), 20);
-        $eventManager->addListener($eventType, array($this, 'onEventForListenerB'), 10);        
+        $eventManager->addListener($eventType, array($this, 'onEventForListenerB'), 10);
         $event = new Event();
         $eventManager->triggerEvent($eventType, $event);
         $this->assertEquals('AB', $this->eventValue);
-        
+
         $this->eventValue = '';
         $eventManager->removeListener($eventType, array($this, 'onEventForListenerA'));
         $eventManager->removeListener($eventType, array($this, 'onEventForListenerB'));
@@ -73,44 +74,46 @@ class EventManagerTest extends TestCase
         $eventManager->addListener($eventType, array($this, 'onEventForListenerB'), 20);
         $event = new Event();
         $eventManager->triggerEvent($eventType, $event);
-        $this->assertEquals('BA', $this->eventValue);        
+        $this->assertEquals('BA', $this->eventValue);
     }
-    
-    
+
     public function onEventForListener(Event $event)
     {
-        if ($event->getName() == 'foo:event')
+        if ($event->getName() == 'foo:event') {
             $this->eventValue = true;
+        }
     }
-    
+
     public function onEventForListenerA(Event $event)
     {
-        if ($event->getName() == 'foo:event')
+        if ($event->getName() == 'foo:event') {
             $this->eventValue .= 'A';
+        }
     }
-    
+
     public function onEventForListenerB(Event $event)
     {
-        if ($event->getName() == 'foo:event')
+        if ($event->getName() == 'foo:event') {
             $this->eventValue .= 'B';
+        }
     }
 }
 
 class TestSubscriber implements EventSubscriberInterface
 {
     public $eventValue;
-    
-    
+
     public function onEventForListener(Event $event)
     {
-        if ($event->getName() == 'foo:event')
+        if ($event->getName() == 'foo:event') {
             $this->eventValue = true;
+        }
     }
 
     public static function getSubscribedEvents()
     {
         return array(
-            'foo:event' => array('onEventForListener', 100)
+            'foo:event' => array('onEventForListener', 100),
         );
     }
 }

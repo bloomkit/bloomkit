@@ -49,7 +49,7 @@ class Route
      * @param string|array $methods      The supported HTTP-methods
      * @param array        $requirements An array of requirements for parameters (regexes)
      * @param string       $host         A host pattern to match
-     * @param string|array $schemes      A required URI scheme or an array of restricted schemes     
+     * @param string|array $schemes      A required URI scheme or an array of restricted schemes
      */
     public function __construct($path, array $attributes = [], $methods = [], array $requirements = [], $host = '', $schemes = [])
     {

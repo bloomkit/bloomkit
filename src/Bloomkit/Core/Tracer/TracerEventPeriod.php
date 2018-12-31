@@ -31,8 +31,8 @@ class TracerEventPeriod
      */
     public function __construct($start, $end)
     {
-        $this->start = (int)$start;
-        $this->end = (int)$end;
+        $this->start = (int) $start;
+        $this->end = (int) $end;
         $this->memory = memory_get_usage(true);
     }
 

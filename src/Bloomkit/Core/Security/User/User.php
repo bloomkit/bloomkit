@@ -21,7 +21,7 @@ class User implements UserInterface
      * @var array
      */
     protected $roles;
-    
+
     /**
      * @var array
      */
@@ -77,13 +77,13 @@ class User implements UserInterface
     {
         return $this->roles;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getScopes()
     {
-    	return $this->scopes;
+        return $this->scopes;
     }
 
     /**
@@ -127,13 +127,13 @@ class User implements UserInterface
     {
         $this->roles = $roles;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function setScopes(array $scopes)
     {
-    	$this->scopes = $scopes;
+        $this->scopes = $scopes;
     }
 
     /**

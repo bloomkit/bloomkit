@@ -5,7 +5,7 @@ namespace Bloomkit\Core\Security\Policy;
 use Bloomkit\Core\Security\Policy\Exceptions\PolicyInvalidException;
 
 /**
- * Serializes / Deserializes a Policy to / from json
+ * Serializes / Deserializes a Policy to / from json.
  */
 class PolicySerializer
 {
@@ -25,7 +25,7 @@ class PolicySerializer
     }
 
     /**
-     * Deserializer
+     * Deserializer.
      *
      * @param string $jsonPolicy A policy-json-string to deserialize
      */
@@ -98,9 +98,9 @@ class PolicySerializer
     }
 
     /**
-     * Serializer
+     * Serializer.
      *
-     * @return string The serialized policy-json-string 
+     * @return string The serialized policy-json-string
      */
     public function serialize()
     {

@@ -450,6 +450,7 @@ class JsonWebToken
             if (!$success) {
                 throw new \DomainException('Signing failed - openSSL error: '.openssl_error_string());
             }
+
             return $signature;
         }
     }

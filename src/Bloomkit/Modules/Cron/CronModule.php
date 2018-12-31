@@ -9,6 +9,5 @@ class CronModule extends Module
     public function __construct()
     {
         parent::__construct('BloomkitCronModule');
-    }    
-    
+    }
 }

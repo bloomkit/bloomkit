@@ -16,7 +16,7 @@ abstract class Module implements ModuleInterface
      * @var string
      */
     protected $name;
-    
+
     /**
      * @var array
      */
@@ -39,10 +39,10 @@ abstract class Module implements ModuleInterface
      */
     public function __construct($moduleName, $options = [])
     {
-    	$this->options['registerRoutes'] = true;
-    	$this->options['registerEntites'] = true;
-    	$this->options['registerConsole'] = true;
-    	array_merge($this->options, $options);
+        $this->options['registerRoutes'] = true;
+        $this->options['registerEntites'] = true;
+        $this->options['registerConsole'] = true;
+        array_merge($this->options, $options);
         $this->name = $moduleName;
     }
 
@@ -52,9 +52,10 @@ abstract class Module implements ModuleInterface
     public function getEntities()
     {
         $result = new Repository();
-        if ((isset($this->options['registerEntities'])) && ($this->options['registerEntities']===false))
-        	return $result;
-        
+        if ((isset($this->options['registerEntities'])) && ($this->options['registerEntities'] === false)) {
+            return $result;
+        }
+
         $entityDir = $this->getPath().'/Entities';
         if (is_dir($entityDir)) {
             $entityFiles = glob($entityDir.'/*Entity.php');
@@ -111,9 +112,10 @@ abstract class Module implements ModuleInterface
     public function getRoutes()
     {
         $result = new RouteCollection();
-        if ((isset($this->options['registerRoutes'])) && ($this->options['registerRoutes']===false))
-        	return $result;
-        
+        if ((isset($this->options['registerRoutes'])) && ($this->options['registerRoutes'] === false)) {
+            return $result;
+        }
+
         $routeDir = $this->getPath().'/Routing';
         if (is_dir($routeDir)) {
             $routeFiles = glob($routeDir.'/*.Routing.php');
@@ -141,9 +143,10 @@ abstract class Module implements ModuleInterface
      */
     public function registerConsoleCommands()
     {
-    	if ((isset($this->options['registerConsole'])) && ($this->options['registerConsole']===false))
-    		return;
-    	
+        if ((isset($this->options['registerConsole'])) && ($this->options['registerConsole'] === false)) {
+            return;
+        }
+
         $consoleDir = $this->getPath().'/Console';
         if (is_dir($consoleDir)) {
             $consoleFiles = glob($consoleDir.'/*Command.php');
@@ -153,8 +156,9 @@ abstract class Module implements ModuleInterface
                 $className = $this->getNamespace().'\\Console\\'.ucfirst($baseName);
                 if ((class_exists($className)) && (is_subclass_of($className, 'Bloomkit\Core\Console\ConsoleCommand'))) {
                     $consoleCommand = new $className($this->application);
-                    if (!$consoleCommand->isDisabled())
+                    if (!$consoleCommand->isDisabled()) {
                         $this->application->registerCommand($consoleCommand);
+                    }
                 }
             }
         }

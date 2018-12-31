@@ -41,7 +41,7 @@ class TracerSection
      *
      * @param string $name Name of the event to check
      *
-     * @return bool Returns true if started, false if not.
+     * @return bool returns true if started, false if not
      *
      * @throws LogicException If event does not exist
      */
@@ -50,6 +50,7 @@ class TracerSection
         if (!isset($this->events[$name])) {
             throw new \LogicException(sprintf('Event "%s" not found.', $name));
         }
+
         return isset($this->events[$name]) && $this->events[$name]->isStarted();
     }
 
@@ -57,7 +58,7 @@ class TracerSection
      * Start and return an event with a specific name and category.
      *
      * @param string name The Name of the event to stop
-     * @param string $category  Optional category of the event to trace (e.g. "database")
+     * @param string $category Optional category of the event to trace (e.g. "database")
      *
      * @return TracerEventPeriod The new period
      */

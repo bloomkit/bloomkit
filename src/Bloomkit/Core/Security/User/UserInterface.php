@@ -20,7 +20,7 @@ interface UserInterface
      * @return array An array of user roles
      */
     public function getRoles();
-    
+
     /**
      * Returns the scopes of the user.
      *

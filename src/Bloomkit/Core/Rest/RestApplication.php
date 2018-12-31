@@ -228,7 +228,7 @@ class RestApplication extends Application
     /**
      * Start the application.
      *
-     * @param RestRequest $request The request to process.
+     * @param RestRequest $request the request to process
      */
     public function run(RestRequest $request = null)
     {

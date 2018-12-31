@@ -106,16 +106,13 @@ class OAuthServer
         $scopeList = explode(' ', $scope);
         $permissionScopes = [];
         $userScopes = $user->getScopes();
+        if(is_null($userScopes))
+        	$userScopes = [];
+        
         while (count($scopeList) > 0) {
             $scopeItm = array_shift($scopeList);
             if (!in_array($scopeItm, $this->defaultScopes)) {
                 $permissionScopes[] = $scopeItm;
-            }
-        }
-
-        foreach ($permissionScopes as $permScope) {
-            if (!in_array($permScope, $userScopes)) {
-                throw new OAuthServerException(403, 'insufficient permissions', 'You are not allowed to access this ressource');
             }
         }
 
@@ -135,6 +132,12 @@ class OAuthServer
         // check if the client is assigned to a specific user and if so, does the user match?
         if ((!is_null($client->getUserId()) && ($user->getUserId() != $client->getUserId()))) {
             throw new OAuthServerException(403, 'access_denied', 'You are not allowed to use this client.');
+        }
+        // check the users scopes
+        foreach ($permissionScopes as $permScope) {
+        	if (!in_array($permScope, $userScopes)) {
+        		throw new OAuthServerException(403, 'access_denied', 'Insufficient permissions: you are not allowed to access this ressource');
+        	}
         }
         // generate token code
         $tokenCode = $this->createTokenCode();
@@ -188,7 +191,7 @@ class OAuthServer
                         time() + $lifetime, time(), $this->jwtSignAlgorithm);
                 if ($nonce !== '') {
                     $idToken->setCustomClaim('nonce', $nonce);
-                    $idToken->setCustomClaim('scp', implode(' ',$permissionScopes));                    
+                    $idToken->setCustomClaim('scp', implode(' ', $permissionScopes));
                 }
                 $params['id_token'] = $idToken->getTokenString($this->jwtSignKey);
             }

@@ -23,7 +23,7 @@ class EntityManager
      * @var DbMaster
      */
     private $dbCon;
-    
+
     /**
      * Construktor.
      *
@@ -32,10 +32,10 @@ class EntityManager
     public function __construct(DbMaster $dbCon)
     {
         $this->dbCon = $dbCon;
-    }    
+    }
 
     /**
-     * Deletes an given Entity from database
+     * Deletes an given Entity from database.
      *
      * @param Entity $entity Entity to delete
      */
@@ -43,33 +43,32 @@ class EntityManager
     {
         $dsId = $entity->getDatasetId();
         $entityDesc = $entity->getDescriptor();
-    
+
         $sql = 'DELETE FROM '.$this->dbCon->quoteTableName($entityDesc->getTableName());
         $sql .= ' where '.$this->dbCon->quoteColumnName('id').'= ?;';
-    
+
         $stmt = $this->dbCon->prepare($sql);
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
             $stmt->bindValue(1, $dsId, \PDO::PARAM_STR);
         } else {
             $stmt->bindValue(1, $dsId, \PDO::PARAM_INT);
         }
-    
+
         $stmt->execute();
     }
 
     /**
-     * Returns the rowCount for a given EntityDescriptor and an optional Filter
+     * Returns the rowCount for a given EntityDescriptor and an optional Filter.
      *
      * @param EntityDescriptor $entityDesc EntityDescriptor object for the request
-     * @param Filter|null $filter The Filter to use for the request (if any)
-     *  
+     * @param Filter|null      $filter     The Filter to use for the request (if any)
      */
     public function getCount(EntityDescriptor $entityDesc, Filter $filter = null)
     {
         $sql = 'select count(*) from '.$entityDesc->getTableName().' as bt ';
-    
+
         $fields = $entityDesc->getFields();
-    
+
         foreach ($fields as $field) {
             if ($field->hasReference()) {
                 $entityDesc = $this->getEntityDescriptor($field->getRefEntityName());
@@ -83,11 +82,11 @@ class EntityManager
                 $tblName = $entityDesc->getTableName();
                 $reference['entityDesc'] = $entityDesc;
                 $reference['refField'] = $refField;
-    
+
                 $sql .= 'left join '.$tblName.' on bt.'.$field->getFieldId().' = '.$tblName.'.'.$refField.' ';
             }
         }
-    
+
         $where = '';
         $whereCnt = 0;
         if ($entityDesc->getRecoveryMode()) {
@@ -101,7 +100,7 @@ class EntityManager
                 }
             }
         }
-    
+
         if (isset($filter)) {
             $filterSql = $filter->getSql('bt');
             if (trim($filterSql) != '') {
@@ -112,34 +111,33 @@ class EntityManager
                 ++$whereCnt;
             }
         }
-    
+
         if ($whereCnt > 0) {
             $sql .= 'where '.$where;
         }
-    
+
         try {
             $stmt = $this->dbCon->getConnection()->query($sql);
             $rowCount = (int) $stmt->fetchColumn(0);
-    
+
             return $rowCount;
         } catch (PDOException $e) {
             throw new EDbError($e->getMessage());
         }
     }
 
-
     /**
-     * Returns the database connection
+     * Returns the database connection.
      *
-     * @return DbMaster The database connection 
+     * @return DbMaster The database connection
      */
     public function getDatabaseConnection()
     {
         return $this->dbCon;
     }
-    
+
     /**
-     * Create (if not already done) and returns an EntityDescriptor object based on the class name
+     * Create (if not already done) and returns an EntityDescriptor object based on the class name.
      *
      * @param string $className The Name of the EntityDescriptor class
      *
@@ -158,12 +156,12 @@ class EntityManager
             return $entityDesc;
         }
     }
-    
+
     /**
-     * Returns a SQL insert statement and the bind-values for for a given Entity
+     * Returns a SQL insert statement and the bind-values for for a given Entity.
      *
-     * @param Entity $entity The Entity to generate an insert statement for
-     * @param array $replacements An array to save the bind-values for the statement to
+     * @param Entity $entity       The Entity to generate an insert statement for
+     * @param array  $replacements An array to save the bind-values for the statement to
      *
      * @return string The generated SQL statement
      */
@@ -172,16 +170,16 @@ class EntityManager
         $entityDesc = $entity->getDescriptor();
         $fields = $entityDesc->getFields();
         $dsId = $entity->getDatasetId();
-    
+
         $replacements = array();
         $columns = array();
         $values = array();
-    
+
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
             $columns[] = $this->dbCon->quoteColumnName('id');
             $values[] = $this->dbCon->quoteValue($dsId, DbDataType::UUID);
         }
-    
+
         if ($entityDesc->getCreationDateLogging()) {
             $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_CREATION_STAMP);
             if (is_null($entity->getCreationDate())) {
@@ -190,7 +188,7 @@ class EntityManager
                 $values[] = $this->dbCon->quoteValue($entity->getCreationDate(), DbDataType::Varchar);
             }
         }
-    
+
         if ($entityDesc->getModificationDateLogging()) {
             $columns[] = $this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_MODIFICATION_STAMP);
             if (is_null($entity->getModificationDate())) {
@@ -199,7 +197,7 @@ class EntityManager
                 $values[] = $this->dbCon->quoteValue($entity->getModificationDate(), DbDataType::Varchar);
             }
         }
-    
+
         foreach ($fields as $field) {
             if ($field->getIsAbstract() == true) {
                 continue;
@@ -213,19 +211,19 @@ class EntityManager
             $replacements[] = $replacement;
             $values[] = '?';
         }
-    
+
         $sql = 'INSERT INTO '.$this->dbCon->quoteTableName($entityDesc->getTableName()).' ';
         $sql .= '('.implode(', ', $columns).') ';
         $sql .= 'VALUES ('.implode(', ', $values).')';
-    
+
         return $sql;
     }
-    
+
     /**
-     * Returns a SQL update statement and the bind-values for for a given Entity
+     * Returns a SQL update statement and the bind-values for for a given Entity.
      *
-     * @param Entity $entity The Entity to generate an update statement for
-     * @param array $replacements An array to save the bind-values for the statement to 
+     * @param Entity $entity       The Entity to generate an update statement for
+     * @param array  $replacements An array to save the bind-values for the statement to
      *
      * @return string The generated SQL statement
      */
@@ -234,14 +232,14 @@ class EntityManager
         $entityDesc = $entity->getDescriptor();
         $fields = $entityDesc->getFields();
         $dsId = $entity->getDatasetId();
-    
+
         $items = [];
         $replacements = [];
-    
+
         if ($entityDesc->getModificationDateLogging()) {
             $items[$this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_MODIFICATION_STAMP)] = 'now()';
         }
-    
+
         foreach ($fields as $field) {
             if ($field->getIsAbstract() == true) {
                 continue;
@@ -254,7 +252,7 @@ class EntityManager
             $replacement['type'] = $this->dbCon->getPDOType($fieldValue, $fieldDbType);
             $replacements[] = $replacement;
         }
-    
+
         $list = [];
         foreach ($items as $key => $value) {
             $list[] = $key.'='.$value;
@@ -262,7 +260,7 @@ class EntityManager
         $sql = 'UPDATE '.$this->dbCon->quoteTableName($entityDesc->getTableName()).' SET ';
         $sql .= implode(', ', $list);
         $sql .= ' where '.$this->dbCon->quoteColumnName('id').'= ?;';
-    
+
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
             $replacement['value'] = $dsId;
             $replacement['type'] = \PDO::PARAM_STR;
@@ -271,12 +269,12 @@ class EntityManager
             $replacement['type'] = \PDO::PARAM_INT;
         }
         $replacements[] = $replacement;
-    
+
         return $sql;
     }
 
     /**
-     * Saves a new Entity to the database 
+     * Saves a new Entity to the database.
      *
      * @param Entity $entity The Entity to save
      *
@@ -287,14 +285,14 @@ class EntityManager
         $replacements = [];
         $entityDesc = $entity->getDescriptor();
         $sql = $this->getInsertSql($entity, $replacements);
-    
+
         $stmt = $this->dbCon->prepare($sql);
-    
+
         $paramIndex = 1;
         foreach ($replacements as $rep) {
             $stmt->bindValue($paramIndex++, $rep['value'], $rep['type']);
         }
-    
+
         $stmt->execute();
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_SERIAL) {
             $dsId = $this->dbCon->getLastInsertId($entityDesc->getTableName(), 'id');
@@ -302,15 +300,15 @@ class EntityManager
         } else {
             $dsId = $entity->getDatasetId();
         }
-    
+
         return $dsId;
-    }    
-    
+    }
+
     /**
-     * Load a specific Entitiy by a filter (returns the first one, if multiple matches)
+     * Load a specific Entitiy by a filter (returns the first one, if multiple matches).
      *
-     * @param EntityDescriptor  $entityDesc The descriptor for the Entity to load
-     * @param Filter|null  $filter A filter to use for the request
+     * @param EntityDescriptor $entityDesc The descriptor for the Entity to load
+     * @param Filter|null      $filter     A filter to use for the request
      *
      * @return Entity|false The first matching Entity or false if not found
      */
@@ -324,14 +322,14 @@ class EntityManager
             return reset($result);
         }
     }
-    
+
     /**
-     * Load a specific Entitiy by its id
+     * Load a specific Entitiy by its id.
      *
-     * @param EntityDescriptor  $entityDesc The descriptor for the Entity to load
-     * @param string $id The id of the Entity to load
+     * @param EntityDescriptor $entityDesc The descriptor for the Entity to load
+     * @param string           $id         The id of the Entity to load
      *
-     * @return Entity|false The matching Entity or false if not found 
+     * @return Entity|false The matching Entity or false if not found
      */
     public function loadById(EntityDescriptor $entityDesc, $id)
     {
@@ -341,19 +339,19 @@ class EntityManager
             $value = $id;
         }
         $filter = new Filter($entityDesc, '"id"='.$value, $this->dbCon);
-    
+
         return $this->load($entityDesc, $filter);
     }
 
     /**
-     * Load a list of Entities for a given EntityDescriptor
+     * Load a list of Entities for a given EntityDescriptor.
      *
-     * @param EntityDescriptor  $entityDesc The descriptor for the Entities to load
-     * @param Filter|null  $filter A filter to use for the request
-     * @param int $limit The amount of Entities to load 
-     * @param int $offset The offset to start loading Entities from
-     * @param string|null $orderBy The id of the Field to order by
-     * @param boolean $orderAsc Order ascending if true, descending if false 
+     * @param EntityDescriptor $entityDesc The descriptor for the Entities to load
+     * @param Filter|null      $filter     A filter to use for the request
+     * @param int              $limit      The amount of Entities to load
+     * @param int              $offset     The offset to start loading Entities from
+     * @param string|null      $orderBy    The id of the Field to order by
+     * @param bool             $orderAsc   Order ascending if true, descending if false
      *
      * @return Repository A Repository containing the loaded Entities
      */
@@ -362,20 +360,20 @@ class EntityManager
         $fields = $entityDesc->getFields();
         $result = new Repository();
         $tblCnt = 1;
-    
+
         $sql = 'select bt.id ';
-    
-        if ($entityDesc-> getCreationDateLogging()) {
+
+        if ($entityDesc->getCreationDateLogging()) {
             $sql .= ',bt.creation_date ';
         }
-    
+
         if ($entityDesc->getModificationDateLogging()) {
             $sql .= ',bt.modification_date ';
         }
-    
+
         $fieldSql = '';
         $joinSql = '';
-    
+
         foreach ($fields as $field) {
             if ($field->getIsAbstract()) {
                 continue;
@@ -383,22 +381,22 @@ class EntityManager
             $fieldSql .= ',';
             $fieldSql .= 'bt.'.$this->dbCon->quoteColumnName($field->getFieldId());
         }
-    
+
         foreach ($fields as $field) {
             if ($field->hasReference()) {
                 $refEntityDesc = $this->getEntityDescriptor($field->getRefEntityName());
                 if (is_null($refEntityDesc)) {
                     continue;
                 }
-    
+
                 $refField = $field->getRefField();
                 if ($refEntityDesc->hasField($refField) == false) {
                     continue;
                 }
-    
+
                 $alias = 'jt'.$tblCnt;
                 ++$tblCnt;
-    
+
                 $refFields = $refEntityDesc->getFields();
                 foreach ($refFields as $tmpField) {
                     if ($tmpField->getIsAbstract()) {
@@ -407,19 +405,19 @@ class EntityManager
                     $fieldSql .= ',';
                     $fieldSql .= $alias.'.'.$this->dbCon->quoteColumnName($tmpField->getFieldId());
                 }
-    
+
                 $tblName = $refEntityDesc->getTableName();
                 $reference['entityDesc'] = $refEntityDesc;
                 $reference['refField'] = $refField;
-    
+
                 $joinSql .= 'left join '.$tblName.' as '.$alias.' on bt.'.$field->getFieldId().' = '.$alias.'.'.$refField.' ';
             }
         }
-    
+
         $sql .= $fieldSql.' ';
         $sql .= 'from '.$entityDesc->getTableName().' as bt ';
         $sql .= $joinSql.' ';
-    
+
         $where = '';
         $whereCnt = 0;
         if ($entityDesc->getRecoveryMode()) {
@@ -433,7 +431,7 @@ class EntityManager
                 }
             }
         }
-    
+
         if (isset($filter)) {
             $filterSql = $filter->getSql('bt');
             if (trim($filterSql) != '') {
@@ -444,11 +442,11 @@ class EntityManager
                 ++$whereCnt;
             }
         }
-    
+
         if ($whereCnt > 0) {
             $sql .= 'where '.$where;
         }
-       
+
         if (isset($orderBy) && (($entityDesc->hasField($orderBy))) || ($orderBy == 'id')) {
             $sql .= ' order by bt.'.$this->dbCon->quoteColumnName($orderBy);
             if ($orderAsc) {
@@ -461,14 +459,14 @@ class EntityManager
                 $sql .= ' order by bt.creation_date DESC ';
             }
         }
-    
+
         if ((is_int($limit)) && ($limit > 0)) {
             $sql .= ' limit '.$limit;
         }
         if ((is_int($offset)) && ($offset > 0)) {
             $sql .= ' offset '.$offset;
         }
-    
+
         try {
             $stmt = $this->dbCon->getConnection()->query($sql);
         } catch (PDOException $e) {
@@ -479,17 +477,17 @@ class EntityManager
             if (isset($row['id'])) {
                 $entity->setDatasetId($row['id']);
             }
-    
+
             if ($entityDesc->getCreationDateLogging()) {
                 $entity->setCreationDate($row['creation_date']);
             }
-    
+
             if ($entityDesc->getModificationDateLogging()) {
                 $entity->setModificationDate($row['modification_date']);
             }
-    
+
             $fields = $entityDesc->getFields();
-    
+
             foreach ($fields as $field) {
                 $fieldCol = $field->getColumnName();
 
@@ -499,12 +497,12 @@ class EntityManager
             }
             $result->set($entity->getDatasetId(), $entity);
         }
-    
+
         return $result;
     }
 
     /**
-     * Updating a given entity in the database
+     * Updating a given entity in the database.
      *
      * @param Entity $entity The Entity to update
      */
@@ -513,39 +511,39 @@ class EntityManager
         $replacements = array();
         $entityDesc = $entity->getDescriptor();
         $sql = $this->getUpdateSql($entity, $replacements);
-    
+
         $stmt = $this->dbCon->prepare($sql);
-    
+
         $paramIndex = 1;
         foreach ($replacements as $rep) {
             $stmt->bindValue($paramIndex++, $rep['value'], $rep['type']);
         }
-    
+
         $stmt->execute();
     }
 
     /**
-     * Sets the modification timestamp for a given Entity to now
+     * Sets the modification timestamp for a given Entity to now.
      *
      * @param Entity $entity The Entity to update the modification date
      */
     public function updateModificationDate(Entity $entity)
     {
         $entityDesc = $entity->getDescriptor();
-    
+
         $dsId = $entity->getDatasetId();
-    
+
         $sql = 'UPDATE '.$this->dbCon->quoteTableName($entityDesc->getTableName()).' SET ';
         $sql .= $this->dbCon->quoteColumnName(EntityDescriptor::COL_NAME_MODIFICATION_STAMP).'= now()';
         $sql .= ' where '.$this->dbCon->quoteColumnName('id').'= ?;';
-    
+
         $stmt = $this->dbCon->prepare($sql);
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
             $stmt->bindValue(1, $dsId, \PDO::PARAM_STR);
         } else {
             $stmt->bindValue(1, $dsId, \PDO::PARAM_INT);
         }
-    
+
         $stmt->execute();
     }
 }

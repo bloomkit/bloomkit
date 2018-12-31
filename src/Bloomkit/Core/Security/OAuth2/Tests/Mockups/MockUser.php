@@ -20,9 +20,10 @@ class MockUser implements UserInterface
     public function getPassword()
     {
     }
-    
-    public function getScopes()
-    {    	
+
+    public function getScopes()    
+    {
+    	return ['myscope'];
     }
 
     public function getUsername()

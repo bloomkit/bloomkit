@@ -30,8 +30,8 @@ class TracerEvent
     /**
      * Constructor.
      *
-     * @param float $originTime  The unix-time in miliseconds, this event is created
-     * @param string $category  Optional category of the event to trace (e.g. "database")
+     * @param float  $originTime The unix-time in miliseconds, this event is created
+     * @param string $category   Optional category of the event to trace (e.g. "database")
      */
     public function __construct($originTime, $category = 'default')
     {
@@ -60,7 +60,7 @@ class TracerEvent
         $stoppedPeriods = count($periods);
         $leftPeriods = count($this->started) - $stoppedPeriods;
 
-        for ($i = 0; $i < $leftPeriods; ++$i ) {
+        for ($i = 0; $i < $leftPeriods; ++$i) {
             $index = $stoppedPeriods + $i;
             $periods[] = new TracerEventPeriod($this->started[$index], $this->getRuntime());
         }
@@ -155,7 +155,7 @@ class TracerEvent
     /**
      * Check if event is started.
      *
-     * @return bool Returns true if started, false if not.
+     * @return bool returns true if started, false if not
      */
     public function isStarted()
     {
@@ -189,7 +189,7 @@ class TracerEvent
         if (count($this->started) == 0) {
             throw new \LogicException('there are no started events');
         }
-        $this->periods[] = new TracerEventPeriod((int)array_pop($this->started), (int)$this->getRuntime());
+        $this->periods[] = new TracerEventPeriod((int) array_pop($this->started), (int) $this->getRuntime());
     }
 
     /**

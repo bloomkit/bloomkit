@@ -15,7 +15,7 @@ class ConsoleCommand
      * @var ConsoleApplication
      */
     protected $application;
-    
+
     /**
      * Arguments accepted by the command.
      *
@@ -38,19 +38,19 @@ class ConsoleCommand
     protected $help;
 
     /**
-     * The console input (command line parameters)
+     * The console input (command line parameters).
      *
      * @var ConsoleInput
      */
     protected $input;
-    
+
     /**
-     * Possibility to disable commands
+     * Possibility to disable commands.
      *
-     * @var boolean
+     * @var bool
      */
     protected $disabled = false;
-    
+
     /**
      * Command name.
      *
@@ -66,12 +66,12 @@ class ConsoleCommand
     protected $options = [];
 
     /**
-     * Object for console output
+     * Object for console output.
      *
      * @var ConsoleOutput
      */
     protected $output;
-    
+
     /**
      * Constructor.
      *
@@ -271,15 +271,15 @@ class ConsoleCommand
     }
 
     /**
-     * Returns the disabled-state of the command
-     * 
-     * @return boolean The disable state of the command
+     * Returns the disabled-state of the command.
+     *
+     * @return bool The disable state of the command
      */
     public function isDisabled()
     {
         return $this->disabled;
     }
-    
+
     /**
      * Print help-text to output.
      */
@@ -385,6 +385,7 @@ class ConsoleCommand
         $this->output = $output;
         if ($this->application->getHelpStatus()) {
             $this->printHelp();
+
             return 0;
         }
         $input->validate();

@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Security\Token;
 
 /**
- * Representation of an ApiKey Token
+ * Representation of an ApiKey Token.
  */
 class ApiKeyToken extends Token
 {
@@ -15,8 +15,8 @@ class ApiKeyToken extends Token
     /**
      * Constructor.
      *
-     * @param string $apiKey    The apiKey to set
-     * @param array  $roles     The roles to set
+     * @param string $apiKey The apiKey to set
+     * @param array  $roles  The roles to set
      */
     public function __construct($apiKey, array $roles = [])
     {
@@ -27,7 +27,7 @@ class ApiKeyToken extends Token
     }
 
     /**
-     * Returns the apiKey
+     * Returns the apiKey.
      *
      * @return string The apiKey
      */

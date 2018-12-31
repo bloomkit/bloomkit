@@ -72,12 +72,12 @@ class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
         $input = new ConsoleInput($consoleApp);
         $output = new ConsoleOutput($consoleApp, false);
         $consoleApp->run($input, $output);
-       // $this->assertStringEqualsFile($fixturesPath.'run_output2.txt', $output->getOutputBuffer());
+        // $this->assertStringEqualsFile($fixturesPath.'run_output2.txt', $output->getOutputBuffer());
 
         $_SERVER['argv'] = ['app.php', 'list', '--help'];
         $input = new ConsoleInput($consoleApp);
         $output->clear();
-        $consoleApp->run($input, $output);        
+        $consoleApp->run($input, $output);
         //$this->assertStringEqualsFile($fixturesPath.'run_output2.txt', $output->getOutputBuffer());
 
         $_SERVER['argv'] = ['app.php', 'list'];

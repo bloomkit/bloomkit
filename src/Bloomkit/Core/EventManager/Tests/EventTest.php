@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\EventManager\Tests;
 
 use Bloomkit\Core\EventManager\Event;
@@ -11,7 +12,7 @@ class EventTest extends TestCase
         $event = new Event();
         $this->assertFalse($event->getStopProcessing());
     }
-    
+
     public function testStopProcessing()
     {
         $event = new Event();

@@ -1,4 +1,5 @@
 <?php
+
 namespace Bloomkit\Core\Security\User;
 
 use Bloomkit\Core\EventManager\Event;
@@ -14,7 +15,7 @@ class UserEvent extends Event
     private $user;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param User $user The User object this event is about
      */
@@ -22,15 +23,14 @@ class UserEvent extends Event
     {
         $this->user = $user;
     }
-    
+
     /**
-     * Return the User object
-     * 
+     * Return the User object.
+     *
      * @return User The User object of this event
      */
     public function getUser()
     {
         return $this->user;
     }
-
 }
