@@ -42,7 +42,7 @@ abstract class Module implements ModuleInterface
         $this->options['registerRoutes'] = true;
         $this->options['registerEntites'] = true;
         $this->options['registerConsole'] = true;
-        array_merge($this->options, $options);
+        $this->options = array_merge($this->options, $options);
         $this->name = $moduleName;
     }
 
