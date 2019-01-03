@@ -106,9 +106,10 @@ class OAuthServer
         $scopeList = explode(' ', $scope);
         $permissionScopes = [];
         $userScopes = $user->getScopes();
-        if(is_null($userScopes))
-        	$userScopes = [];
-        
+        if (is_null($userScopes)) {
+            $userScopes = [];
+        }
+
         while (count($scopeList) > 0) {
             $scopeItm = array_shift($scopeList);
             if (!in_array($scopeItm, $this->defaultScopes)) {
@@ -135,9 +136,9 @@ class OAuthServer
         }
         // check the users scopes
         foreach ($permissionScopes as $permScope) {
-        	if (!in_array($permScope, $userScopes)) {
-        		throw new OAuthServerException(403, 'access_denied', 'Insufficient permissions: you are not allowed to access this ressource');
-        	}
+            if (!in_array($permScope, $userScopes)) {
+                throw new OAuthServerException(403, 'access_denied', 'Insufficient permissions: you are not allowed to access this ressource');
+            }
         }
         // generate token code
         $tokenCode = $this->createTokenCode();

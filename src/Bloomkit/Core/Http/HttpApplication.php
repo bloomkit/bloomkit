@@ -87,6 +87,12 @@ class HttpApplication extends Application
                 if (isset($parameters['_auth'])) {
                     $auth = $parameters['_auth'];
 
+                    if (isset($auth['options'])) {
+                        $options = $auth['options'];
+                    } else {
+                        $options = [];
+                    }
+
                     if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
                         $this->firewall->setAuthEntryPoint(new $auth['authEntryPoint']());
                     }
@@ -125,7 +131,7 @@ class HttpApplication extends Application
                     if ($authenticator->supportsToken($token) == false) {
                         throw new \Exception('Token is not supported');
                     }
-                    $token = $authenticator->authenticateToken($token, $userProvider);
+                    $token = $authenticator->authenticateToken($token, $userProvider, $options);
                     $this->getSecurityContext()->setToken($token);
                 }
 

@@ -113,6 +113,12 @@ class RestApplication extends Application
             if (isset($parameters['_auth'])) {
                 $auth = $parameters['_auth'];
 
+                if (isset($auth['options'])) {
+                    $options = $auth['options'];
+                } else {
+                    $options = [];
+                }
+
                 if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
                     $this->get('firewall')->setAuthEntryPoint(new $auth['authEntryPoint']());
                 }
@@ -143,7 +149,7 @@ class RestApplication extends Application
                     throw new \Exception('Token is not supported');
                 }
 
-                $token = $authenticator->authenticateToken($token, $userProvider);
+                $token = $authenticator->authenticateToken($token, $userProvider, $options);
                 $this->getSecurityContext()->setToken($token);
             }
 

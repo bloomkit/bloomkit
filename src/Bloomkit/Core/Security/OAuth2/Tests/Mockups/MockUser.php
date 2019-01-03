@@ -21,9 +21,9 @@ class MockUser implements UserInterface
     {
     }
 
-    public function getScopes()    
+    public function getScopes()
     {
-    	return ['myscope'];
+        return ['myscope'];
     }
 
     public function getUsername()

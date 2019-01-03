@@ -18,7 +18,7 @@ class LoginFormAuthenticator implements AuthenticatorInterface
     /**
      * {@inheritdoc}
      */
-    public function authenticateToken(Token $token, UserProviderInterface $userProvider)
+    public function authenticateToken(Token $token, UserProviderInterface $userProvider, $options = [])
     {
         if (is_null($token)) {
             throw new AuthFailedException('No token provided');

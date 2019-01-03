@@ -16,12 +16,13 @@ interface AuthenticatorInterface
      *
      * @param Token                 $token        The token to authenticate
      * @param UserProviderInterface $userProvider UserProvider to check for a matching user
+     * @param array                 $options      Array of custom options
      *
      * @return Token Returns the token
      *
      * @throws Exception Throws an exeception if something went wrong
      */
-    public function authenticateToken(Token $token, UserProviderInterface $userProvider);
+    public function authenticateToken(Token $token, UserProviderInterface $userProvider, $options = []);
 
     /**
      * Creates a token for a HttpRequest and returns it.
