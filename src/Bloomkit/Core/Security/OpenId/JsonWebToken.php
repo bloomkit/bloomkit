@@ -132,7 +132,7 @@ class JsonWebToken
      *
      * @var array
      */
-    private static $supportedAlgorithms = [
+    public static $supportedAlgorithms = [
             'HS256' => ['hash_hmac', 'SHA256'],
             'HS512' => ['hash_hmac', 'SHA512'],
             'HS384' => ['hash_hmac', 'SHA384'],
@@ -458,9 +458,10 @@ class JsonWebToken
     /**
      * Verify a token with a specific key and algorithm.
      *
-     * @param string $key The key to use
+     * @param string $key       The key to use
+     * @param string $algorithm The algorithm to use
      */
-    public function verify($key)
+    public function verify($key, $algorithm)
     {
         $timestamp = $this->timestamp;
         if (is_null($timestamp)) {
@@ -471,15 +472,23 @@ class JsonWebToken
             throw new \InvalidArgumentException('Key may not be empty');
         }
 
+        if (empty($algorithm)) {
+            throw new \InvalidArgumentException('Algorithm may not be empty');
+        }
+
+        if (empty(static::$supportedAlgorithms[$algorithm])) {
+            throw new \UnexpectedValueException('Algorithm not supported');
+        }
+
         if (isset($this->payload->iat) && $this->payload->iat > ($timestamp)) {
             throw new \Exception('Cannot handle token prior to '.date(DateTime::ISO8601, $payload->iat));
         }
         if (isset($this->payload->exp) && ($timestamp) >= $this->payload->exp) {
             throw new \Exception('Expired token');
         }
-        $msg = $this->headerRaw.$this->payloadRaw;
+        $msg = $this->headerRaw.'.'.$this->payloadRaw;
         $signature = $this->signature;
-        $alg = $this->algorithm;
+        $alg = $algorithm;
 
         $type = static::$supportedAlgorithms[$alg][0];
         $algorithm = static::$supportedAlgorithms[$alg][1];
