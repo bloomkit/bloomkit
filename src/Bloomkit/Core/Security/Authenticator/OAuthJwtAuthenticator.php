@@ -26,11 +26,18 @@ class OAuthJwtAuthenticator implements AuthenticatorInterface
         if (is_null($token)) {
             throw new AuthFailedException('No token provided');
         }
+
         $tokenCode = $token->getBearerToken();
         try {
             $jwt = JsonWebToken::decode($tokenCode);
-        } catch (Exception $e) {
-            throw new AuthFailedException('Not a valid JWT: '.$e->getMessage());
+        } catch (\Exception $e) {
+            if ((isset($options['oauth_fallback'])) && ($options['oauthFallback'] === true)) {
+                $oAuthAuthenticator = new OAuthTokenAuthenticator();
+
+                return $oAuthAuthenticator->authenticateToken($token, $userProvider, $options);
+            } else {
+                throw new AuthFailedException('Not a valid JWT: '.$e->getMessage());
+            }
         }
 
         if (isset($options['jwtAlgorithm'])) {

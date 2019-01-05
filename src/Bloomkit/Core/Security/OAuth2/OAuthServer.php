@@ -136,7 +136,7 @@ class OAuthServer
         }
         // check the users scopes
         foreach ($permissionScopes as $permScope) {
-            if (!in_array($permScope, $userScopes)) {
+            if ((!empty($permScope)) && (!in_array($permScope, $userScopes))) {
                 throw new OAuthServerException(403, 'access_denied', 'Insufficient permissions: you are not allowed to access this ressource');
             }
         }

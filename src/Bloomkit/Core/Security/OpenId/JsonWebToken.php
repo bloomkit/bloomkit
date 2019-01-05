@@ -173,7 +173,7 @@ class JsonWebToken
     {
         $parts = explode('.', $jwt);
         if (count($parts) != 3) {
-            throw new \UnexpectedValueException('Wrong number of segments');
+            throw new \Exception('Wrong number of segments');
         }
 
         $headRaw = $parts[0];

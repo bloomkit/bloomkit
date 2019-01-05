@@ -57,7 +57,7 @@ class Event
     /**
      * Return the status of the stopProcessing flag.
      *
-     * @return boolean
+     * @return bool
      */
     public function getStopProcessing()
     {
