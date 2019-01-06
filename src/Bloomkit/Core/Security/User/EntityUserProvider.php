@@ -3,22 +3,23 @@
 namespace Bloomkit\Core\Security\User;
 
 use Bloomkit\Core\Entities\EntityManager;
+use Bloomkit\Core\Application\Application;
 
 /**
  * Abstract class for providing users by the EntityManager.
  */
 abstract class EntityUserProvider implements UserProviderInterface
 {
-    protected $entityManager;
+    protected $application;
 
     /**
      * Constuctor.
      *
-     * @param EntityManager $entityManager The name of the user
+     * @param Application $application The application object
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(Application $application)
     {
-        $this->entityManager = $entityManager;
+        $this->application = $application;
     }
 
     /**
@@ -28,7 +29,7 @@ abstract class EntityUserProvider implements UserProviderInterface
      */
     public function getEntityManager()
     {
-        return $this->entityManager;
+        return $this->application->getEntityManager();
     }
 
     /**

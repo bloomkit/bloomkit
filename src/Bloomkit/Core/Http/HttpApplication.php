@@ -115,7 +115,7 @@ class HttpApplication extends Application
                     }
 
                     if (is_subclass_of($auth['userProvider'], 'Bloomkit\Core\Security\User\EntityUserProvider')) {
-                        $userProvider = new $auth['userProvider']($this->entityManager);
+                        $userProvider = new $auth['userProvider']($this);
                     } else {
                         $userProvider = new $auth['userProvider']();
                     }
