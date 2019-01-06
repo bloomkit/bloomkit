@@ -189,6 +189,22 @@ class Application extends Container implements EventTracerInterface
     }
 
     /**
+     * Returns a module by its name.
+     *
+     * @param string $moduleName
+     *
+     * @return Module|null The module if existing, null otherwise
+     */
+    public function getModule($moduleName)
+    {
+        if (isset($this->modules[$moduleName])) {
+            return $this->modules[$moduleName];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns the security context.
      *
      * @return \Bloomkit\Core\Security\SecurityContext;

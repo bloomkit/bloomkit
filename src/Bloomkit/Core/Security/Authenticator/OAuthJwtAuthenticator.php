@@ -33,6 +33,7 @@ class OAuthJwtAuthenticator implements AuthenticatorInterface
         } catch (\Exception $e) {
             if ((isset($options['oauthFallback'])) && ($options['oauthFallback'] === true)) {
                 $oAuthAuthenticator = new OAuthTokenAuthenticator();
+
                 return $oAuthAuthenticator->authenticateToken($token, $userProvider, $options);
             } else {
                 throw new AuthFailedException('Not a valid JWT: '.$e->getMessage());

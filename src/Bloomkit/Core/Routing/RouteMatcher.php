@@ -37,7 +37,7 @@ class RouteMatcher
             return $match;
         }
 
-        throw new RessourceNotFoundException();
+        throw new RessourceNotFoundException('Ressource not found:'.$path, 404);
     }
 
     /**
