@@ -1,6 +1,6 @@
 <?php
 
-namespace Bloomkit\Core\Database\PbxQL;
+namespace Bloomkit\Core\Database\PbxQl;
 
 /**
  * Class for parsing PbxQl Queries.

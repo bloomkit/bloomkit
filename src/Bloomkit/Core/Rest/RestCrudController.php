@@ -3,7 +3,7 @@
 namespace Bloomkit\Core\Rest;
 
 use Bloomkit\Core\Module\Controller;
-use Bloomkit\Core\Database\PbxQL\Filter;
+use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
 
 class RestCrudController extends Controller
