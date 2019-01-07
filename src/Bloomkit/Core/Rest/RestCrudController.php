@@ -85,7 +85,14 @@ class RestCrudController extends Controller
         if (is_null($filter)) {
             $filterStr = $params->get('filter');
             if (isset($filterStr)) {
-                $filter = new Filter($entityDesc, '* like "%'.$filterStr.'%"', $entityManager->getDatabaseConnection());
+                if (substr($filterStr, 0, 6) == 'PbxQL:') {
+                    $subStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
+                    if ($subStr !== '') {
+                        $filter = new Filter($entityDesc, $subStr, $entityManager->getDatabaseConnection());
+                    }
+                } else {
+                    $filter = new Filter($entityDesc, '* like "%'.$filterStr.'%"', $entityManager->getDatabaseConnection());
+                }
             }
         }
 
