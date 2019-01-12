@@ -5,25 +5,36 @@ namespace Bloomkit\Core\Rest;
 use Bloomkit\Core\Module\Controller;
 use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
+use Bloomkit\Core\Entities\EntityManager;
 
 class RestCrudController extends Controller
 {
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
     /**
      * @var string
      */
     protected $entityDescName;
 
+    public function __construct(EntityManager $entityManager)
+    {
+        parent::__construct();
+        $this->entityManager = $entityManager;
+    }
+
     public function deleteById($dsId)
     {
-        $entityManager = $this->application->getEntityManager();
-        $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = $entityManager->loadById($entityDesc, $dsId);
+        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
+        $entity = $this->entityManager->loadById($entityDesc, $dsId);
 
         if (false == $entity) {
             return RestResponse::createFault(404, 'Not Found', 404);
         }
 
-        $entityManager->delete($entity);
+        $this->entityManager->delete($entity);
         $result['success'] = true;
 
         return new RestResponse(json_encode($result), 200);
@@ -31,11 +42,10 @@ class RestCrudController extends Controller
 
     public function getDatasetByFilter($query)
     {
-        $entityManager = $this->application->getEntityManager();
 
-        $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
-        $filter = new Filter($entityDesc, $query, $entityManager->getDatabaseConnection());
-        $entities = $entityManager->loadList($entityDesc, $filter, 1);
+        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
+        $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
+        $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
         $entities = $entities->getItems();
 
         if (1 != count($entities)) {
@@ -51,9 +61,8 @@ class RestCrudController extends Controller
 
     public function getDatasetById($dsId)
     {
-        $entityManager = $this->application->getEntityManager();
-        $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = $entityManager->loadById($entityDesc, $dsId);
+        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
+        $entity = $this->entityManager->loadById($entityDesc, $dsId);
         if (false == $entity) {
             $response = RestResponse::createFault(404, sprintf('User "%s" not found', $dsId));
 
@@ -74,13 +83,12 @@ class RestCrudController extends Controller
 
         $request = $this->getRequest();
         $params = $request->getGetParams();
-        $limit = (int) $params->get('limit', 20);
-        $offset = (int) $params->get('offset', 0);
-        $orderAsc = (bool) $params->get('orderAsc', true);
+        $limit = (int)$params->get('limit', 20);
+        $offset = (int)$params->get('offset', 0);
+        $orderAsc = (bool)$params->get('orderAsc', true);
         $orderBy = $params->get('orderBy', null);
 
-        $entityManager = $this->application->getEntityManager();
-        $entityDesc = $entityManager->getEntityDescriptor($entityDescName);
+        $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
 
         if (is_null($filter)) {
             $filterStr = $params->get('filter');
@@ -88,16 +96,16 @@ class RestCrudController extends Controller
                 if (substr($filterStr, 0, 6) == 'PbxQL:') {
                     $subStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
                     if ($subStr !== '') {
-                        $filter = new Filter($entityDesc, $subStr, $entityManager->getDatabaseConnection());
+                        $filter = new Filter($entityDesc, $subStr, $this->entityManager->getDatabaseConnection());
                     }
                 } else {
-                    $filter = new Filter($entityDesc, '* like "%'.$filterStr.'%"', $entityManager->getDatabaseConnection());
+                    $filter = new Filter($entityDesc, '* like "%' . $filterStr . '%"', $this->entityManager->getDatabaseConnection());
                 }
             }
         }
 
-        $entitites = $entityManager->loadList($entityDesc, $filter, $limit, $offset, $orderBy, $orderAsc);
-        $count = $entityManager->getCount($entityDesc, $filter);
+        $entitites = $this->entityManager->loadList($entityDesc, $filter, $limit, $offset, $orderBy, $orderAsc);
+        $count = $this->entityManager->getCount($entityDesc, $filter);
         $response = new RestResponse();
         $response->setEntityList($entitites, $count);
         $response->setStatusCode(200);
@@ -114,8 +122,7 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $entityManager = $this->application->getEntityManager();
-        $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
+        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
         $entity = new Entity($entityDesc);
 
         foreach ($requestData as $key => $value) {
@@ -124,7 +131,7 @@ class RestCrudController extends Controller
             }
         }
 
-        $entityManager->insert($entity);
+        $this->entityManager->insert($entity);
 
         $result['success'] = true;
         $result['id'] = $entity->getDatasetId();
@@ -141,10 +148,9 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $entityManager = $this->application->getEntityManager();
-        $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
-        $filter = new Filter($entityDesc, $query, $entityManager->getDatabaseConnection());
-        $entities = $entityManager->loadList($entityDesc, $filter, 1);
+        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
+        $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
+        $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
         $entities = $entities->getItems();
 
         if (1 != count($entities)) {
@@ -159,7 +165,7 @@ class RestCrudController extends Controller
             }
         }
 
-        $entityManager->update($entity);
+        $this->entityManager->update($entity);
         $result['success'] = true;
 
         return new RestResponse(json_encode($result), 200);
@@ -174,9 +180,8 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $entityManager = $this->application->getEntityManager();
-        $entityDesc = $entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = $entityManager->loadById($entityDesc, $dsId);
+        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
+        $entity = $this->entityManager->loadById($entityDesc, $dsId);
 
         if (false == $entity) {
             return RestResponse::createFault(404, 'Not Found', 404);
@@ -187,7 +192,7 @@ class RestCrudController extends Controller
                 $entity->$key = $value;
             }
         }
-        $entityManager->update($entity);
+        $this->entityManager->update($entity);
         $result['success'] = true;
 
         return new RestResponse(json_encode($result), 200);
