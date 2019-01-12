@@ -354,6 +354,7 @@ class Application extends Container implements EventTracerInterface
         $this->setAlias('Bloomkit\Core\Entities\EntityManager', 'entityManager');
         $this->setAlias('Bloomkit\Core\Entities\TemplateManager', 'templateManager');
         $this->setAlias('Bloomkit\Core\Tracer\Tracer', 'tracer');
+        $this->setAlias('Bloomkit\Core\Utilities\Repository', 'config');
     }
 
     /**
