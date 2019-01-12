@@ -13,6 +13,10 @@ class Controller
      * @var HttpRequest
      */
     protected $request;
+	
+    public function __construct()
+    {
+    }	
 
     /**
      * @deprecated use PermissionCheckModule instead
