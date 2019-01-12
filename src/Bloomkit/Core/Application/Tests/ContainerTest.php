@@ -75,9 +75,37 @@ class ContainerTest extends TestCase
     public function testDiWithBinding()
     {
         $container = new Container();
-        $className = 'Bloomkit\Core\Application\Tests\ContainerTestClassThree';
-        $container->bind('Bloomkit\Core\Application\Tests\ContainerTestInterface', 'Bloomkit\Core\Application\Tests\ContainerTestClassFive');
-        $class = $container->make($className);
+        $argumentInterface = 'Bloomkit\Core\Application\Tests\ContainerTestInterface';
+        $argumentClass = 'Bloomkit\Core\Application\Tests\ContainerTestClassFive';
+        $targetClass = 'Bloomkit\Core\Application\Tests\ContainerTestClassThree';
+        $container->bind($argumentInterface, $argumentClass, false);
+
+        $obj1 = $container->make($targetClass);
+        $obj2 = $container->make($targetClass);
+
+        $this->assertInstanceOf($argumentClass, $obj1->impl);
+        $this->assertInstanceOf($argumentClass, $obj2->impl);
+        $this->assertInstanceOf($targetClass, $obj1);
+        $this->assertInstanceOf($targetClass, $obj2);
+        $this->assertNotSame($obj1->impl, $obj2->impl);
+    }
+
+    public function testDiWithBindingAsFactory()
+    {
+        $container = new Container();
+        $argumentInterface = 'Bloomkit\Core\Application\Tests\ContainerTestInterface';
+        $argumentClass = 'Bloomkit\Core\Application\Tests\ContainerTestClassFive';
+        $targetClass = 'Bloomkit\Core\Application\Tests\ContainerTestClassThree';
+        $container->bind($argumentInterface, $argumentClass, true);
+
+        $obj1 = $container->make($targetClass);
+        $obj2 = $container->make($targetClass);
+
+        $this->assertInstanceOf($argumentClass, $obj1->impl);
+        $this->assertInstanceOf($argumentClass, $obj2->impl);
+        $this->assertInstanceOf($targetClass, $obj1);
+        $this->assertInstanceOf($targetClass, $obj2);
+        $this->assertSame($obj1->impl, $obj2->impl);
     }
 
     public function testDiWithRules()

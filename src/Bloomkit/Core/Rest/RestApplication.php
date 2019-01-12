@@ -177,7 +177,7 @@ class RestApplication extends Application
             $attributes = $request->getAttributes()->getItems();
             $arguments = [];
 
-            $controller = new $class($this);
+            $controller = $this->createObject($class);
             $controller->setRequest($request);
 
             foreach ($params as $param) {

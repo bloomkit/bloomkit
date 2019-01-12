@@ -178,7 +178,7 @@ class HttpApplication extends Application
                     }
                 }
 
-                $controller = new $class($this);
+                $controller = $this->createObject($class);
                 $controller->setRequest($request);
 
                 $response = call_user_func_array([$controller, $method], $arguments);

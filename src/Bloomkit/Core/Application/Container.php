@@ -170,7 +170,14 @@ class Container implements \ArrayAccess
 
         $concrete = $this->resolveAbstract($abstract);
 
+        if (isset($this->bindings[$abstract]) && (isset($this->bindings[$abstract]['shared']))) {
+            $shared = $this->bindings[$abstract]['shared'];
+        } else {
+            $shared = false;
+        }
+
         $alias = $this->getAlias($concrete);
+
         if ($alias !== $concrete) {
             if (isset($this->values[$alias])) {
                 return $this->values[$alias];
@@ -183,11 +190,22 @@ class Container implements \ArrayAccess
 
         $this->buildStack[] = $abstract;
 
-        if ($concrete instanceof \Closure) {
-            return $concrete($this);
+        if ($shared === true) {
+            $key = $abstract;
+            if (isset($this->instances[$key])) {
+                return $this->instances[$key];
+            }
         }
 
-        $object = $this->createObject($concrete, $parameters);
+        if ($concrete instanceof \Closure) {
+            $object = $concrete($this);
+        } else {
+            $object = $this->createObject($concrete, $parameters);
+        }
+
+        if ($shared === true) {
+            $this->instances[$key] = $object;
+        }
 
         return $object;
     }
@@ -391,9 +409,6 @@ class Container implements \ArrayAccess
         }
 
         if (isset($this->bindings[$abstract])) {
-            //        if (! $concrete instanceof \Closure)
-            //            $concrete = $this->getClosure($concrete);
-
             return $this->bindings[$abstract]['concrete'];
         }
 
