@@ -12,7 +12,7 @@ class RestCrudController extends Controller
     /**
      * @var EntityManager
      */
-    private $entityManager;
+    protected $entityManager;
 
     /**
      * @var string
