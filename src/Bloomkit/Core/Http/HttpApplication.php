@@ -72,6 +72,10 @@ class HttpApplication extends Application
             $event = new HttpEvent($request);
             $this->getEventManager()->triggerEvent(HttpEvents::REQUEST, $event);
 
+            foreach ($this->modules as $module) {
+                $module->onModulesLoaded();
+            }
+
             if ($event->hasResponse()) {
                 $this->getEventManager()->triggerEvent(HttpEvents::RESPONSE, $event);
                 $this->getEventManager()->triggerEvent(HttpEvents::FINISH_REQUEST, $event);

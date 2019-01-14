@@ -141,6 +141,13 @@ abstract class Module implements ModuleInterface
     /**
      * {@inheritdoc}
      */
+    public function onModulesLoaded()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function registerConsoleCommands()
     {
         if ((isset($this->options['registerConsole'])) && ($this->options['registerConsole'] === false)) {

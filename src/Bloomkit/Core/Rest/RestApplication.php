@@ -95,6 +95,10 @@ class RestApplication extends Application
         $event = new HttpEvent($request);
         $this['eventManager']->triggerEvent(HttpEvents::REQUEST, $event);
 
+        foreach ($this->modules as $module) {
+            $module->onModulesLoaded();
+        }
+
         if ($event->hasResponse()) {
             $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
             $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);

@@ -122,6 +122,10 @@ class ConsoleApplication extends Application
     public function run(ConsoleInput $input = null, ConsoleOutput $output = null)
     {
         try {
+            foreach ($this->modules as $module) {
+                $module->onModulesLoaded();
+            }
+
             // Create output object if not provided
             if (false == isset($output)) {
                 $output = new ConsoleOutput($this);

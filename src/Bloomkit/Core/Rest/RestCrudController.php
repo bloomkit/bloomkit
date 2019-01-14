@@ -42,7 +42,6 @@ class RestCrudController extends Controller
 
     public function getDatasetByFilter($query)
     {
-
         $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
         $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
         $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
@@ -83,9 +82,9 @@ class RestCrudController extends Controller
 
         $request = $this->getRequest();
         $params = $request->getGetParams();
-        $limit = (int)$params->get('limit', 20);
-        $offset = (int)$params->get('offset', 0);
-        $orderAsc = (bool)$params->get('orderAsc', true);
+        $limit = (int) $params->get('limit', 20);
+        $offset = (int) $params->get('offset', 0);
+        $orderAsc = (bool) $params->get('orderAsc', true);
         $orderBy = $params->get('orderBy', null);
 
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
@@ -99,7 +98,7 @@ class RestCrudController extends Controller
                         $filter = new Filter($entityDesc, $subStr, $this->entityManager->getDatabaseConnection());
                     }
                 } else {
-                    $filter = new Filter($entityDesc, '* like "%' . $filterStr . '%"', $this->entityManager->getDatabaseConnection());
+                    $filter = new Filter($entityDesc, '* like "%'.$filterStr.'%"', $this->entityManager->getDatabaseConnection());
                 }
             }
         }

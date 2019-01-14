@@ -53,6 +53,12 @@ interface ModuleInterface
     public function initialize();
 
     /**
+     * Lifecycle event. Triggered when all modules are loaded and application is ready to run.
+     * Application is already set here.
+     */
+    public function onModulesLoaded();
+
+    /**
      * Register all console commands of this module.
      */
     public function registerConsoleCommands();
