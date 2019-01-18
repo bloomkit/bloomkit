@@ -108,6 +108,22 @@ class ContainerTest extends TestCase
         $this->assertSame($obj1->impl, $obj2->impl);
     }
 
+    public function testDiWithBindingAsClosure()
+    {
+        $container = new Container();
+        $argumentInterface = 'Bloomkit\Core\Application\Tests\ContainerTestInterface';
+        $argumentClass = 'Bloomkit\Core\Application\Tests\ContainerTestClassFive';
+
+        $container->bind($argumentInterface, function () {
+            $log = new ContainerTestClassFive();
+
+            return $log;
+        });
+
+        $obj1 = $container->make($argumentInterface);
+        $this->assertInstanceOf($argumentClass, $obj1);
+    }
+
     public function testDiWithRules()
     {
         $container = new Container();
