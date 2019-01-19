@@ -11,6 +11,7 @@ use Bloomkit\Core\Http\HttpExceptionEvent;
 use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
 use Bloomkit\Core\Routing\RouteCollection;
+use Bloomkit\Core\Security\Exceptions\AccessDeniedException;
 
 class RestApplication extends Application
 {
@@ -155,6 +156,24 @@ class RestApplication extends Application
 
                 $token = $authenticator->authenticateToken($token, $userProvider, $options);
                 $this->getSecurityContext()->setToken($token);
+            }
+
+            // Authorization
+            if (isset($parameters['_perm'])) {
+                $action = $parameters['_perm'];
+
+                $user = $token->getUser();
+                if (is_null($user)) {
+                    throw new AccessDeniedException('No user found');
+                }
+                $policy = $user->getPolicy();
+
+                if (is_null($policy)) {
+                    throw new AccessDeniedException('No policy found');
+                }
+                if (true !== $policy->isAllowed($action, '*')) {
+                    throw new AccessDeniedException('Permission denied');
+                }
             }
 
             $request->getAttributes()->addItems($parameters);
