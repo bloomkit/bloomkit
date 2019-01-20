@@ -209,7 +209,10 @@ class ConsoleInput
     public function getOptionValueByName($name)
     {
         $value = null;
-        $option = $this->command->getOptionByName($name);
+        $option = $this->getApplicationOptionByName($name);
+        if (is_null($option)) {
+            $option = $this->command->getOptionByName($name);
+        }
         if (is_null($option)) {
             throw new \InvalidArgumentException(sprintf('Option "--%s" does not exist.', $name));
         }
