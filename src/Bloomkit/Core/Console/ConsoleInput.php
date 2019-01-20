@@ -2,11 +2,21 @@
 
 namespace Bloomkit\Core\Console;
 
+use Bloomkit\Core\Console\Events\ConsoleEvents;
+use Bloomkit\Core\EventManager\RepositoryEvent;
+
 /**
  * Class for handling command line inputs.
  */
 class ConsoleInput
 {
+    /**
+     * Contains all application-options.
+     *
+     * @var ConsoleOption[];
+     */
+    private $applicationOptions = [];
+
     /**
      * Command line arguments.
      *
@@ -57,6 +67,11 @@ class ConsoleInput
         $this->params = $params;
         $this->application = $consoleApp;
 
+        $eventManager = $this->application->getEventManager();
+        $event = new RepositoryEvent();
+        $eventManager->triggerEvent(ConsoleEvents::REGISTEROPTIONS, $event);
+        $this->applicationOptions = array_merge($this->applicationOptions, $event->getRepository()->getItems());
+
         // Parse arguments and options
         $this->parse();
     }
@@ -84,7 +99,15 @@ class ConsoleInput
      */
     private function addLongOption($name, $value = null)
     {
-        $option = $this->command->getOptionByName($name);
+        $option = null;
+        foreach ($this->applicationOptions as $appOption) {
+            if ($appOption->getName() == $name) {
+                $option = $appOption;
+            }
+        }
+        if (is_null($option)) {
+            $option = $this->command->getOptionByName($name);
+        }
         if (is_null($option)) {
             throw new \InvalidParameterException(sprintf('Option "--%s" does not exist.', $name));
         }
@@ -102,7 +125,15 @@ class ConsoleInput
      */
     private function addShortOption($name, $value = null)
     {
-        $option = $this->command->getOptionByShortname($name);
+        $option = null;
+        foreach ($this->applicationOptions as $appOption) {
+            if ($appOption->getShortcut() == $name) {
+                $option = $appOption;
+            }
+        }
+        if (is_null($option)) {
+            $option = $this->command->getOptionByShortname($name);
+        }
         if (is_null($option)) {
             throw new \InvalidArgumentException(sprintf('Option "-%s" does not exist.', $name));
         }
@@ -110,6 +141,38 @@ class ConsoleInput
             throw new \InvalidArgumentException(sprintf('Option "-%s" requires a value.', $name));
         }
         $this->options[$option->getName()] = $value;
+    }
+
+    /**
+     * Returns an applicationOption by its name.
+     *
+     * @param string $name The name to search for
+     *
+     * @return ConsoleOption|null The option or null if not found
+     */
+    public function getApplicationOptionByName($name)
+    {
+        foreach ($this->applicationOptions as $option) {
+            if ($option->getName() == $name) {
+                return $option;
+            }
+        }
+    }
+
+    /**
+     * Returns an applicationOption by its short-name.
+     *
+     * @param string $name The shortname to search for
+     *
+     * @return ConsoleOption|null The option or null if not found
+     */
+    public function getApplicationOptionByShortname($name)
+    {
+        foreach ($this->options as $option) {
+            if ($option->getShortcut() == $name) {
+                return $option;
+            }
+        }
     }
 
     /**
@@ -223,6 +286,7 @@ class ConsoleInput
 
         // Parse params
         $params = $this->params;
+
         foreach ($params as $param) {
             if (0 === strpos($param, '--')) {
                 $this->parseLongOption($param);

@@ -4,6 +4,9 @@ namespace Bloomkit\Core\Console;
 
 use Bloomkit\Core\Application\Application;
 use Bloomkit\Core\Module\ModuleInterface;
+use Bloomkit\Core\EventManager\Event;
+use Bloomkit\Core\Console\Events\ConsoleEvents;
+use Bloomkit\Core\Console\Events\ConsoleRunEvent;
 
 /**
  * Application class for building console applications.
@@ -134,6 +137,17 @@ class ConsoleApplication extends Application
             // Create input object if not provided
             if (false == isset($input)) {
                 $input = new ConsoleInput($this);
+            }
+
+            // Trigger ConsoleRun Event
+            $eventManager = $this->getEventManager();
+            $event = new ConsoleRunEvent($input, $output);
+            $event->setData($input);
+            $eventManager->triggerEvent(ConsoleEvents::CONSOLERUN, $event);
+            if ($event->stopProcessing()) {
+                echo $output->getOutputBuffer();
+
+                return 0;
             }
 
             // Check for version request
