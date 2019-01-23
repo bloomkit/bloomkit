@@ -223,7 +223,9 @@ class RestApplication extends Application
             }
 
             //$tracer->start('App::CallController');
-            $response = call_user_func_array([$controller, $method], $arguments);
+            $response = $this->createResponseFromMethodCall(function () use ($controller, $method, $arguments) {
+                return call_user_func_array([$controller, $method], $arguments);
+            });
             //$tracer->stop('App::CallController');
 
             $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
@@ -238,6 +240,28 @@ class RestApplication extends Application
         } catch (MethodNotAllowedException $e) {
             $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
             throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
+        }
+    }
+
+    private function createResponseFromMethodCall(\Closure $controllerMethod): HttpResponse
+    {
+        try {
+            $result = $controllerMethod();
+            if ($result instanceof HttpResponse) {
+                return $result;
+            }
+
+            if (!isset($result)) {
+                $result = ['success' => true];
+            }
+
+            return new RestResponse(json_encode($result), 200);
+        } catch (\Bloomkit\Core\Rest\Exceptions\RestFault $ex) {
+            return RestResponse::createFault($ex->getStatusCode(), $ex->getMessage(), $ex->getFaultCode());
+        } catch (\Bloomkit\Core\Exceptions\NotFoundException $ex) {
+            return RestResponse::createFault(404, 'Not Found', 404);
+        } catch (\Throwable $th) {
+            return RestResponse::createFault(500, 'An unknown error has occured, please contact the administrator.');
         }
     }
 
