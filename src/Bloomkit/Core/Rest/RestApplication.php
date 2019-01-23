@@ -12,6 +12,7 @@ use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
 use Bloomkit\Core\Routing\RouteCollection;
 use Bloomkit\Core\Security\Exceptions\AccessDeniedException;
+use Bloomkit\Core\Http\HttpResponse;
 
 class RestApplication extends Application
 {
@@ -198,6 +199,11 @@ class RestApplication extends Application
             $params = $r->getParameters();
 
             $attributes = $request->getAttributes()->getItems();
+            $jsonData = $request->getJsonData();
+            if(is_array($jsonData)) {
+                $attributes = array_merge($attributes, $request->getJsonData());
+            }
+
             $arguments = [];
 
             $controller = $this->createObject($class);
