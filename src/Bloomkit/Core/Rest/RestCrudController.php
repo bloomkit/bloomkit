@@ -219,7 +219,7 @@ class RestCrudController extends Controller
         foreach ($dsIds as $id) {
             try {
                 $operationForSingleId($id);
-            } catch (\Throwable $th) {
+            } catch (\Exception $th) {
                 $failedIds[] = $id;
             }
         }
