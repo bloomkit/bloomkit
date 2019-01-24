@@ -267,6 +267,7 @@ class RestApplication extends Application
         } catch (\Bloomkit\Core\Exceptions\NotFoundException $ex) {
             return RestResponse::createFault(404, 'Not Found', 404);
         } catch (\Throwable $th) {
+            $this->getLogger()->error($th->getMessage());
             return RestResponse::createFault(500, 'An unknown error has occured, please contact the administrator.');
         }
     }
