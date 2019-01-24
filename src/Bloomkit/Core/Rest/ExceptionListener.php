@@ -9,6 +9,8 @@ use Bloomkit\Core\Security\Exceptions\AuthFailedException;
 use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Security\Exceptions\BadCredentialsException;
 use Bloomkit\Core\Http\HttpExceptionEvent;
+use Bloomkit\Core\Rest\Exceptions\RestFaultException;
+use Bloomkit\Core\Exceptions\NotFoundException;
 
 /**
  * ExceptionListener for REST applications.
@@ -57,6 +59,11 @@ class ExceptionListener
                 $this->logger->warning('Not found:'.$exception->getMessage());
             }
             $response = RestResponse::createFault(404, $exception->getMessage());
+        } elseif ($exception instanceof NotFoundException) {
+            if (isset($this->logger)) {
+                $this->logger->warning('Not found:'.$exception->getMessage());
+            }
+            $response = RestResponse::createFault(404, $exception->getMessage());
         } elseif ($exception instanceof AuthFailedException) {
             if (isset($this->logger)) {
                 $this->logger->warning('Authentication failed:'.$exception->getMessage());
@@ -67,6 +74,16 @@ class ExceptionListener
                 $this->logger->warning('Access denied:'.$exception->getMessage());
             }
             $response = RestResponse::createFault(403, $exception->getMessage());
+        } elseif ($exception instanceof RestFaultException) {
+            if (isset($this->logger)) {
+                $this->logger->warning('REST fault:'.$exception->getMessage());
+            }
+            $response = RestResponse::createFault($exception->getStatusCode(), $exception->getMessage(), $exception->getFaultCode());
+        } elseif ($exception instanceof \Exception) {
+            if (isset($this->logger)) {
+                $this->logger->error('Unknown error:'.$exception->getMessage());
+            }
+            $response = RestResponse::createFault(500, 'An unknown error has occured, please contact the administrator.');
         }
 
         if (isset($response)) {

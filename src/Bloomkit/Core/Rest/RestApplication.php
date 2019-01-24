@@ -200,7 +200,7 @@ class RestApplication extends Application
 
             $attributes = $request->getAttributes()->getItems();
             $jsonData = $request->getJsonData();
-            if(is_array($jsonData)) {
+            if (is_array($jsonData)) {
                 $attributes = array_merge($attributes, $request->getJsonData());
             }
 
@@ -229,17 +229,16 @@ class RestApplication extends Application
             }
 
             //$tracer->start('App::CallController');
-            $response = $this->createResponseFromMethodCall(function () use ($controller, $method, $arguments) {
-                return call_user_func_array([$controller, $method], $arguments);
-            });
+            $response = call_user_func_array([$controller, $method], $arguments);
+            $httpResponse = $this->convertToHttpResponse($response);
             //$tracer->stop('App::CallController');
 
             $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
-            $event->setResponse($response);
+            $event->setResponse($httpResponse);
             $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
             $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
 
-            return $response;
+            return $httpResponse;
         } catch (RessourceNotFoundException $e) {
             $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
             throw new HttpNotFoundException($message);
@@ -249,27 +248,18 @@ class RestApplication extends Application
         }
     }
 
-    private function createResponseFromMethodCall(\Closure $controllerMethod): HttpResponse
+    private function convertToHttpResponse($response): HttpResponse
     {
-        try {
-            $result = $controllerMethod();
-            if ($result instanceof HttpResponse) {
-                return $result;
-            }
-
-            if (!isset($result)) {
-                $result = ['success' => true];
-            }
-
-            return new RestResponse(json_encode($result), 200);
-        } catch (\Bloomkit\Core\Rest\Exceptions\RestFaultException $ex) {
-            return RestResponse::createFault($ex->getStatusCode(), $ex->getMessage(), $ex->getFaultCode());
-        } catch (\Bloomkit\Core\Exceptions\NotFoundException $ex) {
-            return RestResponse::createFault(404, 'Not Found', 404);
-        } catch (\Throwable $th) {
-            $this->getLogger()->error($th->getMessage());
-            return RestResponse::createFault(500, 'An unknown error has occured, please contact the administrator.');
+        $result = $response;
+        if ($result instanceof HttpResponse) {
+            return $result;
         }
+
+        if (!isset($result)) {
+            $result = ['success' => true];
+        }
+
+        return new RestResponse(json_encode($result), 200);
     }
 
     /**
