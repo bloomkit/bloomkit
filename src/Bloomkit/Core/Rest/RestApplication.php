@@ -262,7 +262,7 @@ class RestApplication extends Application
             }
 
             return new RestResponse(json_encode($result), 200);
-        } catch (\Bloomkit\Core\Rest\Exceptions\RestFault $ex) {
+        } catch (\Bloomkit\Core\Rest\Exceptions\RestFaultException $ex) {
             return RestResponse::createFault($ex->getStatusCode(), $ex->getMessage(), $ex->getFaultCode());
         } catch (\Bloomkit\Core\Exceptions\NotFoundException $ex) {
             return RestResponse::createFault(404, 'Not Found', 404);

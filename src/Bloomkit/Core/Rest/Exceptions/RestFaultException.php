@@ -5,7 +5,7 @@ namespace Bloomkit\Core\Rest\Exceptions;
 /**
  * Exception representing a REST fault.
  */
-class RestFault extends \Exception
+class RestFaultException extends RestException
 {
     /** @var int */
     private $statusCode;

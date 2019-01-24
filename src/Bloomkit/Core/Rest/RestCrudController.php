@@ -6,7 +6,7 @@ use Bloomkit\Core\Module\Controller;
 use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Entities\EntityManager;
-use Bloomkit\Core\Rest\Exceptions\RestFault;
+use Bloomkit\Core\Rest\Exceptions\RestFaultException;
 
 class RestCrudController extends Controller
 {
@@ -225,7 +225,7 @@ class RestCrudController extends Controller
         }
 
         if(count($failedIds) > 0) {
-            throw new RestFault(500, 'Following datasets could not be processed: '.implode(', ', $failedIds));
+            throw new RestFaultException(500, 'Following datasets could not be processed: '.implode(', ', $failedIds));
         }
     }
 }
