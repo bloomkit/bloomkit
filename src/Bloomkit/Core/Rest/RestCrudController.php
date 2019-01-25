@@ -6,6 +6,7 @@ use Bloomkit\Core\Module\Controller;
 use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Entities\EntityManager;
+use Bloomkit\Core\Rest\Exceptions\RestFaultException;
 
 class RestCrudController extends Controller
 {
@@ -38,6 +39,16 @@ class RestCrudController extends Controller
         $result['success'] = true;
 
         return new RestResponse(json_encode($result), 200);
+    }
+
+    /**
+     * @param array $dsIds
+     * @return void
+     */
+    public function bulkDelete($dsIds) {
+        $this->bulkOperation($dsIds, function($dsId) {
+            $this->deleteById($dsId);
+        });
     }
 
     public function getDatasetByFilter($query)
@@ -195,5 +206,26 @@ class RestCrudController extends Controller
         $result['success'] = true;
 
         return new RestResponse(json_encode($result), 200);
+    }
+
+    /**
+     * @param array $dsIds
+     * @param \Closure $operationForSingleId
+     * @return void
+     */
+    protected function bulkOperation($dsIds, $operationForSingleId)
+    {
+        $failedIds = [];
+        foreach ($dsIds as $id) {
+            try {
+                $operationForSingleId($id);
+            } catch (\Exception $th) {
+                $failedIds[] = $id;
+            }
+        }
+
+        if(count($failedIds) > 0) {
+            throw new RestFaultException(500, 'Following datasets could not be processed: '.implode(', ', $failedIds));
+        }
     }
 }

@@ -12,6 +12,7 @@ use Bloomkit\Core\Http\Exceptions\HttpNotFoundException;
 use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
 use Bloomkit\Core\Routing\RouteCollection;
 use Bloomkit\Core\Security\Exceptions\AccessDeniedException;
+use Bloomkit\Core\Http\HttpResponse;
 
 class RestApplication extends Application
 {
@@ -198,6 +199,11 @@ class RestApplication extends Application
             $params = $r->getParameters();
 
             $attributes = $request->getAttributes()->getItems();
+            $jsonData = $request->getJsonData();
+            if (is_array($jsonData)) {
+                $attributes = array_merge($attributes, $request->getJsonData());
+            }
+
             $arguments = [];
 
             $controller = $this->createObject($class);
@@ -224,14 +230,15 @@ class RestApplication extends Application
 
             //$tracer->start('App::CallController');
             $response = call_user_func_array([$controller, $method], $arguments);
+            $httpResponse = $this->convertToHttpResponse($response);
             //$tracer->stop('App::CallController');
 
             $this['eventManager']->triggerEvent(HttpEvents::VIEW, $event);
-            $event->setResponse($response);
+            $event->setResponse($httpResponse);
             $this['eventManager']->triggerEvent(HttpEvents::RESPONSE, $event);
             $this['eventManager']->triggerEvent(HttpEvents::FINISH_REQUEST, $event);
 
-            return $response;
+            return $httpResponse;
         } catch (RessourceNotFoundException $e) {
             $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
             throw new HttpNotFoundException($message);
@@ -239,6 +246,20 @@ class RestApplication extends Application
             $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
             throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
         }
+    }
+
+    private function convertToHttpResponse($response): HttpResponse
+    {
+        $result = $response;
+        if ($result instanceof HttpResponse) {
+            return $result;
+        }
+
+        if (!isset($result)) {
+            $result = ['success' => true];
+        }
+
+        return new RestResponse(json_encode($result), 200);
     }
 
     /**
