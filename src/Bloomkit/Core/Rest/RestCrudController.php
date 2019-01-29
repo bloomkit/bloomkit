@@ -7,6 +7,7 @@ use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Rest\Exceptions\RestFaultException;
+use Bloomkit\Core\Exceptions\NotFoundException;
 
 class RestCrudController extends Controller
 {
@@ -43,10 +44,12 @@ class RestCrudController extends Controller
 
     /**
      * @param array $dsIds
+     *
      * @return void
      */
-    public function bulkDelete($dsIds) {
-        $this->bulkOperation($dsIds, function($dsId) {
+    public function bulkDelete($dsIds)
+    {
+        $this->bulkOperation($dsIds, function ($dsId) {
             $this->deleteById($dsId);
         });
     }
@@ -62,11 +65,7 @@ class RestCrudController extends Controller
             return RestResponse::createFault(404, 'Not Found', 404);
         }
 
-        $response = new RestResponse();
-        $response->setEntity(reset($entities));
-        $response->setStatusCode(200);
-
-        return $response;
+        return reset($entities);
     }
 
     public function getDatasetById($dsId)
@@ -74,15 +73,10 @@ class RestCrudController extends Controller
         $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
         $entity = $this->entityManager->loadById($entityDesc, $dsId);
         if (false == $entity) {
-            $response = RestResponse::createFault(404, sprintf('User "%s" not found', $dsId));
-
-            return $response;
+            throw new NotFoundException(sprintf('"%s" not found', $dsId));
         }
-        $response = new RestResponse();
-        $response->setEntity($entity);
-        $response->setStatusCode(200);
 
-        return $response;
+        return $entity;
     }
 
     public function getList($filter = null, $entityDescName = null)
@@ -209,8 +203,9 @@ class RestCrudController extends Controller
     }
 
     /**
-     * @param array $dsIds
+     * @param array    $dsIds
      * @param \Closure $operationForSingleId
+     *
      * @return void
      */
     protected function bulkOperation($dsIds, $operationForSingleId)
@@ -224,7 +219,7 @@ class RestCrudController extends Controller
             }
         }
 
-        if(count($failedIds) > 0) {
+        if (count($failedIds) > 0) {
             throw new RestFaultException(500, 'Following datasets could not be processed: '.implode(', ', $failedIds));
         }
     }
