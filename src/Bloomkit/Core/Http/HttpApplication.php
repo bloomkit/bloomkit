@@ -44,8 +44,6 @@ class HttpApplication extends Application
 
         $this->setAlias('Bloomkit\Core\Routing\RouteCollection', 'routes');
 
-        $this->bind('Psr\Log\LoggerInterface', 'Bloomkit\Core\Application\DummyLogger');
-
         $this->getEventManager()->addSubscriber(new SessionListener($this));
         $this->getEventManager()->addSubscriber(new FirewallListener($this));
     }

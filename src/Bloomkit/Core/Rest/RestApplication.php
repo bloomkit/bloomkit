@@ -36,10 +36,6 @@ class RestApplication extends Application
         $this->registerFactory('routeMatcher', 'Bloomkit\Core\Routing\RouteMatcher', true);
 
         $this->setAlias('Bloomkit\Core\Routing\RouteCollection', 'routes');
-
-        $this->bind('Psr\Log\LoggerInterface', 'Bloomkit\Core\Application\DummyLogger');
-
-        $this->getEventManager()->addListener(HttpEvents::EXCEPTION, [$this['exception_handler'], 'onException']);
     }
 
     /**
@@ -291,6 +287,8 @@ class RestApplication extends Application
      */
     public function run(RestRequest $request = null)
     {
+        $this->getEventManager()->addListener(HttpEvents::EXCEPTION, [$this['exception_handler'], 'onException']);
+
         if (is_null($request)) {
             try {
                 $request = RestRequest::processRequest();
