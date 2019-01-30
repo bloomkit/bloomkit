@@ -43,10 +43,10 @@ class RestCrudController extends Controller
 
     /**
      * @param array $dsIds
-     * @return void
      */
-    public function bulkDelete($dsIds) {
-        $this->bulkOperation($dsIds, function($dsId) {
+    public function bulkDelete($dsIds)
+    {
+        $this->bulkOperation($dsIds, function ($dsId) {
             $this->deleteById($dsId);
         });
     }
@@ -209,9 +209,8 @@ class RestCrudController extends Controller
     }
 
     /**
-     * @param array $dsIds
+     * @param array    $dsIds
      * @param \Closure $operationForSingleId
-     * @return void
      */
     protected function bulkOperation($dsIds, $operationForSingleId)
     {
@@ -224,7 +223,7 @@ class RestCrudController extends Controller
             }
         }
 
-        if(count($failedIds) > 0) {
+        if (count($failedIds) > 0) {
             throw new RestFaultException(500, 'Following datasets could not be processed: '.implode(', ', $failedIds));
         }
     }

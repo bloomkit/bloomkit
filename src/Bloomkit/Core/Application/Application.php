@@ -75,7 +75,7 @@ class Application extends Container implements EventTracerInterface
 
         $this->registerFactory('logger', 'Bloomkit\Core\Application\DummyLogger', true);
         $this->bind('Psr\Log\LoggerInterface', function (Application $app) {
-        	return $app->getLogger();
+            return $app->getLogger();
         });
     }
 
