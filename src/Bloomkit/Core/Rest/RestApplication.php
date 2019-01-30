@@ -13,6 +13,7 @@ use Bloomkit\Core\Routing\Exceptions\RessourceNotFoundException;
 use Bloomkit\Core\Routing\RouteCollection;
 use Bloomkit\Core\Security\Exceptions\AccessDeniedException;
 use Bloomkit\Core\Http\HttpResponse;
+use Bloomkit\Core\Entities\Entity;
 
 class RestApplication extends Application
 {
@@ -249,6 +250,14 @@ class RestApplication extends Application
         $result = $response;
         if ($result instanceof HttpResponse) {
             return $result;
+        }
+
+        if ($result instanceof Entity) {
+            $restResponse = new RestResponse();
+            $restResponse->setEntity($response);
+            $restResponse->setStatusCode(200);
+
+            return $restResponse;
         }
 
         if (!isset($result)) {
