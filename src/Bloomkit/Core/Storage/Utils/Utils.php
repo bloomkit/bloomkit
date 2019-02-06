@@ -69,18 +69,19 @@ class Utils
      */
     public static function emulateDirectories(array $listing)
     {
-    	$directories = [];
-    	$listedDirectories = [];
-    	foreach ($listing as $object) {
-    		list($directories, $listedDirectories) = static::emulateObjectDirectories($object, $directories, $listedDirectories);
-    	}
-    	$directories = array_diff(array_unique($directories), array_unique($listedDirectories));
-    	foreach ($directories as $directory) {
-    		$listing[] = static::pathinfo($directory) + ['type' => 'dir'];
-    	}
-    	return $listing;
+        $directories = [];
+        $listedDirectories = [];
+        foreach ($listing as $object) {
+            list($directories, $listedDirectories) = static::emulateObjectDirectories($object, $directories, $listedDirectories);
+        }
+        $directories = array_diff(array_unique($directories), array_unique($listedDirectories));
+        foreach ($directories as $directory) {
+            $listing[] = static::pathinfo($directory) + ['type' => 'dir'];
+        }
+
+        return $listing;
     }
-    
+
     /**
      * Emulate the directories of a single object.
      *
@@ -92,24 +93,26 @@ class Utils
      */
     protected static function emulateObjectDirectories(array $object, array $directories, array $listedDirectories)
     {
-    	if ($object['type'] === 'dir') {
-    		$listedDirectories[] = $object['path'];
-    	}
-    	if (empty($object['dirname'])) {
-    		return [$directories, $listedDirectories];
-    	}
-    	$parent = $object['dirname'];
-    	while ( ! empty($parent) && ! in_array($parent, $directories)) {
-    		$directories[] = $parent;
-    		$parent = static::dirname($parent);
-    	}
-    	if (isset($object['type']) && $object['type'] === 'dir') {
-    		$listedDirectories[] = $object['path'];
-    		return [$directories, $listedDirectories];
-    	}
-    	return [$directories, $listedDirectories];
+        if ($object['type'] === 'dir') {
+            $listedDirectories[] = $object['path'];
+        }
+        if (empty($object['dirname'])) {
+            return [$directories, $listedDirectories];
+        }
+        $parent = $object['dirname'];
+        while (!empty($parent) && !in_array($parent, $directories)) {
+            $directories[] = $parent;
+            $parent = static::dirname($parent);
+        }
+        if (isset($object['type']) && $object['type'] === 'dir') {
+            $listedDirectories[] = $object['path'];
+
+            return [$directories, $listedDirectories];
+        }
+
+        return [$directories, $listedDirectories];
     }
-    
+
     /**
      * Get the size of a stream.
      *

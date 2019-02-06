@@ -44,8 +44,6 @@ class RestCrudController extends Controller
 
     /**
      * @param array $dsIds
-     *
-     * @return void
      */
     public function bulkDelete($dsIds)
     {
@@ -61,8 +59,9 @@ class RestCrudController extends Controller
         $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
         $entities = $entities->getItems();
         if (1 != count($entities)) {
-        	return false;
+            return false;
         }
+
         return reset($entities);
     }
 
@@ -203,8 +202,6 @@ class RestCrudController extends Controller
     /**
      * @param array    $dsIds
      * @param \Closure $operationForSingleId
-     *
-     * @return void
      */
     protected function bulkOperation($dsIds, $operationForSingleId)
     {
