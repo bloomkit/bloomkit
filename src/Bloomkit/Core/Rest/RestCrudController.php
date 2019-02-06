@@ -60,11 +60,9 @@ class RestCrudController extends Controller
         $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
         $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
         $entities = $entities->getItems();
-
         if (1 != count($entities)) {
-            return RestResponse::createFault(404, 'Not Found', 404);
+        	return false;
         }
-
         return reset($entities);
     }
 

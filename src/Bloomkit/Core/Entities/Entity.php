@@ -132,6 +132,38 @@ class Entity
     {
         return $this->datasetId;
     }
+    
+    /**
+     * Returns the Field values as a associative array
+     * 
+     * @param array Array of options
+     *
+     * @return array The field values of the entity
+     */
+    public function getDatasetAsArray(array $options = [])
+    {
+    	$entityDesc = $this->getDescriptor();
+    	$fields = $entityDesc->getFields();    	
+    
+    	$content = [];
+    	foreach ($fields as $field) {
+    		if((!isset($options['includeAbstract']))||(($options['includeAbstract'])!==true)){
+    			if ($field->getIsAbstract()) {
+    				continue;
+    			}
+    		}
+    		$fieldId = $field->getFieldId();
+    		$fieldValue = $this->$fieldId;
+    		if ($fieldValue === true) {
+    			$fieldValue = '1';
+    		} elseif ($fieldValue === false) {
+    			$fieldValue = '0';
+    		}
+    		$content[$fieldId] = (string) $fieldValue;
+    	}
+    	ksort($content);    
+    	return $content;
+    }
 
     /**
      * Returns the Field values as a json string.
@@ -140,26 +172,7 @@ class Entity
      */
     public function getDatasetJson()
     {
-        $entityDesc = $this->getDescriptor();
-        $fields = $entityDesc->getFields();
-
-        $content = [];
-        foreach ($fields as $field) {
-            if ($field->getIsAbstract()) {
-                continue;
-            }
-            $fieldId = $field->getFieldId();
-            $fieldValue = $this->$fieldId;
-            if ($fieldValue === true) {
-                $fieldValue = '1';
-            } elseif ($fieldValue === false) {
-                $fieldValue = '0';
-            }
-            $content[$fieldId] = (string) $fieldValue;
-        }
-        ksort($content);
-
-        return json_encode($content);
+    	return json_encode($this->getDatasetAsArray());
     }
 
     /**
