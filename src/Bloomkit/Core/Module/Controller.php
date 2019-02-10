@@ -19,7 +19,7 @@ class Controller
     }
 
     /**
-     * @deprecated use PermissionCheckModule instead
+     * @deprecated define permission on route registration
      */
     public function checkPermission($action, $resource)
     {

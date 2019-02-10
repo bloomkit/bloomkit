@@ -287,7 +287,7 @@ class RestApplication extends Application
      */
     public function run(RestRequest $request = null)
     {
-        $this->getEventManager()->addListener(HttpEvents::EXCEPTION, [$this['exception_handler'], 'onException']);
+        $this->getEventManager()->addListener(HttpEvents::EXCEPTION, [$this['exception_handler'], 'onException'], 10000);
 
         if (is_null($request)) {
             try {
