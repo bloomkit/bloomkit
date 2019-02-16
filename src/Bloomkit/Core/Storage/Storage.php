@@ -48,11 +48,12 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         $newpath = Utils::normalizePath($newpath);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-       	if($this->has($newpath))
-       		throw new FileExistsException();
-
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
+        if ($this->has($newpath)) {
+            throw new FileExistsException();
+        }
         return $this->getAdapter()->copy($path, $newpath);
     }
 
@@ -73,9 +74,9 @@ class Storage implements StorageInterface
     public function delete($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         return $this->getAdapter()->delete($path);
     }
 
@@ -134,9 +135,9 @@ class Storage implements StorageInterface
     public function getMetadata($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         return $this->getAdapter()->getMetadata($path);
     }
 
@@ -146,8 +147,9 @@ class Storage implements StorageInterface
     public function getMimetype($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         if ((!$object = $this->getAdapter()->getMimetype($path)) || !array_key_exists('mimetype', $object)) {
             return false;
         }
@@ -161,8 +163,9 @@ class Storage implements StorageInterface
     public function getSize($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         if ((!$object = $this->getAdapter()->getSize($path)) || !array_key_exists('size', $object)) {
             return false;
         }
@@ -176,8 +179,9 @@ class Storage implements StorageInterface
     public function getTimestamp($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         if ((!$object = $this->getAdapter()->getTimestamp($path)) || !array_key_exists('timestamp', $object)) {
             return false;
         }
@@ -191,8 +195,9 @@ class Storage implements StorageInterface
     public function getVisibility($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         if ((!$object = $this->getAdapter()->getVisibility($path)) || !array_key_exists('visibility', $object)) {
             return false;
         }
@@ -274,9 +279,9 @@ class Storage implements StorageInterface
     public function read($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-        
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         if (!($object = $this->getAdapter()->read($path))) {
             return false;
         }
@@ -290,9 +295,9 @@ class Storage implements StorageInterface
     public function readStream($path)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-        
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         if (!$object = $this->getAdapter()->readStream($path)) {
             return false;
         }
@@ -307,11 +312,12 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         $newpath = Utils::normalizePath($newpath);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-        if($this->has($newpath))
-        	throw new FileExistsException();
-
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
+        if ($this->has($newpath)) {
+            throw new FileExistsException();
+        }
         return (bool) $this->getAdapter()->rename($path, $newpath);
     }
 
@@ -321,9 +327,9 @@ class Storage implements StorageInterface
     public function setVisibility($path, $visibility)
     {
         $path = Utils::normalizePath($path);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         return (bool) $this->getAdapter()->setVisibility($path, $visibility);
     }
 
@@ -334,9 +340,9 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         $config = $this->prepareConfig($config);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         return (bool) $this->getAdapter()->update($path, $contents, $config);
     }
 
@@ -350,9 +356,9 @@ class Storage implements StorageInterface
         }
         $path = Utils::normalizePath($path);
         $config = $this->prepareConfig($config);
-        if(!$this->has($path))
-        	throw new FileNotFoundException();
-        
+        if (!$this->has($path)) {
+            throw new FileNotFoundException();
+        }
         Utils::rewindStream($resource);
 
         return (bool) $this->getAdapter()->updateStream($path, $resource, $config);
@@ -364,8 +370,9 @@ class Storage implements StorageInterface
     public function write($path, $contents, array $config = [])
     {
         $path = Utils::normalizePath($path);
-        if($this->has($path))
-        	throw new FileExistsException();
+        if ($this->has($path)) {
+            throw new FileExistsException();
+        }
         $config = $this->prepareConfig($config);
 
         return (bool) $this->getAdapter()->write($path, $contents, $config);
@@ -380,8 +387,9 @@ class Storage implements StorageInterface
             throw new InvalidArgumentException(__METHOD__.' expects argument #2 to be a valid resource.');
         }
         $path = Utils::normalizePath($path);
-        if($this->has($path))
-        	throw new FileExistsException();
+        if ($this->has($path)) {
+            throw new FileExistsException();
+        }
         $config = $this->prepareConfig($config);
         Utils::rewindStream($resource);
 

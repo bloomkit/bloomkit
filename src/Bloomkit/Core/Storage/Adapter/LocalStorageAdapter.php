@@ -5,19 +5,16 @@ namespace Bloomkit\Core\Storage\Adapter;
 use DirectoryIterator;
 use FilesystemIterator;
 use finfo as Finfo;
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\Config;
-use League\Flysystem\Exception;
-use League\Flysystem\NotSupportedException;
-use League\Flysystem\UnreadableFileException;
-use League\Flysystem\Util;
+use Bloomkit\Core\Storage\Config;
 use LogicException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 use Bloomkit\Core\Storage\Utils\MimeType;
+use Bloomkit\Core\Storage\Utils\Utils;
+use Bloomkit\Core\Storage\Exceptions\UnreadableFileException;
 
-class Local extends AbstractAdapter
+class LocalStorageAdapter extends AbstractStorageAdapter
 {
     /**
      * @var int
@@ -73,7 +70,7 @@ class Local extends AbstractAdapter
         $this->permissionMap = array_replace_recursive(static::$permissions, $permissions);
         $this->ensureDirectory($root);
         if (!is_dir($root) || !is_readable($root)) {
-            throw new LogicException('The root path '.$root.' is not readable.');
+            throw new \LogicException('The root path '.$root.' is not readable.');
         }
         $this->setPathPrefix($root);
         $this->writeFlags = $writeFlags;
@@ -98,7 +95,7 @@ class Local extends AbstractAdapter
             clearstatcache(false, $root);
             if (!is_dir($root)) {
                 $errorMessage = isset($mkdirError['message']) ? $mkdirError['message'] : '';
-                throw new Exception(sprintf('Impossible to create the root directory "%s". %s', $root, $errorMessage));
+                throw new \Exception(sprintf('Impossible to create the root directory "%s". %s', $root, $errorMessage));
             }
         }
     }
@@ -213,7 +210,7 @@ class Local extends AbstractAdapter
     {
         $location = $this->applyPathPrefix($path);
         $destination = $this->applyPathPrefix($newpath);
-        $parentDirectory = $this->applyPathPrefix(Util::dirname($newpath));
+        $parentDirectory = $this->applyPathPrefix(Utils::dirname($newpath));
         $this->ensureDirectory($parentDirectory);
 
         return rename($location, $destination);
@@ -363,7 +360,9 @@ class Local extends AbstractAdapter
         $contents = $this->getRecursiveDirectoryIterator($location, RecursiveIteratorIterator::CHILD_FIRST);
         /** @var SplFileInfo $file */
         foreach ($contents as $file) {
-            $this->guardAgainstUnreadableFileInfo($file);
+            if (!$file->isReadable()) {
+                throw UnreadableFileException::forFileInfo($file);
+            }
             $this->deleteFileInfoObject($file);
         }
 
@@ -394,7 +393,7 @@ class Local extends AbstractAdapter
      *
      * @return array|void
      *
-     * @throws NotSupportedException
+     * @throws \RuntimeException
      */
     protected function normalizeFileInfo(SplFileInfo $file)
     {
@@ -402,7 +401,7 @@ class Local extends AbstractAdapter
             return $this->mapFileInfo($file);
         }
         if ($this->linkHandling & self::DISALLOW_LINKS) {
-            throw NotSupportedException::forLink($file);
+            throw new \RuntimeException('Links are not supported, encountered link at '.$file->getPathname());
         }
     }
 
@@ -464,17 +463,5 @@ class Local extends AbstractAdapter
         }
 
         return $normalized;
-    }
-
-    /**
-     * @param SplFileInfo $file
-     *
-     * @throws UnreadableFileException
-     */
-    protected function guardAgainstUnreadableFileInfo(SplFileInfo $file)
-    {
-        if (!$file->isReadable()) {
-            throw UnreadableFileException::forFileInfo($file);
-        }
     }
 }

@@ -53,6 +53,16 @@ class Filter
     }
 
     /**
+     * Returns the original query string.
+     *
+     * @return string The original query string
+     */
+    public function getPbxQlQuery()
+    {
+        return $this->query;
+    }
+
+    /**
      * Get SQL Query from filter.
      *
      * @param string $prefix Optional prefix to use for keys
