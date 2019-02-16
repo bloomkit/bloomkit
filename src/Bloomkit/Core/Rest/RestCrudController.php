@@ -4,13 +4,18 @@ namespace Bloomkit\Core\Rest;
 
 use Bloomkit\Core\Module\Controller;
 use Bloomkit\Core\Database\PbxQl\Filter;
-use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Rest\Exceptions\RestFaultException;
-use Bloomkit\Core\Exceptions\NotFoundException;
+use Bloomkit\Core\Entities\Services\ServiceInterface;
+use Bloomkit\Core\Entities\Services\CrudService;
 
 class RestCrudController extends Controller
 {
+    /**
+     * @var ServiceInterface
+     */
+    protected $service;
+
     /**
      * @var EntityManager
      */
@@ -25,21 +30,17 @@ class RestCrudController extends Controller
     {
         parent::__construct();
         $this->entityManager = $entityManager;
+        $this->service = new CrudService($entityManager);
     }
 
     public function deleteById($dsId)
     {
-        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = $this->entityManager->loadById($entityDesc, $dsId);
-
-        if (false == $entity) {
+        $result = $this->service->deleteById($this->entityDescName, $dsId);
+        if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);
+        } else {
+            return new RestResponse(json_encode(['success' => true]), 200);
         }
-
-        $this->entityManager->delete($entity);
-        $result['success'] = true;
-
-        return new RestResponse(json_encode($result), 200);
     }
 
     /**
@@ -54,26 +55,30 @@ class RestCrudController extends Controller
 
     public function getDatasetByFilter($query)
     {
-        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
-        $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
-        $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
-        $entities = $entities->getItems();
-        if (1 != count($entities)) {
-            return false;
-        }
+        $entity = $this->service->getDatasetByFilter($this->entityDescName, $query);
+        if ($entity === false) {
+            return RestResponse::createFault(404, 'Not Found', 404);
+        } else {
+            $restResponse = new RestResponse();
+            $restResponse->setEntity($entity);
+            $restResponse->setStatusCode(200);
 
-        return reset($entities);
+            return $restResponse;
+        }
     }
 
     public function getDatasetById($dsId)
     {
-        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = $this->entityManager->loadById($entityDesc, $dsId);
-        if (false == $entity) {
-            throw new NotFoundException(sprintf('"%s" not found', $dsId));
-        }
+        $entity = $this->service->getDatasetById($this->entityDescName, $dsId);
+        if ($entity === false) {
+            return RestResponse::createFault(404, sprintf('"%s" not found', $dsId), 404);
+        } else {
+            $restResponse = new RestResponse();
+            $restResponse->setEntity($entity);
+            $restResponse->setStatusCode(200);
 
-        return $entity;
+            return $restResponse;
+        }
     }
 
     public function getList($filter = null, $entityDescName = null)
@@ -81,32 +86,20 @@ class RestCrudController extends Controller
         if (!isset($entityDescName)) {
             $entityDescName = $this->entityDescName;
         }
-
         $request = $this->getRequest();
         $params = $request->getGetParams();
         $limit = (int) $params->get('limit', 20);
         $offset = (int) $params->get('offset', 0);
         $orderAsc = (bool) $params->get('orderAsc', true);
         $orderBy = $params->get('orderBy', null);
+        $filterStr = $params->get('filter');
 
-        $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
-
-        if (is_null($filter)) {
-            $filterStr = $params->get('filter');
-            if (isset($filterStr)) {
-                if (substr($filterStr, 0, 6) == 'PbxQL:') {
-                    $subStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
-                    if ($subStr !== '') {
-                        $filter = new Filter($entityDesc, $subStr, $this->entityManager->getDatabaseConnection());
-                    }
-                } else {
-                    $filter = new Filter($entityDesc, '* like "%'.$filterStr.'%"', $this->entityManager->getDatabaseConnection());
-                }
-            }
+        if (isset($filter)) {
+            $filterStr = $filter->getPbxQlQuery();
         }
 
-        $entitites = $this->entityManager->loadList($entityDesc, $filter, $limit, $offset, $orderBy, $orderAsc);
-        $count = $this->entityManager->getCount($entityDesc, $filter);
+        $entitites = $this->service->getList($entityDescName, $filterStr, $limit, $offset, $orderBy, $orderAsc);
+        $count = $this->service->getCount($entityDescName, $filterStr);
         $response = new RestResponse();
         $response->setEntityList($entitites, $count);
         $response->setStatusCode(200);
@@ -123,24 +116,15 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = new Entity($entityDesc);
-
-        foreach ($requestData as $key => $value) {
-            if ($entity->fieldExist($key)) {
-                $entity->$key = $value;
-            }
-        }
-
-        $this->entityManager->insert($entity);
+        $dsId = $this->service->insert($this->entityDescName, $requestData);
 
         $result['success'] = true;
-        $result['id'] = $entity->getDatasetId();
+        $result['id'] = $dsId;
 
         return new RestResponse(json_encode($result), 200);
     }
 
-    public function updateByFilter($query, $maxItems = 1)
+    public function updateByFilter($query)
     {
         $request = $this->getRequest();
         $requestData = $request->getJsonData();
@@ -149,27 +133,12 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
-        $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
-        $entities = $this->entityManager->loadList($entityDesc, $filter, 1);
-        $entities = $entities->getItems();
-
-        if (1 != count($entities)) {
+        $result = $this->service->updateByFilter($this->entiyDescName, $query, $requestData);
+        if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);
+        } else {
+            return new RestResponse(json_encode(['success' => true]), 200);
         }
-
-        $entity = reset($entities);
-
-        foreach ($requestData as $key => $value) {
-            if ($entity->fieldExist($key)) {
-                $entity->$key = $value;
-            }
-        }
-
-        $this->entityManager->update($entity);
-        $result['success'] = true;
-
-        return new RestResponse(json_encode($result), 200);
     }
 
     public function updateById($dsId)
@@ -181,22 +150,12 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $entityDesc = $this->entityManager->getEntityDescriptor($this->entityDescName);
-        $entity = $this->entityManager->loadById($entityDesc, $dsId);
-
-        if (false == $entity) {
+        $result = $this->service->updateById($this->entiyDescName, $dsId, $requestData);
+        if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);
+        } else {
+            return new RestResponse(json_encode(['success' => true]), 200);
         }
-
-        foreach ($requestData as $key => $value) {
-            if ($entity->fieldExist($key)) {
-                $entity->$key = $value;
-            }
-        }
-        $this->entityManager->update($entity);
-        $result['success'] = true;
-
-        return new RestResponse(json_encode($result), 200);
     }
 
     /**
