@@ -4,6 +4,7 @@ namespace Bloomkit\Core\Application\Tests;
 
 use Bloomkit\Core\Application\Application;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Error\Warning;
 
 class ApplicationTest extends TestCase
 {
@@ -11,6 +12,7 @@ class ApplicationTest extends TestCase
     {
         $app = new Application();
         $app->run();
+        self::assertTrue(true);
     }
 
     public function testConfig()
@@ -29,7 +31,7 @@ class ApplicationTest extends TestCase
 
     public function testInvalidPath()
     {
-        $this->expectException(\PHPUnit_Framework_Error_Warning::class);
+        $this->expectException(Warning::class);
         $app = new Application('TestApp', '0.1', 'invalidPath');
         $app->run();
     }

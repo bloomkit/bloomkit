@@ -3,8 +3,9 @@
 namespace Bloomkit\Core\Console\Tests;
 
 use Bloomkit\Core\Console\ConsoleOption;
+use PHPUnit\Framework\TestCase;
 
-class ConsoleOptionTest extends \PHPUnit_Framework_TestCase
+class ConsoleOptionTest extends TestCase
 {
     public function testConstructor()
     {

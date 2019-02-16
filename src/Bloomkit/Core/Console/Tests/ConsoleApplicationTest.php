@@ -6,8 +6,9 @@ use Bloomkit\Core\Console\ConsoleInput;
 use Bloomkit\Core\Console\ConsoleOutput;
 use Bloomkit\Core\Console\ConsoleCommand;
 use Bloomkit\Core\Console\ConsoleApplication;
+use PHPUnit\Framework\TestCase;
 
-class ConsoleApplicationTest extends \PHPUnit_Framework_TestCase
+class ConsoleApplicationTest extends TestCase
 {
     public function testConstructor()
     {

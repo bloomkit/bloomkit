@@ -242,6 +242,7 @@ class OAuthServerTest extends TestCase
         $request->getPostParams()->set('scope', $scope);
         $request->getServerParams()->set('PHP_AUTH_PW', 'secret');
         $response = $this->authServer->requestToken($request);
+        self::assertTrue(true);
     }
 
     public function testGetTokenWithParamAuth()
@@ -256,6 +257,7 @@ class OAuthServerTest extends TestCase
         $request->getPostParams()->set('client_secret', 'secret');
         $request->getPostParams()->set('scope', $scope);
         $response = $this->authServer->requestToken($request);
+        self::assertTrue(true);
     }
 
     public function testGetRefreshTokenWithInvalidCode()

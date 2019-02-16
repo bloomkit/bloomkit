@@ -44,6 +44,7 @@ class RestRequestTest extends TestCase
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['REQUEST_URI'] = '/index.php/custom/v1/test';
         $request = new RestRequest($_SERVER, $_GET, '', $_COOKIE, $_FILES, 'custom');
+        self::assertTrue(true);
     }
 
     public function testCreateFromGlobals()
@@ -52,6 +53,7 @@ class RestRequestTest extends TestCase
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['REQUEST_URI'] = '/index.php/api/v1/test';
         $request = RestRequest::processRequest();
+        self::assertTrue(true);
     }
 
     public function testCreateWithVersionAndModule()

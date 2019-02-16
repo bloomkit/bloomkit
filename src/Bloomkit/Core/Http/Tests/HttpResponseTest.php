@@ -31,5 +31,6 @@ class HttpResponseTest extends TestCase
         $cookies[] = $cookie;
         $response = new HttpResponse('', 200, $headers, $cookies);
         $response->sendHeaders();
+        self::assertTrue(true);
     }
 }

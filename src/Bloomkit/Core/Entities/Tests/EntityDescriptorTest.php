@@ -5,8 +5,9 @@ namespace Bloomkit\Core\Entities\Tests;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Entities\Fields\Field;
 use Bloomkit\Core\Entities\Fields\FieldType;
+use PHPUnit\Framework\TestCase;
 
-class EntityDescriptorTest extends \PHPUnit_Framework_TestCase
+class EntityDescriptorTest extends TestCase
 {
     public function testSetTableName()
     {

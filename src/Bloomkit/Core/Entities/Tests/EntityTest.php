@@ -6,8 +6,9 @@ use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Entities\Fields\Field;
 use Bloomkit\Core\Entities\Fields\FieldType;
 use Bloomkit\Core\Entities\Entity;
+use PHPUnit\Framework\TestCase;
 
-class EntityTest extends \PHPUnit_Framework_TestCase
+class EntityTest extends TestCase
 {
     protected $descriptor;
 
@@ -22,13 +23,14 @@ class EntityTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(\Bloomkit\Core\Entities\Exceptions\FieldNotFoundException::class);
         $entity = new Entity($this->descriptor);
-        $entity->unknown = 1234;
+        $entity->unknown = 1234;        
     }
 
     public function testSettingValueForField()
     {
         $entity = new Entity($this->descriptor);
         $entity->fieldid = 1234;
+        self::assertEquals($entity->fieldid, 1234);
     }
 
     public function testGettingValueForField()
