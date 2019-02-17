@@ -150,7 +150,7 @@ class RestCrudController extends Controller
             return RestResponse::createFault(400, 'Invalid request: No JSON found.');
         }
 
-        $result = $this->service->updateById($this->entiyDescName, $dsId, $requestData);
+        $result = $this->service->updateById($this->entityDescName, $dsId, $requestData);
         if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);
         } else {

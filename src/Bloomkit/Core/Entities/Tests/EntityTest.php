@@ -23,7 +23,7 @@ class EntityTest extends TestCase
     {
         $this->expectException(\Bloomkit\Core\Entities\Exceptions\FieldNotFoundException::class);
         $entity = new Entity($this->descriptor);
-        $entity->unknown = 1234;        
+        $entity->unknown = 1234;
     }
 
     public function testSettingValueForField()

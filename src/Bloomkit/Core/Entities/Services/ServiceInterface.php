@@ -10,7 +10,6 @@ use Bloomkit\Core\Entities\Entity;
  */
 interface ServiceInterface
 {
-
     /**
      * Delete a specific entitiy by its id.
      *
