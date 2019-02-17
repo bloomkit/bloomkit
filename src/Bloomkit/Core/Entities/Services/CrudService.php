@@ -102,7 +102,7 @@ class CrudService extends AbstractService
             return false;
         }
 
-        foreach ($requestData as $key => $value) {
+        foreach ($data as $key => $value) {
             if ($entity->fieldExist($key)) {
                 $entity->$key = $value;
             }
@@ -125,7 +125,7 @@ class CrudService extends AbstractService
             return false;
         }
 
-        foreach ($requestData as $key => $value) {
+        foreach ($data as $key => $value) {
             if ($entity->fieldExist($key)) {
                 $entity->$key = $value;
             }
