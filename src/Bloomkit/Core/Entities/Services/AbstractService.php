@@ -14,7 +14,9 @@ abstract class AbstractService implements ServiceInterface
     protected $entityManager;
 
     /**
-     * {@inheritdoc}
+     * Construktor.
+     *
+     * @param EntityManager $entityManager EntityManager to use
      */
     public function __construct(EntityManager $entityManager)
     {

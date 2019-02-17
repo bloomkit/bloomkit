@@ -3,18 +3,13 @@
 namespace Bloomkit\Core\Entities\Services;
 
 use Bloomkit\Core\Entities\EntityManager;
+use Bloomkit\Core\Entities\Entity;
 
 /**
  * Describes all functions a service implementation must provide.
  */
 interface ServiceInterface
 {
-    /**
-     * Construktor.
-     *
-     * @param EntityManager $entityManager EntityManager to use
-     */
-    public function __construct(EntityManager $entityManager);
 
     /**
      * Delete a specific entitiy by its id.
