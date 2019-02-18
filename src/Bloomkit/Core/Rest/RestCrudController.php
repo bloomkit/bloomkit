@@ -97,6 +97,14 @@ class RestCrudController extends Controller
         if (isset($filter)) {
             $filterStr = $filter->getPbxQlQuery();
         }
+        
+        if (isset($filterStr)) {
+        	if (substr($filterStr, 0, 6) == 'PbxQL:') {
+        		$filterStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
+        	} else {
+        		$filterStr = '* like "%'.$filterStr.'%"';
+        	}
+        }        
 
         $entitites = $this->service->getList($entityDescName, $filterStr, $limit, $offset, $orderBy, $orderAsc);
         $count = $this->service->getCount($entityDescName, $filterStr);
