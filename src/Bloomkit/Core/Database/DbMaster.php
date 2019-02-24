@@ -39,7 +39,7 @@ final class DbMaster
                 'driverOptions' => [1002 => 'SET NAMES utf8'],
             ];
 
-            $this->dbCon = DriverManager::getConnection($params, $config);
+            $this->dbCon = DriverManager::getConnection($params, $config);            
         } catch (\Exception $e) {
             throw new DbConnectionException($e->getMessage());
         }
@@ -74,12 +74,55 @@ final class DbMaster
      */
     public function createDatabase($dbName)
     {
-        $stmt = $this->dbCon->prepare('create database "'.$dbName.'" ENCODING = \'UTF8\' template=template0');
+    	$driver = $this->dbCon->getDriver();
+    	if ($driver instanceof \Doctrine\DBAL\Driver\PDOMySql\Driver)
+    	{
+    		$stmt = $this->dbCon->prepare('create database `'.$dbName.'` /*!40100 COLLATE \'utf8_general_ci\' */');
+    	} else if ($driver instanceof \Doctrine\DBAL\Driver\PDOPgSql\Driver){
+	        $stmt = $this->dbCon->prepare('create database "'.$dbName.'" ENCODING = \'UTF8\' template=template0');
+    	} else {
+    		throw new \Exception('driver not supported yet');
+    	}
         try {
             $stmt->execute();
         } catch (\Exception $e) {
             throw new DbException($e->getMessage());
         }
+    }
+    
+    /**
+     * Creates a user.
+     *
+     * @param string $dbName Name of the database to create
+     *
+     * @throws DbException
+     */
+    public function createUser($username, $password)
+    {
+    	$stmt = $this->dbCon->prepare('CREATE USER ? IDENTIFIED BY ?');
+    	$stmt->bindParam(1, $username, \PDO::PARAM_STR);
+    	$stmt->bindParam(2, $password, \PDO::PARAM_STR);
+    	try {
+    		$stmt->execute();    	
+    	} catch (\Exception $e) {
+    		throw new DbException($e->getMessage());
+    	}
+    }
+    
+    /**
+     * Set DB-Permissions
+     *
+     * @throws DbException
+     */
+    public function setDbPermissions($database, $username)
+    {
+    	$permissions = ['SELECT', 'EXECUTE', 'SHOW VIEW', 'ALTER', 'ALTER ROUTINE', 'CREATE', 'CREATE ROUTINE',
+    			'CREATE TEMPORARY TABLES', 'CREATE VIEW', 'DELETE', 'DROP', 'EVENT', 'INDEX', 'INSERT',
+    			'REFERENCES', 'TRIGGER', 'UPDATE', 'LOCK TABLES'];
+    	 
+    	$query = 'GRANT '.implode(', ', $permissions). ' on `'.$database.'`.* to `'.$username.'`';
+    	$this->dbCon->exec($query);
+    	$this->dbCon->exec('FLUSH PRIVILEGES;');
     }
 
     /**
@@ -92,7 +135,7 @@ final class DbMaster
     public function doesTableExist($table)
     {
         $stmt = $this->dbCon->prepare('select exists (select null from information_schema.tables where table_name=?)');
-        $stmt->bindParam(1, $table, PDO::PARAM_STR);
+        $stmt->bindParam(1, $table, \PDO::PARAM_STR);
         try {
             $stmt->execute();
 
@@ -243,7 +286,7 @@ final class DbMaster
     {
         $stmt = $this->dbCon->prepare('select column_name, is_nullable, data_type, character_maximum_length '.
             'from INFORMATION_SCHEMA.COLUMNS where table_name = ?');
-        $stmt->bindParam(1, $table, PDO::PARAM_STR);
+        $stmt->bindParam(1, $table, \PDO::PARAM_STR);
         try {
             $stmt->execute();
         } catch (\Exception $e) {
@@ -266,7 +309,7 @@ final class DbMaster
         }
         $stmt = $this->dbCon->prepare('select column_name from INFORMATION_SCHEMA.key_column_usage '.
             "where table_name = ? and constraint_name like '%_pkey'");
-        $stmt->bindParam(1, $table, PDO::PARAM_STR);
+        $stmt->bindParam(1, $table, \PDO::PARAM_STR);
         try {
             $stmt->execute();
         } catch (\Exception $e) {
