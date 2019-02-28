@@ -7,6 +7,13 @@ namespace Bloomkit\Core\Security\User;
  */
 interface UserInterface
 {
+	/**
+	 * Returns the instance_id if set (used for multi client setups)
+	 *
+	 * @return string The instance_id
+	 */
+	public function getInstanceId();
+	
     /**
      * Returns the users password.
      *
@@ -41,7 +48,14 @@ interface UserInterface
      * @return string The username
      */
     public function getUsername();
-
+    
+    /**
+     * Set the instance id (used for multi client setups)
+     *
+     * @param string $instanceId
+     */
+    public function setInstanceId(string $instanceId);
+    
     /**
      * Set the password of the user.
      *

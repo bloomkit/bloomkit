@@ -7,6 +7,11 @@ namespace Bloomkit\Core\Security\User;
  */
 class User implements UserInterface
 {
+	/**
+	 * @var string
+	 */
+	protected $instance_id;
+	
     /**
      * @var string
      */
@@ -50,6 +55,14 @@ class User implements UserInterface
         }
         $this->username = $username;
         $this->roles = $roles;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getInstanceId()
+    {
+    	return $this->instance_id;
     }
 
     /**
@@ -100,6 +113,15 @@ class User implements UserInterface
     public function getUsername()
     {
         return $this->username;
+    }
+    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setInstanceId(string $instanceId)
+    {
+    	$this->instance_id = $instanceId;
     }
 
     /**
