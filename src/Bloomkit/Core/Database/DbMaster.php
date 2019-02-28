@@ -39,7 +39,7 @@ final class DbMaster
                 'driverOptions' => [1002 => 'SET NAMES utf8'],
             ];
 
-            $this->dbCon = DriverManager::getConnection($params, $config);            
+            $this->dbCon = DriverManager::getConnection($params, $config);
         } catch (\Exception $e) {
             throw new DbConnectionException($e->getMessage());
         }
@@ -74,22 +74,21 @@ final class DbMaster
      */
     public function createDatabase($dbName)
     {
-    	$driver = $this->dbCon->getDriver();
-    	if ($driver instanceof \Doctrine\DBAL\Driver\PDOMySql\Driver)
-    	{
-    		$stmt = $this->dbCon->prepare('create database `'.$dbName.'` /*!40100 COLLATE \'utf8_general_ci\' */');
-    	} else if ($driver instanceof \Doctrine\DBAL\Driver\PDOPgSql\Driver){
-	        $stmt = $this->dbCon->prepare('create database "'.$dbName.'" ENCODING = \'UTF8\' template=template0');
-    	} else {
-    		throw new \Exception('driver not supported yet');
-    	}
+        $driver = $this->dbCon->getDriver();
+        if ($driver instanceof \Doctrine\DBAL\Driver\PDOMySql\Driver) {
+            $stmt = $this->dbCon->prepare('create database `'.$dbName.'` /*!40100 COLLATE \'utf8_general_ci\' */');
+        } elseif ($driver instanceof \Doctrine\DBAL\Driver\PDOPgSql\Driver) {
+            $stmt = $this->dbCon->prepare('create database "'.$dbName.'" ENCODING = \'UTF8\' template=template0');
+        } else {
+            throw new \Exception('driver not supported yet');
+        }
         try {
             $stmt->execute();
         } catch (\Exception $e) {
             throw new DbException($e->getMessage());
         }
     }
-    
+
     /**
      * Creates a user.
      *
@@ -99,30 +98,30 @@ final class DbMaster
      */
     public function createUser($username, $password)
     {
-    	$stmt = $this->dbCon->prepare('CREATE USER ? IDENTIFIED BY ?');
-    	$stmt->bindParam(1, $username, \PDO::PARAM_STR);
-    	$stmt->bindParam(2, $password, \PDO::PARAM_STR);
-    	try {
-    		$stmt->execute();    	
-    	} catch (\Exception $e) {
-    		throw new DbException($e->getMessage());
-    	}
+        $stmt = $this->dbCon->prepare('CREATE USER ? IDENTIFIED BY ?');
+        $stmt->bindParam(1, $username, \PDO::PARAM_STR);
+        $stmt->bindParam(2, $password, \PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+        } catch (\Exception $e) {
+            throw new DbException($e->getMessage());
+        }
     }
-    
+
     /**
-     * Set DB-Permissions
+     * Set DB-Permissions.
      *
      * @throws DbException
      */
     public function setDbPermissions($database, $username)
     {
-    	$permissions = ['SELECT', 'EXECUTE', 'SHOW VIEW', 'ALTER', 'ALTER ROUTINE', 'CREATE', 'CREATE ROUTINE',
-    			'CREATE TEMPORARY TABLES', 'CREATE VIEW', 'DELETE', 'DROP', 'EVENT', 'INDEX', 'INSERT',
-    			'REFERENCES', 'TRIGGER', 'UPDATE', 'LOCK TABLES'];
-    	 
-    	$query = 'GRANT '.implode(', ', $permissions). ' on `'.$database.'`.* to `'.$username.'`';
-    	$this->dbCon->exec($query);
-    	$this->dbCon->exec('FLUSH PRIVILEGES;');
+        $permissions = ['SELECT', 'EXECUTE', 'SHOW VIEW', 'ALTER', 'ALTER ROUTINE', 'CREATE', 'CREATE ROUTINE',
+                'CREATE TEMPORARY TABLES', 'CREATE VIEW', 'DELETE', 'DROP', 'EVENT', 'INDEX', 'INSERT',
+                'REFERENCES', 'TRIGGER', 'UPDATE', 'LOCK TABLES', ];
+
+        $query = 'GRANT '.implode(', ', $permissions).' on `'.$database.'`.* to `'.$username.'`';
+        $this->dbCon->exec($query);
+        $this->dbCon->exec('FLUSH PRIVILEGES;');
     }
 
     /**

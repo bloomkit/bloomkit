@@ -95,15 +95,15 @@ class RestCrudController extends Controller
         $filterStr = $params->get('filter');
 
         if (isset($filterStr)) {
-        	if (substr($filterStr, 0, 6) == 'PbxQL:') {
-        		$filterStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
-        	} else {
-        		$filterStr = '* like "%'.$filterStr.'%"';
-        	}
+            if (substr($filterStr, 0, 6) == 'PbxQL:') {
+                $filterStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
+            } else {
+                $filterStr = '* like "%'.$filterStr.'%"';
+            }
         }
-        
+
         if (isset($filter)) {
-        	$filterStr = $filter->getPbxQlQuery();
+            $filterStr = $filter->getPbxQlQuery();
         }
 
         $entitites = $this->service->getList($entityDescName, $filterStr, $limit, $offset, $orderBy, $orderAsc);
