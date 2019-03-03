@@ -248,6 +248,16 @@ class Application extends Container implements EventTracerInterface
     }
 
     /**
+     * Checks if container has a specific key.
+     *
+     * @return bool True if key exists, false if not
+     */
+    public function has($key)
+    {
+        return $this->offsetExists($key);
+    }
+
+    /**
      * Check the config-dir for configuration files and load them into the config repo.
      */
     protected function loadConfigFromFiles()

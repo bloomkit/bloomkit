@@ -195,7 +195,7 @@ class OAuthServer
                     $idToken->setCustomClaim('scp', implode(' ', $permissionScopes));
                 }
                 if (!is_null($user->getInstanceId())) {
-                    $idToken->setCustomClaim('instance', $user->getInstanceId());
+                    $idToken->setCustomClaim('iid', $user->getInstanceId());
                 }
                 $params['id_token'] = $idToken->getTokenString($this->jwtSignKey);
             }

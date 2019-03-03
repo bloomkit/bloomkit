@@ -12,10 +12,10 @@ class MockUser implements UserInterface
     {
         $this->userId = $userId;
     }
-    
-	public function getInstanceId()
-	{		
-	}
+
+    public function getInstanceId()
+    {
+    }
 
     public function getRoles()
     {
@@ -33,7 +33,7 @@ class MockUser implements UserInterface
     public function getUsername()
     {
     }
-    
+
     public function setInstanceId(string $instanceId)
     {
     }
