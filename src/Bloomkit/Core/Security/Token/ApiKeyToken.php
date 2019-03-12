@@ -33,6 +33,6 @@ class ApiKeyToken extends Token
      */
     public function getApiKey()
     {
-        return $this->_apiKey;
+        return $this->apiKey;
     }
 }

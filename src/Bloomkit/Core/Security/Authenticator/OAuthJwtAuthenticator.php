@@ -65,7 +65,7 @@ class OAuthJwtAuthenticator implements AuthenticatorInterface
 
         try {
             $result = $jwt->verify($jwtKey, $jwtAlgorithm);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new AuthFailedException('JWT verification failed: '.$e->getMessage());
         }
 

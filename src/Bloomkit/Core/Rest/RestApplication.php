@@ -123,7 +123,7 @@ class RestApplication extends Application
                 }
 
                 if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
-                    $this->get('firewall')->setAuthEntryPoint(new $auth['authEntryPoint']());
+                    $this->firewall->setAuthEntryPoint(new $auth['authEntryPoint']());
                 }
 
                 if (false == isset($auth['authenticator'])) {
@@ -239,9 +239,6 @@ class RestApplication extends Application
         } catch (RessourceNotFoundException $e) {
             $message = sprintf('No route found for "%s %s"', $request->getHttpMethod(), $request->getPathUrl());
             throw new HttpNotFoundException($message);
-        } catch (MethodNotAllowedException $e) {
-            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
-            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
         }
     }
 

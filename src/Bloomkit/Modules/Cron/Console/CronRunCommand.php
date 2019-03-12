@@ -33,17 +33,10 @@ class CronRunCommand extends ConsoleCommand
         $event = $tracer->stop('Cron:Run');
         $duration = $event->getDuration();
         $memory = $event->getMemory() / 1024;
-        $output = $this->commandId."\r\n";
+        $output = $this->name."\r\n";
         $output .= date('Y-m-d H:i:s')."\r\n";
         $output .= "runtime: $duration ms; memory-usage: $memory kb"."\r\n";
 
         return $output;
-    }
-
-    protected function afterExecute($sendMail = true)
-    {
-        $output = $this->getMailBody();
-        echo $output;
-        echo "\r\n";
     }
 }

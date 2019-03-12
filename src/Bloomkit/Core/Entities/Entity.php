@@ -213,7 +213,7 @@ class Entity
     /**
      * Sets the creation-date for the Entity.
      *
-     * @param string|DateTime $date The DateTime to set
+     * @param string|\DateTime $date The DateTime to set
      */
     public function setCreationDate($date)
     {
@@ -241,7 +241,7 @@ class Entity
     /**
      * Sets the modification-date for the Entity.
      *
-     * @param string|DateTime $date The DateTime to set
+     * @param string|\DateTime $date The DateTime to set
      */
     public function setModificationDate($date)
     {

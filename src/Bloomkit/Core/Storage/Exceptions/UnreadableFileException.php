@@ -7,7 +7,7 @@ use SplFileInfo;
 /**
  * Definition of the UnreadableFileException.
  */
-class UnreadableFileException extends Exception
+class UnreadableFileException extends \Exception
 {
     public static function forFileInfo(SplFileInfo $fileInfo)
     {

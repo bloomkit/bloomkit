@@ -222,7 +222,7 @@ class EventManager
         $listeners = $this->getListeners($eventName);
 
         foreach ($listeners as $listener) {
-            $listenerInfo = $this->getListenerInfo($listener, $eventName);
+            $listenerInfo = $this->getListenerInfo($listener);
             if (isset($this->eventTracer)) {
                 $this->eventTracer->onBeforeEventListener($listenerInfo, $eventName, $event);
             }

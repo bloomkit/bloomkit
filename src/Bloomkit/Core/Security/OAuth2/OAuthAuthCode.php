@@ -8,7 +8,7 @@ namespace Bloomkit\Core\Security\OAuth2;
 class OAuthAuthCode extends OAuthToken
 {
     /**
-     * @var string
+     * @var array
      */
     protected $redirectUris;
 
@@ -43,8 +43,8 @@ class OAuthAuthCode extends OAuthToken
      *
      * @param array The redirect URIs to associate with this AuthCode
      */
-    public function setRedirectUris($redirectUri)
+    public function setRedirectUris($redirectUris)
     {
-        $this->redirectUri = $redirectUri;
+        $this->redirectUris = $redirectUris;
     }
 }

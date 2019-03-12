@@ -109,7 +109,7 @@ class ConsoleInput
             $option = $this->command->getOptionByName($name);
         }
         if (is_null($option)) {
-            throw new \InvalidParameterException(sprintf('Option "--%s" does not exist.', $name));
+            throw new \Bloomkit\Core\Exceptions\InvalidParameterException(sprintf('Option "--%s" does not exist.', $name));
         }
         if ((is_null($value)) && ($option->getRequireValue())) {
             throw new \InvalidArgumentException(sprintf('Option "--%s" requires a value.', $name));

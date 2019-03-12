@@ -4,6 +4,7 @@ namespace Bloomkit\Core\Entities\Fields;
 
 use Bloomkit\Core\Database;
 use Bloomkit\Core\Database\DbDataType;
+use Bloomkit\Core\Entities\Exceptions\InvalidFieldTypeException;
 
 /**
  * Class for describing a dataset field.
@@ -156,7 +157,7 @@ class Field
             case FieldType::PDynFTTimestamp:
                 return DbDataType::Timestamp;
         }
-        throw new InvalidFieldTypeException(sprintf('Invalid FieldType: "%s"', $fieldType));
+        throw new InvalidFieldTypeException(sprintf('Invalid FieldType: "%s"', $this->fieldType));
     }
 
     /**

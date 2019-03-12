@@ -8,6 +8,8 @@ use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Utilities\GuidUtils;
 use Bloomkit\Core\Database\DbDataType;
+use Doctrine\DBAL\Driver\PDOException;
+use Bloomkit\Core\Database\Exceptions\DbException;
 
 /**
  * Provides CRUD functions for Entities.
@@ -57,13 +59,7 @@ class EntityManager
         $stmt->execute();
     }
 
-    /**
-     * Returns the rowCount for a given EntityDescriptor and an optional Filter.
-     *
-     * @param EntityDescriptor $entityDesc EntityDescriptor object for the request
-     * @param Filter|null      $filter     The Filter to use for the request (if any)
-     */
-    public function getCount(EntityDescriptor $entityDesc, Filter $filter = null)
+    public function getCount(EntityDescriptor $entityDesc, ?Filter $filter = null): int
     {
         $sql = 'select count(*) from '.$entityDesc->getTableName().' as bt ';
 
@@ -122,7 +118,7 @@ class EntityManager
 
             return $rowCount;
         } catch (PDOException $e) {
-            throw new EDbError($e->getMessage());
+            throw new DbException($e->getMessage());
         }
     }
 
@@ -470,7 +466,7 @@ class EntityManager
         try {
             $stmt = $this->dbCon->getConnection()->query($sql);
         } catch (PDOException $e) {
-            throw new EDbError($e->getMessage());
+            throw new DbException($e->getMessage());
         }
         foreach ($stmt as $row) {
             $entity = new Entity($entityDesc);

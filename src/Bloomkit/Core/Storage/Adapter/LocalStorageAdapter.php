@@ -82,7 +82,7 @@ class LocalStorageAdapter extends AbstractStorageAdapter
      *
      * @param string $root root directory path
      *
-     * @throws Exception in case the root directory can not be created
+     * @throws \Exception in case the root directory can not be created
      */
     protected function ensureDirectory($root)
     {

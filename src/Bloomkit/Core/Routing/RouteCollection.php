@@ -10,6 +10,11 @@ class RouteCollection
     private $routes = [];
 
     /**
+     * @var array
+     */
+    private $resources = [];
+
+    /**
      * Returns the number of Routes in this collection.
      *
      * @return int
@@ -128,7 +133,7 @@ class RouteCollection
         return array_unique($this->resources);
     }
 
-    public function addResource(RessourceInterface $resource)
+    public function addResource($resource)
     {
         $this->resources[] = $resource;
     }

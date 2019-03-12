@@ -8,7 +8,7 @@ namespace Bloomkit\Core\Utilities;
 class Mutex
 {
     /**
-     * @var handle
+     * @var resource
      */
     public $fileHandle = null;
 
@@ -39,7 +39,7 @@ class Mutex
         $this->lockName = preg_replace('/[^a-z0-9_]/', '', $lockName);
 
         if (is_null($writablePath)) {
-            $this->writablePath = $this->findWritablePath($lockName);
+            $this->writablePath = $this->findWritablePath();
         } else {
             $this->writablePath = $writablePath;
         }

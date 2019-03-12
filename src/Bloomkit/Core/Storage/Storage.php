@@ -11,7 +11,7 @@ use Bloomkit\Core\Storage\Exceptions\FileExistsException;
 class Storage implements StorageInterface
 {
     /**
-     * @var AdapterInterface
+     * @var StorageAdapterInterface
      */
     protected $adapter;
 
@@ -23,7 +23,7 @@ class Storage implements StorageInterface
     /**
      * Constructor.
      *
-     * @param AdapterInterface $adapter
+     * @param StorageAdapterInterface $adapter
      * @param Config|array     $config
      */
     public function __construct(StorageAdapterInterface $adapter, $config = null)

@@ -5,9 +5,14 @@ namespace Bloomkit\Core\Http;
 class Cookie
 {
     /**
-     * @var domain
+     * @var string
      */
     protected $domain;
+
+    /**
+     * @var string
+     */
+    protected $sameSite;
 
     /**
      * @var int
@@ -38,6 +43,11 @@ class Cookie
      * @var bool
      */
     protected $secureOnly;
+
+    /**
+     * @var bool
+     */
+    protected $raw;
 
     /**
      * @var mixed|null

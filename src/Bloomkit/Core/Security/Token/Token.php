@@ -103,7 +103,7 @@ class Token
      */
     public function setAuthenticated($isAuthenticated)
     {
-        $this->authenticated = (bool) $authenticated;
+        $this->authenticated = (bool) $isAuthenticated;
     }
 
     /**
