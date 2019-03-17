@@ -314,7 +314,7 @@ class EntityManager
      *
      * @return Entity|false The first matching Entity or false if not found
      */
-    public function load(EntityDescriptor $entityDesc, Filter $filter = null)
+    public function load(EntityDescriptor $entityDesc, ?Filter $filter = null): ?Entity
     {
         $result = $this->loadList($entityDesc, $filter, 1);
         $result = $result->getItems();

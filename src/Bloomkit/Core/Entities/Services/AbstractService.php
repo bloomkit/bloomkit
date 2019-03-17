@@ -73,7 +73,7 @@ abstract class AbstractService implements ServiceInterface
     {
     	return new Repository([]);
     }
-    
+
     /**
      * Create a filter object for a query.
      *
