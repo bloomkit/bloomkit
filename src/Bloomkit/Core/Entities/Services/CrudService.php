@@ -48,7 +48,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function getCount(string $entityDescName, string $query): int
+    public function getCount(string $entityDescName, ?string $query): int
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $filter = null;
@@ -62,7 +62,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function getList(string $entityDescName, string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository
+    public function getList(string $entityDescName, ?string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $filter = null;
