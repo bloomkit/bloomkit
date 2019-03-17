@@ -7,6 +7,11 @@ use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
 use Psr\Log\LoggerInterface;
 use Bloomkit\Core\Module\Module;
+use Bloomkit\Core\Entities\EntityManager;
+use Bloomkit\Core\EventManager\EventManager;
+use Bloomkit\Core\Security\SecurityContext;
+use Bloomkit\Core\Template\TemplateManager;
+use Bloomkit\Core\Tracer\Tracer;
 
 class Application extends Container implements EventTracerInterface
 {
@@ -110,12 +115,7 @@ class Application extends Container implements EventTracerInterface
         return $this['config'];
     }
 
-    /**
-     * Returns a list of files in the config directory.
-     *
-     * @return array;
-     */
-    protected function getConfigFiles()
+    protected function getConfigFiles(): array
     {
         $files = [];
         $configPath = realpath($this->getConfigPath());
@@ -142,64 +142,35 @@ class Application extends Container implements EventTracerInterface
         return $files;
     }
 
-    /**
-     * Returns the path to the config directory.
-     *
-     * @return string
-     */
-    public function getConfigPath()
+    public function getConfigPath(): string
     {
         return $this->basePath.'/config';
     }
 
-    /**
-     * Returns the entity manager.
-     *
-     * @return \Bloomkit\Core\Entities\EntityManager;
-     */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManager
     {
         return $this['entityManager'];
     }
 
-    /**
-     * Returns the event manager.
-     *
-     * @return \Bloomkit\Core\EventManager\EventManager;
-     */
-    public function getEventManager()
+    public function getEventManager(): EventManager
     {
         return $this['eventManager'];
     }
 
     /**
      * Returns the application name + version as a string.
-     *
-     * @return string
      */
-    public function getLongVersion()
+    public function getLongVersion(): string
     {
         return $this->appName.' '.$this->appVersion;
     }
 
-    /**
-     * Returns the logger.
-     *
-     * @return LoggerInterface;
-     */
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this['logger'];
     }
 
-    /**
-     * Returns a module by its name.
-     *
-     * @param string $moduleName
-     *
-     * @return Module|null The module if existing, null otherwise
-     */
-    public function getModule($moduleName)
+    public function getModule(string $moduleName): ?Module
     {
         if (isset($this->modules[$moduleName])) {
             return $this->modules[$moduleName];
@@ -208,52 +179,33 @@ class Application extends Container implements EventTracerInterface
         }
     }
 
-    /**
-     * Returns the security context.
-     *
-     * @return \Bloomkit\Core\Security\SecurityContext;
-     */
-    public function getSecurityContext()
+    public function getSecurityContext(): SecurityContext
     {
         return $this['securityContext'];
     }
 
     /**
      * Returns the start-timestamp of the application.
-     *
-     * @return float
      */
-    public function getStartTime()
+    public function getStartTime(): float
     {
         return $this->startTime;
     }
 
-    /**
-     * Returns the template manager.
-     *
-     * @return \Bloomkit\Core\Template\TemplateManager;
-     */
-    public function getTemplateManager()
+    public function getTemplateManager(): TemplateManager
     {
         return $this['templateManager'];
     }
 
-    /**
-     * Returns the tracer.
-     *
-     * @return \Bloomkit\Core\Tracer\Tracer;
-     */
-    public function getTracer()
+    public function getTracer(): Tracer
     {
         return $this['tracer'];
     }
 
     /**
      * Checks if container has a specific key.
-     *
-     * @return bool True if key exists, false if not
      */
-    public function has($key)
+    public function has($key): bool
     {
         return $this->offsetExists($key);
     }
@@ -261,7 +213,7 @@ class Application extends Container implements EventTracerInterface
     /**
      * Check the config-dir for configuration files and load them into the config repo.
      */
-    protected function loadConfigFromFiles()
+    protected function loadConfigFromFiles(): void
     {
         $cachedConfig = $this->getCachedConfigPath();
         if (file_exists($cachedConfig)) {
