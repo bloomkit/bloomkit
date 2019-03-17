@@ -4,13 +4,14 @@ namespace Bloomkit\Core\Entities\Services;
 
 use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
+use Bloomkit\Core\Utilities\Repository;
 
 class CrudService extends AbstractService
 {
     /**
      * {@inheritdoc}
      */
-    public function deleteById($entityDescName, $dsId)
+    public function deleteById(string $entityDescName, string $dsId): bool
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $entity = $this->entityManager->loadById($entityDesc, $dsId);
@@ -25,7 +26,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function getDatasetByFilter($entityDescName, $query)
+    public function getDatasetByFilter(string $entityDescName, string $query): ?Entity
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
@@ -37,7 +38,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function getDatasetById($entityDescName, $dsId)
+    public function getDatasetById(string $entityDescName, string $dsId): ?Entity
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
 
@@ -47,7 +48,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function getCount($entityDescName, $query)
+    public function getCount(string $entityDescName, string $query): int
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $filter = null;
@@ -61,7 +62,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function getList($entityDescName, $query, $limit = 10, $offset = 0, $orderBy = null, $orderAsc = true)
+    public function getList(string $entityDescName, string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $filter = null;
@@ -75,7 +76,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function insert($entityDescName, $data)
+    public function insert(string $entityDescName, array $data): string
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $entity = new Entity($entityDesc);
@@ -92,7 +93,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function updateByFilter($entityDescName, $query, $data)
+    public function updateByFilter(string $entityDescName, string $query, array $data): bool
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
 
@@ -116,7 +117,7 @@ class CrudService extends AbstractService
     /**
      * {@inheritdoc}
      */
-    public function updateById($entityDescName, $dsId, $data)
+    public function updateById(string $entityDescName, string $dsId, array $data): bool
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
 

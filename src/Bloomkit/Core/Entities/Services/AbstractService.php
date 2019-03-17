@@ -5,6 +5,8 @@ namespace Bloomkit\Core\Entities\Services;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Database\PbxQl\Filter;
+use Bloomkit\Core\Entities\Entity;
+use Bloomkit\Core\Utilities\Repository;
 
 abstract class AbstractService implements ServiceInterface
 {
@@ -26,53 +28,49 @@ abstract class AbstractService implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteById($entityDescName, $dsId)
+    public function deleteById(string $entityDescName, string $dsId): bool
     {
+        return false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDatasetByFilter($entityDescName, $query)
+    public function getDatasetByFilter(string $entityDescName, string $query): ?Entity
     {
+        return null;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function getDatasetById($entityDescName, $dsId)
+    public function getDatasetById(string $entityDescName, string $dsId): ?Entity
     {
+        return null;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManager
     {
         return $this->entityManager;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function getCount($entityDescName, $query)
+    public function getCount(string $entityDescName, string $query): int
     {
+        return 0;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getList($entityDescName, $query, $limit = 10, $offset = 0, $orderBy = null, $orderAsc = true)
+    public function getList(string $entityDescName, string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository
     {
+        return new Repository([]);
     }
 
-    /**
-     * Create a filter object for a query.
-     *
-     * @param EntityDescriptor $entityDesc The entity descriptor to use
-     * @param string           $query      The query to use
-     */
-    protected function getFilterForQuery(EntityDescriptor $entityDesc, $query)
+    protected function getFilterForQuery(EntityDescriptor $entityDesc, string $query): Filter
     {
         if (substr($query, 0, 6) == 'PbxQL:') {
             $subStr = trim(substr($query, 6, strlen($query) - 6));
@@ -89,21 +87,24 @@ abstract class AbstractService implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function insert($entityDescName, $data)
+    public function insert(string $entityDescName, array $data): string
     {
+        return '';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function updateByFilter($entityDescName, $query, $data)
+    public function updateByFilter(string $entityDescName, string $query, array $data): bool
     {
+        return false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function updateById($entityDescName, $dsId, $data)
+    public function updateById(string $entityDescName, string $dsId, array $data): bool
     {
+        return false;
     }
 }
