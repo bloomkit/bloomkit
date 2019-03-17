@@ -4,6 +4,7 @@ namespace Bloomkit\Core\Entities\Services;
 
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Entities\Entity;
+use Bloomkit\Core\Utilities\Repository;
 
 /**
  * Describes all functions a service implementation must provide.

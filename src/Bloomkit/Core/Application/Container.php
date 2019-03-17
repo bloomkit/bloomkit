@@ -111,9 +111,9 @@ class Container implements \ArrayAccess
     /**
      * Add a binding (e.g. register a closure for an interface).
      *
-     * @param string         $abstract
-     * @param string|closure $concrete
-     * @param bool           $shared
+     * @param string          $abstract
+     * @param string|\Closure $concrete
+     * @param bool            $shared
      */
     public function bind($abstract, $concrete, $shared = false)
     {

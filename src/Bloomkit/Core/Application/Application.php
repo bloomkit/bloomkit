@@ -5,7 +5,8 @@ namespace Bloomkit\Core\Application;
 use Bloomkit\Core\Module\ModuleInterface;
 use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
-use Psr\Logger\LoggerInterface;
+use Psr\Log\LoggerInterface;
+use Bloomkit\Core\Module\Module;
 
 class Application extends Container implements EventTracerInterface
 {
@@ -264,7 +265,7 @@ class Application extends Container implements EventTracerInterface
     {
         $cachedConfig = $this->getCachedConfigPath();
         if (file_exists($cachedConfig)) {
-            $items = require $cached;
+            $items = require $cachedConfig;
             $this->getConfig()->addItems($items);
         } else {
             $configFiles = $this->getConfigFiles();

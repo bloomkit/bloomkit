@@ -28,6 +28,11 @@ class NativeSessionStorage implements SessionStorageInterface
     private $isStarted;
 
     /**
+     * @var mixed
+     */
+    private $saveHandler;
+
+    /**
      * @var string;
      */
     private $storageKey;
@@ -78,7 +83,7 @@ class NativeSessionStorage implements SessionStorageInterface
     /**
      * Returns the SessionData object.
      *
-     * @return Repository SessionData object
+     * @return SessionRepository SessionData object
      */
     public function getSessionData()
     {
@@ -132,7 +137,7 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function save()
     {
-        if (!$this->started || $this->closed) {
+        if (!$this->isStarted || $this->isClosed) {
             throw new \RuntimeException('Trying to save a session that was not started yet or was already closed');
         }
         session_write_close();

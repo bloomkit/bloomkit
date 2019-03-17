@@ -8,6 +8,7 @@ use Bloomkit\Core\Entities\Descriptor\EntityDescriptor;
 use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Utilities\GuidUtils;
 use Bloomkit\Core\Database\DbDataType;
+use Bloomkit\Core\Database\Exceptions\DbException;
 
 /**
  * Provides CRUD functions for Entities.
@@ -62,8 +63,9 @@ class EntityManager
      *
      * @param EntityDescriptor $entityDesc EntityDescriptor object for the request
      * @param Filter|null      $filter     The Filter to use for the request (if any)
+     * @param array            $options    Array with options
      */
-    public function getCount(EntityDescriptor $entityDesc, Filter $filter = null)
+    public function getCount(EntityDescriptor $entityDesc, Filter $filter = null, $options = [])
     {
         $sql = 'select count(*) from '.$entityDesc->getTableName().' as bt ';
 
@@ -91,8 +93,8 @@ class EntityManager
         $whereCnt = 0;
         if ($entityDesc->getRecoveryMode()) {
             ++$whereCnt;
-            if (array_search('is_deleted', $criteria)) {
-                $showDeleted = $criteria['is_deleted'] === true;
+            if (array_search('is_deleted', $options)) {
+                $showDeleted = $options['is_deleted'] === true;
                 if ($showDeleted) {
                     $where .= 'is_deleted = TRUE ';
                 } else {
@@ -121,8 +123,8 @@ class EntityManager
             $rowCount = (int) $stmt->fetchColumn(0);
 
             return $rowCount;
-        } catch (PDOException $e) {
-            throw new EDbError($e->getMessage());
+        } catch (\PDOException $e) {
+            throw new DbException($e->getMessage());
         }
     }
 
@@ -352,10 +354,12 @@ class EntityManager
      * @param int              $offset     The offset to start loading Entities from
      * @param string|null      $orderBy    The id of the Field to order by
      * @param bool             $orderAsc   Order ascending if true, descending if false
+     * @param array            $options    Array with options
      *
      * @return Repository A Repository containing the loaded Entities
      */
-    public function loadList(EntityDescriptor $entityDesc, Filter $filter = null, $limit = 10, $offset = 0, $orderBy = null, $orderAsc = true)
+    public function loadList(EntityDescriptor $entityDesc, Filter $filter = null, $limit = 10, $offset = 0,
+            $orderBy = null, $orderAsc = true, $options = [])
     {
         $fields = $entityDesc->getFields();
         $result = new Repository();
@@ -422,8 +426,8 @@ class EntityManager
         $whereCnt = 0;
         if ($entityDesc->getRecoveryMode()) {
             ++$whereCnt;
-            if (array_search('bt.is_deleted', $criteria)) {
-                $showDeleted = $criteria['is_deleted'] === true;
+            if (array_search('bt.is_deleted', $options)) {
+                $showDeleted = $options['is_deleted'] === true;
                 if ($showDeleted) {
                     $where .= 'bt.is_deleted = TRUE ';
                 } else {
@@ -469,8 +473,8 @@ class EntityManager
 
         try {
             $stmt = $this->dbCon->getConnection()->query($sql);
-        } catch (PDOException $e) {
-            throw new EDbError($e->getMessage());
+        } catch (\PDOException $e) {
+            throw new DbException($e->getMessage());
         }
         foreach ($stmt as $row) {
             $entity = new Entity($entityDesc);

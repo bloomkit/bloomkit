@@ -1,0 +1,5 @@
+parameters:
+	includes:
+		- vendor/phpstan/phpstan-mockery/extension.neon
+	autoload_files:
+		- 'vendor/autoload.php'

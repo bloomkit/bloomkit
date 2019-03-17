@@ -180,6 +180,9 @@ class HttpApplication extends Application
                 $attributes = $request->getAttributes()->getItems();
                 $arguments = array();
 
+                $controller = $this->createObject($class);
+                $controller->setRequest($request);
+
                 foreach ($params as $param) {
                     if (array_key_exists($param->name, $attributes)) {
                         $arguments[] = $attributes[$param->name];
@@ -198,9 +201,6 @@ class HttpApplication extends Application
                         throw new \RuntimeException(sprintf('Controller "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $repr, $param->name));
                     }
                 }
-
-                $controller = $this->createObject($class);
-                $controller->setRequest($request);
 
                 $response = call_user_func_array([$controller, $method], $arguments);
 

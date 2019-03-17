@@ -7,6 +7,7 @@ use Bloomkit\Core\Http\HttpRequest;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Http\HttpRedirectResponse;
 use Bloomkit\Core\Security\OAuth2\OAuthServer;
+use Bloomkit\Core\Security\OAuth2\Storage\OAuthStorageInterface;
 use Bloomkit\Core\Security\OAuth2\Exceptions\OAuthServerException;
 use Bloomkit\Core\Security\OAuth2\Tests\Mockups\MockOAuthStorage;
 use Bloomkit\Core\Security\OAuth2\Tests\Mockups\MockUser;
@@ -19,7 +20,7 @@ class OAuthServerTest extends TestCase
     private $authServer;
 
     /**
-     * @var OAuthStorage
+     * @var OAuthStorageInterface
      */
     private $storage;
 

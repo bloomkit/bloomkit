@@ -121,7 +121,7 @@ class EntityDescriptor
     /**
      * Return all fields definied for this entity.
      *
-     * @return Fields[] Return an array of fields
+     * @return Field[] Return an array of fields
      */
     public function getFields()
     {

@@ -25,7 +25,7 @@ class ConsoleOption
     /**
      * @var string
      */
-    private $default;
+    private $defaultValue;
 
     /**
      * @var bool

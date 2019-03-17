@@ -27,22 +27,9 @@ class CronRunCommand extends ConsoleCommand
         $eventManager->triggerEvent(CronEvent::CRONRUN, $event);
     }
 
-    protected function getOutput()
-    {
-        $tracer = $this->application->getTracer();
-        $event = $tracer->stop('Cron:Run');
-        $duration = $event->getDuration();
-        $memory = $event->getMemory() / 1024;
-        $output = $this->commandId."\r\n";
-        $output .= date('Y-m-d H:i:s')."\r\n";
-        $output .= "runtime: $duration ms; memory-usage: $memory kb"."\r\n";
-
-        return $output;
-    }
-
     protected function afterExecute($sendMail = true)
     {
-        $output = $this->getMailBody();
+        $output = $this->getOutput();
         echo $output;
         echo "\r\n";
     }

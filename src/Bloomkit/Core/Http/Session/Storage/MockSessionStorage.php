@@ -87,7 +87,7 @@ class MockSessionStorage implements SessionStorageInterface
     /**
      * Returns the SessionData object.
      *
-     * @return Repository SessionData object
+     * @return SessionRepository SessionData object
      */
     public function getSessionData()
     {
@@ -124,11 +124,11 @@ class MockSessionStorage implements SessionStorageInterface
      */
     public function save()
     {
-        if (!$this->started || $this->closed) {
+        if (!$this->isStarted || $this->isClosed) {
             throw new \RuntimeException('Trying to save a session that was not started or was already closed');
         }
-        $this->closed = false;
-        $this->started = false;
+        $this->isClosed = false;
+        $this->isStarted = false;
     }
 
     /**
@@ -136,7 +136,7 @@ class MockSessionStorage implements SessionStorageInterface
      */
     public function setId($id)
     {
-        if ($this->started) {
+        if ($this->isStarted) {
             throw new \LogicException('Cannot set session ID after the session has started.');
         }
         $this->id = $id;

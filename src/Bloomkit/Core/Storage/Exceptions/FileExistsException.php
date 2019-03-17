@@ -3,8 +3,8 @@
 namespace Bloomkit\Core\Storage\Exceptions;
 
 /**
- * Definition of the FileNotFoundException.
+ * Definition of the FileExistsException.
  */
-class FileNotFoundException extends \Exception
+class FileExistsException extends \Exception
 {
 }

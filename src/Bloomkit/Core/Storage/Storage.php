@@ -11,7 +11,7 @@ use Bloomkit\Core\Storage\Exceptions\FileExistsException;
 class Storage implements StorageInterface
 {
     /**
-     * @var AdapterInterface
+     * @var StorageAdapterInterface
      */
     protected $adapter;
 
@@ -23,8 +23,8 @@ class Storage implements StorageInterface
     /**
      * Constructor.
      *
-     * @param AdapterInterface $adapter
-     * @param Config|array     $config
+     * @param StorageAdapterInterface $adapter
+     * @param Config|array            $config
      */
     public function __construct(StorageAdapterInterface $adapter, $config = null)
     {
@@ -54,6 +54,7 @@ class Storage implements StorageInterface
         if ($this->has($newpath)) {
             throw new FileExistsException();
         }
+
         return $this->getAdapter()->copy($path, $newpath);
     }
 
@@ -77,6 +78,7 @@ class Storage implements StorageInterface
         if (!$this->has($path)) {
             throw new FileNotFoundException();
         }
+
         return $this->getAdapter()->delete($path);
     }
 
@@ -87,32 +89,16 @@ class Storage implements StorageInterface
     {
         $dirname = Utils::normalizePath($dirname);
         if ($dirname === '') {
-            throw new RootViolationException('Root directories can not be deleted.');
+            throw new \Exception('Root directories can not be deleted.');
         }
 
         return (bool) $this->getAdapter()->deleteDir($dirname);
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function get($path, Handler $handler = null)
-    {
-        $path = Utils::normalizePath($path);
-        if (!$handler) {
-            $metadata = $this->getMetadata($path);
-            $handler = $metadata['type'] === 'file' ? new File($this, $path) : new Directory($this, $path);
-        }
-        $handler->setPath($path);
-        $handler->setFilesystem($this);
-
-        return $handler;
-    }
-
-    /**
      * Get the Adapter.
      *
-     * @return AdapterInterface adapter
+     * @return StorageAdapterInterface adapter
      */
     public function getAdapter()
     {
@@ -138,6 +124,7 @@ class Storage implements StorageInterface
         if (!$this->has($path)) {
             throw new FileNotFoundException();
         }
+
         return $this->getAdapter()->getMetadata($path);
     }
 
@@ -248,7 +235,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         $config = $this->prepareConfig($config);
-        if (!$this->getAdapter() instanceof CanOverwriteFiles && $this->has($path)) {
+        if ($this->has($path)) {
             return (bool) $this->getAdapter()->update($path, $contents, $config);
         }
 
@@ -266,7 +253,7 @@ class Storage implements StorageInterface
         $path = Utils::normalizePath($path);
         $config = $this->prepareConfig($config);
         Utils::rewindStream($resource);
-        if (!$this->getAdapter() instanceof CanOverwriteFiles && $this->has($path)) {
+        if ($this->has($path)) {
             return (bool) $this->getAdapter()->updateStream($path, $resource, $config);
         }
 
@@ -318,6 +305,7 @@ class Storage implements StorageInterface
         if ($this->has($newpath)) {
             throw new FileExistsException();
         }
+
         return (bool) $this->getAdapter()->rename($path, $newpath);
     }
 
@@ -330,6 +318,7 @@ class Storage implements StorageInterface
         if (!$this->has($path)) {
             throw new FileNotFoundException();
         }
+
         return (bool) $this->getAdapter()->setVisibility($path, $visibility);
     }
 
@@ -343,6 +332,7 @@ class Storage implements StorageInterface
         if (!$this->has($path)) {
             throw new FileNotFoundException();
         }
+
         return (bool) $this->getAdapter()->update($path, $contents, $config);
     }
 

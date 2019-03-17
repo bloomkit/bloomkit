@@ -135,8 +135,8 @@ class Route
      */
     public function getAttribute($name)
     {
-        if (isset($this->attribute[$name])) {
-            return $this->attribute[$name];
+        if (isset($this->attributes[$name])) {
+            return $this->attributes[$name];
         }
     }
 

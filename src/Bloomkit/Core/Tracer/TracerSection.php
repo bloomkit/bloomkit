@@ -2,6 +2,8 @@
 
 namespace Bloomkit\Core\Tracer;
 
+use Bloomkit\Core\EventManager\Event;
+
 /**
  * Describes a tracing section. A section may have multiple events.
  */

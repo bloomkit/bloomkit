@@ -100,6 +100,8 @@ class EventManager
     private function getListenerInfo($listener)
     {
         $info = [];
+        $file = null;
+        $line = null;
         if ($listener instanceof \Closure) {
             $info = array('type' => 'Closure', 'pretty' => 'closure');
         } elseif (is_string($listener)) {
@@ -222,7 +224,7 @@ class EventManager
         $listeners = $this->getListeners($eventName);
 
         foreach ($listeners as $listener) {
-            $listenerInfo = $this->getListenerInfo($listener, $eventName);
+            $listenerInfo = $this->getListenerInfo($listener);
             if (isset($this->eventTracer)) {
                 $this->eventTracer->onBeforeEventListener($listenerInfo, $eventName, $event);
             }

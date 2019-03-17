@@ -43,8 +43,8 @@ class OAuthAuthCode extends OAuthToken
      *
      * @param array The redirect URIs to associate with this AuthCode
      */
-    public function setRedirectUris($redirectUri)
+    public function setRedirectUris($redirectUris)
     {
-        $this->redirectUri = $redirectUri;
+        $this->redirectUris = $redirectUris;
     }
 }

@@ -58,8 +58,6 @@ class FirewallListener implements EventSubscriberInterface
                 return $this->app->firewall->handleCredentialsMissingException($event, $exception);
             } elseif ($exception instanceof BadCredentialsException) {
                 return $this->app->firewall->handleAuthenticationException($event, $exception);
-            } elseif ($exception instanceof LogoutException) {
-                return $this->app->firewall->handleLogoutException($event, $exception);
             }
             $exception = $exception->getPrevious();
         } while (!is_null($exception));

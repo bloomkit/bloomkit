@@ -105,12 +105,7 @@ class Firewall
         }
 
         $token = $this->context->getToken();
-        if ((is_null($token)) || ($token instanceof AnonymousToken)) {
-            // if ((null === $token = $this->context->getToken()) || () {
-            // if ($request->hasPreviousSession()) {
-            // $session->remove('_security_'.$this->contextKey);
-            // }
-        } else {
+        if (!is_null($token)) {
             if ($token->isStateful()) {
                 $session->set('_security_'.$this->contextKey, serialize($token));
             }

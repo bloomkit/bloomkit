@@ -19,6 +19,11 @@ class FtpLoader
      * @var resource
      */
     protected $connection;
+    
+    /**
+     * @var boolean
+     */
+    protected $done;
 
     /**
      * @var string[]
@@ -212,7 +217,7 @@ class FtpLoader
         }
 
         if (filesize($localFilename) == 0) {
-            $this->addErrorAndLog("downloaded local file is zero size. sLocalFile=`$localFilename`; sRemoteFile=`$remoteFilename`; sSizeRemoteFile=`$fileSize`");
+            $this->addErrorAndLog("downloaded local file is zero size. localFile=`$localFilename`; remoteFile=`$remoteFilename`; sSizeRemoteFile=`$fileSize`");
 
             return false;
         }
@@ -250,10 +255,10 @@ class FtpLoader
             'moveErrorRemote' => array(),
         );
 
-        $sLocalDir = getShopBasePath().'export/'.$ident;
+        $sLocalDir = 'export/'.$ident;
         $aFiles = $this->getFiles($this->connection, 'export', $sLocalDir);
 
-        $aFilteredFiles = array();
+        $filteredFiles = array();
         if ($aFiles) {
             foreach ($aFiles as $mKey => $sFile) {
                 if (in_array($sFile, array(
@@ -266,81 +271,81 @@ class FtpLoader
                 $sFileName = basename($sFile);
                 if ($settings['filename'] != '') {
                     if (stripos($sFileName, $settings['filename']) !== false) {
-                        $aFilteredFiles[$mKey] = $sFile;
+                        $filteredFiles[$mKey] = $sFile;
                     }
                 } else {
-                    $aFilteredFiles[$mKey] = $sFile;
+                    $filteredFiles[$mKey] = $sFile;
                 }
             }
         }
 
-        if (!count($aFilteredFiles)) {
+        if (!count($filteredFiles)) {
             $this->addInfoAndLog('There was nothing to upload! (no filtered files). unfilteredfilesCnt=`'.count($aFiles).'`');
 
             return true;
         }
 
-        foreach ($aFilteredFiles as $sFile) {
-            $sLocalFile = $sLocalDir.'/'.$sFile;
+        foreach ($filteredFiles as $sFile) {
+            $localFile = $sLocalDir.'/'.$sFile;
             $sLocalMoveFile = $sLocalDir.'/done/'.$sFile;
 
             $this->done = true;
 
-            $sRemoteFile = $sToDir.'/temp/'.$sFile;
-            $sRemoteMoveFile = $sToDir.'/'.$sFile;
+            $remoteFile = $sToDir.'/temp/'.$sFile;
+            $remoteMoveFile = $sToDir.'/'.$sFile;
 
-            $blDone = $this->upload($sLocalFile, $sRemoteFile);
+            $blDone = $this->upload($localFile, $remoteFile);
             if ($blDone === true) {
                 $blSuccess = true;
 
                 if ($this->ftpType == 'sftp') {
-                    @ssh2_sftp_unlink($this->ftpResource, $sRemoteMoveFile);
-                    $blMoved = ssh2_sftp_rename($this->ftpResource, $sRemoteFile, $sRemoteMoveFile);
+                    @ssh2_sftp_unlink($this->ftpResource, $remoteMoveFile);
+                    $blMoved = ssh2_sftp_rename($this->ftpResource, $remoteFile, $remoteMoveFile);
                 } else {
-                    @ftp_delete($this->connection, $sRemoteMoveFile);
-                    $blMoved = ftp_rename($this->connection, $sRemoteFile, $sRemoteMoveFile);
+                    @ftp_delete($this->connection, $remoteMoveFile);
+                    $blMoved = ftp_rename($this->connection, $remoteFile, $remoteMoveFile);
                 }
 
                 if ($blMoved == false) {
                     $blSuccess = false;
-                    $aProcessInfo['moveErrorRemote'][] = $sRemoteFile;
-                    $this->addErrorAndLog("remote move failed. sRemoteFile=`$sRemoteFile`; sRemoteMoveFile=`$sRemoteMoveFile`");
+                    $aProcessInfo['moveErrorRemote'][] = $remoteFile;
+                    $this->addErrorAndLog("remote move failed. remoteFile=`$remoteFile`; remoteMoveFile=`$remoteMoveFile`");
                 }
 
                 if (($blSuccess) && ($blMoved == false)) {
                     $blSuccess = false;
-                    $aProcessInfo['moveErrorLocal'][] = $sLocalFile;
-                    $this->addErrorAndLog("local move failed. file=`$sLocalFile`");
+                    $aProcessInfo['moveErrorLocal'][] = $localFile;
+                    $this->addErrorAndLog("local move failed. file=`$localFile`");
                 }
 
                 if ($blSuccess == true) {
-                    $aProcessInfo['success'][] = $sLocalFile;
-                    $this->addSuccessAndLog($sLocalFile);
+                    $aProcessInfo['success'][] = $localFile;
+                    $this->addSuccessAndLog($localFile);
                 }
             } else {
-                $aProcessInfo['error'][] = $sLocalFile;
+                $aProcessInfo['error'][] = $localFile;
             }
         }
 
         $sHowmany = 'NO';
-        if (count($aProcessInfo['success']) == count($aFilteredFiles)) {
+        if (count($aProcessInfo['success']) == count($filteredFiles)) {
             $sHowmany = 'ALL';
         } elseif (count($aProcessInfo['success']) > 0) {
             $sHowmany = 'ONLYSOME';
         }
 
-        $this->addInfoAndLog("Job export:$ident => uploaded and processed `$sHowmany` files. cnt=`".count($aProcessInfo['success']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['success']);
+        $this->addInfoAndLog("Job export:$ident => uploaded and processed `$sHowmany` files. cnt=`".count($aProcessInfo['success']).'/'.count($filteredFiles).'`; see list: ');
 
         if (count($aProcessInfo['error'])) {
-            $this->addInfoAndLog('some files could not be uploaded. cnt=`'.count($aProcessInfo['error']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['error']);
+            $this->addInfoAndLog('some files could not be uploaded. cnt=`'.count($aProcessInfo['error']).'/'.count($filteredFiles));
         }
 
         if (count($aProcessInfo['moveErrorRemote'])) {
-            $this->addInfoAndLog('some files could not be moved (remote). cnt=`'.count($aProcessInfo['moveErrorRemote']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['moveErrorRemote']);
+            $this->addInfoAndLog('some files could not be moved (remote). cnt=`'.count($aProcessInfo['moveErrorRemote']).'/'.count($filteredFiles));
         }
 
         if (count($aProcessInfo['moveErrorLocal'])) {
-            $this->addInfoAndLog('some files could not be moved (local). cnt=`'.count($aProcessInfo['moveErrorLocal']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['moveErrorLocal']);
+            $this->addInfoAndLog('some files could not be moved (local). cnt=`'.count($aProcessInfo['moveErrorLocal']).'/'.count($filteredFiles));
         }
 
         return true;
@@ -542,7 +547,7 @@ class FtpLoader
                     if ($moved == false) {
                         $success = false;
                         $aProcessInfo['moveErrorLocal'][] = $remoteFile;
-                        $this->addErrorAndLog("local move failed: $sLocalFile");
+                        $this->addErrorAndLog("local move failed: $localFile");
                     }
 
                     if ($success && $remoteMove) {
@@ -556,8 +561,8 @@ class FtpLoader
 
                         if ($moved == false) {
                             $success = false;
-                            $aProcessInfo['moveErrorRemote'][] = $sRemoteFile;
-                            $this->addErrorAndLog("remote move failed from $sRemoteFile to $sRemoteMoveFile");
+                            $aProcessInfo['moveErrorRemote'][] = $remoteFile;
+                            $this->addErrorAndLog("remote move failed from $remoteFile to $remoteMoveFile");
                         }
                     } else {
                         $aProcessInfo['error'][] = $remoteFile;
@@ -576,18 +581,18 @@ class FtpLoader
                     $processed = 'SOME';
                 }
 
-                $this->addInfoAndLog("Job import: $ident => downloaded and processed $processed files. Count:".count($aProcessInfo['success']).'/'.count($files).'`; see list: ', $aProcessInfo['success']);
+                $this->addInfoAndLog("Job import: $ident => downloaded and processed $processed files. Count:".count($aProcessInfo['success']).'/'.count($files));
 
                 if (count($aProcessInfo['error'])) {
-                    $this->addInfoAndLog('some files could not be downloaded. cnt=`'.count($aProcessInfo['error']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['error']);
+                    $this->addInfoAndLog('some files could not be downloaded. cnt=`'.count($aProcessInfo['error']).'/'.count($files));
                 }
 
                 if (count($aProcessInfo['moveErrorRemote'])) {
-                    $this->addInfoAndLog('some files could not be moved (remote). cnt=`'.count($aProcessInfo['moveErrorRemote']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['moveErrorRemote']);
+                    $this->addInfoAndLog('some files could not be moved (remote). cnt=`'.count($aProcessInfo['moveErrorRemote']).'/'.count($files));
                 }
 
                 if (count($aProcessInfo['moveErrorLocal'])) {
-                    $this->addInfoAndLog('some files could not be moved (local). cnt=`'.count($aProcessInfo['moveErrorLocal']).'/'.count($aFilteredFiles).'`; see list: ', $aProcessInfo['moveErrorLocal']);
+                    $this->addInfoAndLog('some files could not be moved (local). cnt=`'.count($aProcessInfo['moveErrorLocal']).'/'.count($files));
                 }
             }
         }
@@ -783,7 +788,7 @@ class FtpLoader
 
         if ($fileSize == 0) {
             $sizeLocalFile = filesize($localFilename);
-            $this->addErrorAndLog("uploaded remote file is zero size. Remote-file: $remoteFilename Local-file: $localFilename fileSize=$sSizeLocalFile");
+            $this->addErrorAndLog("uploaded remote file is zero size. Remote-file: $remoteFilename Local-file: $localFilename fileSize=$sizeLocalFile");
 
             return false;
         }

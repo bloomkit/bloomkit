@@ -301,7 +301,7 @@ final class DbMaster
             } else {
                 $dbFieldData[$i]['is_nullable'] = true;
             }
-            $dbFieldData[$i]['dbType'] = $this->mapDbType($row['dbType']);
+            $dbFieldData[$i]['dbType'] = $this->getDbDatatype($row['dbType']);
             $dbFieldData[$i]['dbVarCharLen'] = $row['character_maximum_length'];
             $dbFieldData[$i]['syncState'] = '';
             ++$i;

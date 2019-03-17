@@ -310,7 +310,7 @@ class LocalStorageAdapter extends AbstractStorageAdapter
         $location = $this->applyPathPrefix($path);
         clearstatcache(false, $location);
         $permissions = octdec(substr(sprintf('%o', fileperms($location)), -4));
-        $visibility = $permissions & 0044 ? AdapterInterface::VISIBILITY_PUBLIC : AdapterInterface::VISIBILITY_PRIVATE;
+        $visibility = $permissions & 0044 ? StorageAdapterInterface::VISIBILITY_PUBLIC : StorageAdapterInterface::VISIBILITY_PRIVATE;
 
         return compact('path', 'visibility');
     }

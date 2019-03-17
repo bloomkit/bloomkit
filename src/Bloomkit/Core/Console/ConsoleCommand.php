@@ -24,6 +24,13 @@ class ConsoleCommand
     protected $arguments = [];
 
     /**
+     * Id of the command.
+     *
+     * @var string
+     */
+    protected $commandId;
+
+    /**
      * Command description (for list-output).
      *
      * @var string
@@ -244,6 +251,24 @@ class ConsoleCommand
         }
 
         return $cnt;
+    }
+
+    /**
+     * Return command runtime output.
+     *
+     * @return string Command runtime output
+     */
+    protected function getOutput()
+    {
+        $tracer = $this->application->getTracer();
+        $event = $tracer->stop('ConsoleCommand:Run');
+        $duration = $event->getDuration();
+        $memory = $event->getMemory() / 1024;
+        $output = $this->commandId."\r\n";
+        $output .= date('Y-m-d H:i:s')."\r\n";
+        $output .= "runtime: $duration ms; memory-usage: $memory kb"."\r\n";
+
+        return $output;
     }
 
     /**

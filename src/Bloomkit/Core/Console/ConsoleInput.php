@@ -4,6 +4,7 @@ namespace Bloomkit\Core\Console;
 
 use Bloomkit\Core\Console\Events\ConsoleEvents;
 use Bloomkit\Core\EventManager\RepositoryEvent;
+use Bloomkit\Core\Exceptions\InvalidParameterException;
 
 /**
  * Class for handling command line inputs.
@@ -109,7 +110,7 @@ class ConsoleInput
             $option = $this->command->getOptionByName($name);
         }
         if (is_null($option)) {
-            throw new \InvalidParameterException(sprintf('Option "--%s" does not exist.', $name));
+            throw new InvalidParameterException(sprintf('Option "--%s" does not exist.', $name));
         }
         if ((is_null($value)) && ($option->getRequireValue())) {
             throw new \InvalidArgumentException(sprintf('Option "--%s" requires a value.', $name));

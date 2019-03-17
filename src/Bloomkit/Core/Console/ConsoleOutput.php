@@ -8,8 +8,6 @@ namespace Bloomkit\Core\Console;
 class ConsoleOutput
 {
     /**
-     * ConsoleApplication.
-     *
      * @var ConsoleApplication
      */
     private $application;
@@ -22,11 +20,14 @@ class ConsoleOutput
     private $directOutput;
 
     /**
-     * Output buffer.
-     *
      * @var string
      */
     private $outputBuffer;
+
+    /**
+     * @var string
+     */
+    private $outputString;
 
     /**
      * Constructor.

@@ -15,7 +15,7 @@ class HttpUtils
      * @param int     $status  The status code
      * @param array   $params  An array with url-params (optional)
      *
-     * @return RedirectResponse A RedirectResponse instance
+     * @return HttpRedirectResponse A RedirectResponse instance
      */
     public static function createRedirectResponse(HttpRequest $request, $path, $status = 302, $params = [])
     {

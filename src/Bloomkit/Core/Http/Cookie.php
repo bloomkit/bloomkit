@@ -5,7 +5,7 @@ namespace Bloomkit\Core\Http;
 class Cookie
 {
     /**
-     * @var domain
+     * @var string
      */
     protected $domain;
 
@@ -20,11 +20,6 @@ class Cookie
     protected $httpOnly;
 
     /**
-     * @var bool
-     */
-    protected $isRaw;
-
-    /**
      * @var string
      */
     protected $name;
@@ -33,6 +28,16 @@ class Cookie
      * @var string
      */
     protected $path;
+
+    /**
+     * @var bool
+     */
+    protected $raw;
+
+    /**
+     * @var string
+     */
+    protected $sameSite;
 
     /**
      * @var bool

@@ -14,6 +14,7 @@ use Bloomkit\Core\Routing\RouteCollection;
 use Bloomkit\Core\Security\Exceptions\AccessDeniedException;
 use Bloomkit\Core\Http\HttpResponse;
 use Bloomkit\Core\Entities\Entity;
+use Bloomkit\Core\Routing\Exceptions\MethodNotAllowedException;
 
 class RestApplication extends Application
 {
@@ -123,7 +124,7 @@ class RestApplication extends Application
                 }
 
                 if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
-                    $this->get('firewall')->setAuthEntryPoint(new $auth['authEntryPoint']());
+                    $this->firewall->setAuthEntryPoint(new $auth['authEntryPoint']());
                 }
 
                 if (false == isset($auth['authenticator'])) {
@@ -241,7 +242,7 @@ class RestApplication extends Application
             throw new HttpNotFoundException($message);
         } catch (MethodNotAllowedException $e) {
             $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathUrl(), implode(', ', $e->getAllowedMethods()));
-            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
+            throw new MethodNotAllowedException($e->getAllowedMethods(), $message, $e);
         }
     }
 

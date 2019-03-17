@@ -417,6 +417,22 @@ class JsonWebToken
     }
 
     /**
+     * Get the number of bytes in cryptographic strings.
+     *
+     * @param string
+     *
+     * @return int
+     */
+    private static function safeStrlen($str)
+    {
+        if (function_exists('mb_strlen')) {
+            return mb_strlen($str, '8bit');
+        }
+
+        return strlen($str);
+    }
+
+    /**
      * Add or replace an entry to the CustomClaim list.
      *
      * @param string $key   The key of the value
@@ -480,10 +496,10 @@ class JsonWebToken
             throw new \UnexpectedValueException('Algorithm not supported');
         }
 
-        if (isset($this->payload->iat) && $this->payload->iat > ($timestamp)) {
-            throw new \Exception('Cannot handle token prior to '.date(DateTime::ISO8601, $payload->iat));
+        if (isset($this->iat) && $this->iat > ($timestamp)) {
+            throw new \Exception('Cannot handle token prior to '.date(\DateTime::ISO8601, $this->iat));
         }
-        if (isset($this->payload->exp) && ($timestamp) >= $this->payload->exp) {
+        if (isset($this->exp) && ($timestamp) >= $this->exp) {
             throw new \Exception('Expired token');
         }
         $msg = $this->headerRaw.'.'.$this->payloadRaw;

@@ -131,7 +131,7 @@ class Event
      */
     public function setTracerListenerEvent($tracerEvent)
     {
-        $this->tracerEvent = $tracerListener;
+        $this->tracerEvent = $tracerEvent;
     }
 
     /**
