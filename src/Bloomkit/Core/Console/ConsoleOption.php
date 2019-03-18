@@ -23,7 +23,7 @@ class ConsoleOption
     private $description;
 
     /**
-     * @var string
+     * @var mixed
      */
     private $defaultValue;
 
@@ -60,7 +60,7 @@ class ConsoleOption
     /**
      * Returns the default value of the option.
      *
-     * @return string The default value of the option
+     * @return mixed The default value of the option
      */
     public function getDefault()
     {

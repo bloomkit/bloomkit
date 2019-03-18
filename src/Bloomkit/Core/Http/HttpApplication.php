@@ -97,7 +97,7 @@ class HttpApplication extends Application
                     }
 
                     if ((isset($auth['authEntryPoint'])) && (class_exists($auth['authEntryPoint']))) {
-                        $this->firewall->setAuthEntryPoint(new $auth['authEntryPoint']());
+                        $this->getFirewall()->setAuthEntryPoint(new $auth['authEntryPoint']());
                     }
 
                     if (isset($auth['authenticator']) == false) {
@@ -139,7 +139,7 @@ class HttpApplication extends Application
                 }
 
                 // Authorization
-                if (isset($parameters['_perm'])) {
+                if (isset($parameters['_perm']) && isset($token)) {
                     $action = $parameters['_perm'];
 
                     $user = $token->getUser();
@@ -275,5 +275,10 @@ class HttpApplication extends Application
         }
 
         return $event->getResponse();
+    }
+
+    private function getFirewall(): Firewall
+    {
+        return $this['firewall'];
     }
 }

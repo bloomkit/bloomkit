@@ -323,7 +323,7 @@ class HttpRequest
     /**
      * Returns the server port.
      *
-     * @return string
+     * @return mixed
      */
     public function getPort()
     {

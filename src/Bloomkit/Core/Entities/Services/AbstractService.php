@@ -85,13 +85,11 @@ abstract class AbstractService implements ServiceInterface
         if (substr($query, 0, 6) == 'PbxQL:') {
             $subStr = trim(substr($query, 6, strlen($query) - 6));
             if ($subStr !== '') {
-                $filter = new Filter($entityDesc, $subStr, $this->entityManager->getDatabaseConnection());
+                return new Filter($entityDesc, $subStr, $this->entityManager->getDatabaseConnection());
             }
-        } else {
-            $filter = new Filter($entityDesc, '* like "%'.$query.'%"', $this->entityManager->getDatabaseConnection());
+            $query = $subStr;
         }
-
-        return $filter;
+        return new Filter($entityDesc, '* like "%'.$query.'%"', $this->entityManager->getDatabaseConnection());
     }
 
     /**

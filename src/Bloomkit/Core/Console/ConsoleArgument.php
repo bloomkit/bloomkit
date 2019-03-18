@@ -46,7 +46,7 @@ class ConsoleArgument
     /**
      * Returns the default value.
      *
-     * @return string Default value of the argument
+     * @return mixed Default value of the argument
      */
     public function getDefault()
     {

@@ -158,7 +158,7 @@ class RestApplication extends Application
             }
 
             // Authorization
-            if (isset($parameters['_perm'])) {
+            if (isset($parameters['_perm']) && isset($token)) {
                 $action = $parameters['_perm'];
 
                 $user = $token->getUser();

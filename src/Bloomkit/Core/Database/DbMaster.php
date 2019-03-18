@@ -292,6 +292,7 @@ final class DbMaster
             throw new DbException($e->getMessage());
         }
 
+        $dbFieldData = [];
         $i = 0;
         foreach ($stmt as $row) {
             $dbFieldData[$i]['column_name'] = $row['column_name'];

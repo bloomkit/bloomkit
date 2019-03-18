@@ -309,7 +309,7 @@ class Application extends Container implements EventTracerInterface
             return;
         }
 
-        $event->setTracerEvent($this->tracer->start($eventName, 'section'));
+        $event->setTracerEvent($this->getTracer()->start($eventName, 'section'));
     }
 
     /**
@@ -325,7 +325,7 @@ class Application extends Container implements EventTracerInterface
             return;
         }
 
-        $event->setTracerEvent($this->tracer->start($eventName, 'event_listener'));
+        $event->setTracerEvent($this->getTracer()->start($eventName, 'event_listener'));
     }
 
     /**
