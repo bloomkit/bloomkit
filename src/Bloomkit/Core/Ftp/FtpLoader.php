@@ -113,7 +113,7 @@ class FtpLoader
         $ftpStream = null;
         $localStream = null;
 
-        if ($this->ftpType == FTP_TYPE_FTP) {
+        if ($this->ftpType == self::FTP_TYPE_FTP) {
             if (!ftp_pasv($this->connection, true)) {
                 $this->addErrorAndLog('Could not turn passive mode on! Trying anyway...');
             }
