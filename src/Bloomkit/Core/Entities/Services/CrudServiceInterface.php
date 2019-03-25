@@ -9,7 +9,7 @@ use Bloomkit\Core\Utilities\Repository;
 /**
  * Describes all functions a service implementation must provide.
  */
-interface ServiceInterface
+interface CrudServiceInterface
 {
     /**
      * Delete a specific entitiy by its id.

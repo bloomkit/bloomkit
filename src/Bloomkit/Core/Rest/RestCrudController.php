@@ -3,16 +3,15 @@
 namespace Bloomkit\Core\Rest;
 
 use Bloomkit\Core\Module\Controller;
-use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Rest\Exceptions\RestFaultException;
-use Bloomkit\Core\Entities\Services\ServiceInterface;
+use Bloomkit\Core\Entities\Services\CrudServiceInterface;
 use Bloomkit\Core\Entities\Services\CrudService;
 
 class RestCrudController extends Controller
 {
     /**
-     * @var ServiceInterface
+     * @var CrudServiceInterface
      */
     protected $service;
 

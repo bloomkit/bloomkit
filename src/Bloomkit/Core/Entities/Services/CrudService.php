@@ -5,9 +5,25 @@ namespace Bloomkit\Core\Entities\Services;
 use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Utilities\Repository;
+use Bloomkit\Core\Entities\EntityManager;
 
-class CrudService extends AbstractService
+class CrudService implements CrudServiceInterface
 {
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
+
+    /**
+     * Construktor.
+     *
+     * @param EntityManager $entityManager EntityManager to use
+     */
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -134,5 +150,13 @@ class CrudService extends AbstractService
         $this->entityManager->update($entity);
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityManager(): EntityManager
+    {
+        return $this->entityManager;
     }
 }
