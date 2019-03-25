@@ -14,7 +14,7 @@ class ConsoleInput
     /**
      * Contains all application-options.
      *
-     * @var ConsoleOption[];
+     * @var ConsoleOption[]
      */
     private $applicationOptions = [];
 
@@ -42,7 +42,7 @@ class ConsoleInput
     /**
      * Contains all command-options.
      *
-     * @var ConsoleOption[];
+     * @var ConsoleOption[]
      */
     private $options = [];
 

@@ -8,7 +8,7 @@ use Bloomkit\Core\Http\Session\SessionMessages;
 class MockSessionStorage implements SessionStorageInterface
 {
     /**
-     * @var string;
+     * @var string
      */
     private $id;
 
@@ -23,7 +23,7 @@ class MockSessionStorage implements SessionStorageInterface
     private $isStarted;
 
     /**
-     * @var string;
+     * @var string
      */
     private $name;
 

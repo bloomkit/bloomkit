@@ -40,7 +40,7 @@ class EntityManager
      *
      * @param Entity $entity Entity to delete
      */
-    public function delete(Entity $entity)
+    public function delete(Entity $entity): void
     {
         $dsId = $entity->getDatasetId();
         $entityDesc = $entity->getDescriptor();
@@ -65,7 +65,7 @@ class EntityManager
      * @param Filter|null      $filter     The Filter to use for the request (if any)
      * @param array            $options    Array with options
      */
-    public function getCount(EntityDescriptor $entityDesc, Filter $filter = null, $options = [])
+    public function getCount(EntityDescriptor $entityDesc, ?Filter $filter = null, array $options = []): int
     {
         $sql = 'select count(*) from '.$entityDesc->getTableName().' as bt ';
 
@@ -133,7 +133,7 @@ class EntityManager
      *
      * @return DbMaster The database connection
      */
-    public function getDatabaseConnection()
+    public function getDatabaseConnection(): DbMaster
     {
         return $this->dbCon;
     }
@@ -145,7 +145,7 @@ class EntityManager
      *
      * @return EntityDescriptor The requested object
      */
-    public function getEntityDescriptor($className)
+    public function getEntityDescriptor(string $className): EntityDescriptor
     {
         if (isset($this->entityDescriptions[$className])) {
             return $this->entityDescriptions[$className];
@@ -282,7 +282,7 @@ class EntityManager
      *
      * @return string The id of the saved Entity
      */
-    public function insert(Entity $entity)
+    public function insert(Entity $entity): string
     {
         $replacements = [];
         $entityDesc = $entity->getDescriptor();
@@ -319,7 +319,7 @@ class EntityManager
         $result = $this->loadList($entityDesc, $filter, 1);
         $result = $result->getItems();
         if (count($result) == 0) {
-            return false;
+        	return false;
         } else {
             return reset($result);
         }
@@ -333,7 +333,7 @@ class EntityManager
      *
      * @return Entity|false The matching Entity or false if not found
      */
-    public function loadById(EntityDescriptor $entityDesc, $id)
+    public function loadById(EntityDescriptor $entityDesc, string $id): ?Entity
     {
         if ($entityDesc->getIdType() == EntityDescriptor::IDTYPE_UUID) {
             $value = '\''.GuidUtils::decompressGUID($id).'\'';
@@ -358,8 +358,8 @@ class EntityManager
      *
      * @return Repository A Repository containing the loaded Entities
      */
-    public function loadList(EntityDescriptor $entityDesc, Filter $filter = null, $limit = 10, $offset = 0,
-            $orderBy = null, $orderAsc = true, $options = [])
+    public function loadList(EntityDescriptor $entityDesc, ?Filter $filter = null, int $limit = 10, int $offset = 0,
+    		?string $orderBy = null, bool $orderAsc = true, array $options = []): Repository
     {
         $fields = $entityDesc->getFields();
         $result = new Repository();
@@ -510,7 +510,7 @@ class EntityManager
      *
      * @param Entity $entity The Entity to update
      */
-    public function update(Entity $entity)
+    public function update(Entity $entity): void
     {
         $replacements = array();
         $entityDesc = $entity->getDescriptor();
@@ -531,7 +531,7 @@ class EntityManager
      *
      * @param Entity $entity The Entity to update the modification date
      */
-    public function updateModificationDate(Entity $entity)
+    public function updateModificationDate(Entity $entity): void
     {
         $entityDesc = $entity->getDescriptor();
 

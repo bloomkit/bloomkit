@@ -7,6 +7,11 @@ use Bloomkit\Core\EventManager\EventTracerInterface;
 use Bloomkit\Core\EventManager\Event;
 use Psr\Log\LoggerInterface;
 use Bloomkit\Core\Module\Module;
+use Bloomkit\Core\Entities\EntityManager;
+use Bloomkit\Core\EventManager\EventManager;
+use Bloomkit\Core\Security\SecurityContext;
+use Bloomkit\Core\Template\TemplateManager;
+use Bloomkit\Core\Tracer\Tracer;
 
 class Application extends Container implements EventTracerInterface
 {
@@ -115,7 +120,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return array;
      */
-    protected function getConfigFiles()
+    protected function getConfigFiles(): array
     {
         $files = [];
         $configPath = realpath($this->getConfigPath());
@@ -147,7 +152,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return string
      */
-    public function getConfigPath()
+    public function getConfigPath(): string
     {
         return $this->basePath.'/config';
     }
@@ -157,7 +162,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return \Bloomkit\Core\Entities\EntityManager;
      */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManager
     {
         return $this['entityManager'];
     }
@@ -167,7 +172,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return \Bloomkit\Core\EventManager\EventManager;
      */
-    public function getEventManager()
+    public function getEventManager(): EventManager
     {
         return $this['eventManager'];
     }
@@ -177,7 +182,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return string
      */
-    public function getLongVersion()
+    public function getLongVersion(): string
     {
         return $this->appName.' '.$this->appVersion;
     }
@@ -187,7 +192,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return LoggerInterface;
      */
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this['logger'];
     }
@@ -199,7 +204,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return Module|null The module if existing, null otherwise
      */
-    public function getModule($moduleName)
+    public function getModule(string $moduleName): ?Module
     {
         if (isset($this->modules[$moduleName])) {
             return $this->modules[$moduleName];
@@ -213,7 +218,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return \Bloomkit\Core\Security\SecurityContext;
      */
-    public function getSecurityContext()
+    public function getSecurityContext(): SecurityContext
     {
         return $this['securityContext'];
     }
@@ -223,7 +228,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return float
      */
-    public function getStartTime()
+    public function getStartTime(): float
     {
         return $this->startTime;
     }
@@ -233,7 +238,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return \Bloomkit\Core\Template\TemplateManager;
      */
-    public function getTemplateManager()
+    public function getTemplateManager(): TemplateManager
     {
         return $this['templateManager'];
     }
@@ -243,7 +248,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return \Bloomkit\Core\Tracer\Tracer;
      */
-    public function getTracer()
+    public function getTracer(): Tracer
     {
         return $this['tracer'];
     }
@@ -253,7 +258,7 @@ class Application extends Container implements EventTracerInterface
      *
      * @return bool True if key exists, false if not
      */
-    public function has($key)
+    public function has($key): bool
     {
         return $this->offsetExists($key);
     }

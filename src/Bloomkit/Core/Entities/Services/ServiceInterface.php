@@ -19,7 +19,7 @@ interface ServiceInterface
      *
      * @return bool True on success false if dataset is not found
      */
-    public function deleteById($entityDescName, $dsId);
+	public function deleteById(string $entityDescName, string $dsId): bool;
 
     /**
      * Load a specific entitiy by filter query.
@@ -29,7 +29,7 @@ interface ServiceInterface
      *
      * @return Entity|false The matching entity or false if not found
      */
-    public function getDatasetByFilter($entityDescName, $query);
+    public function getDatasetByFilter(string $entityDescName, string $query): ?Entity;
 
     /**
      * Load a specific entitiy by its id.
@@ -39,14 +39,14 @@ interface ServiceInterface
      *
      * @return Entity|false The matching entity or false if not found
      */
-    public function getDatasetById($entityDescName, $dsId);
+    public function getDatasetById(string $entityDescName, string $dsId): ?Entity;
 
     /**
      * Returns the entity manager.
      *
      * @return EntityManager The entity manager of the application
      */
-    public function getEntityManager();
+    public function getEntityManager(): EntityManager;
 
     /**
      * Returns the rowCount for a given entityDescriptor and an optional filter.
@@ -56,7 +56,7 @@ interface ServiceInterface
      *
      * @return int The total count of datasets
      */
-    public function getCount($entityDescName, $query);
+    public function getCount(string $entityDescName, string $query): int;
 
     /**
      * Load a list of Entities.
@@ -70,7 +70,7 @@ interface ServiceInterface
      *
      * @return Repository A Repository containing the loaded entities
      */
-    public function getList($entityDescName, $query, $limit = 10, $offset = 0, $orderBy = null, $orderAsc = true);
+    public function getList(string $entityDescName, string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository;
 
     /**
      * Insert a dataset with the provided data.
@@ -80,7 +80,7 @@ interface ServiceInterface
      *
      * @return string The id of the saved entity
      */
-    public function insert($entityDescName, $data);
+    public function insert(string $entityDescName, array $data): string;
 
     /**
      * Update a single dataset by a filter.
@@ -90,7 +90,7 @@ interface ServiceInterface
      *
      * @return bool True on success false if dataset is not found
      */
-    public function updateByFilter($entityDescName, $query, $data);
+    public function updateByFilter(string $entityDescName, string $query, array $data): bool;
 
     /**
      * Update a single dataset by the id.
@@ -100,5 +100,5 @@ interface ServiceInterface
      *
      * @return bool True on success false if dataset is not found
      */
-    public function updateById($entityDescName, $dsId, $data);
+	public function updateById(string $entityDescName, string $dsId, array $data): bool;
 }

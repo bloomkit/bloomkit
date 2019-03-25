@@ -33,7 +33,7 @@ class NativeSessionStorage implements SessionStorageInterface
     private $saveHandler;
 
     /**
-     * @var string;
+     * @var string
      */
     private $storageKey;
 
