@@ -319,7 +319,7 @@ class EntityManager
         $result = $this->loadList($entityDesc, $filter, 1);
         $result = $result->getItems();
         if (count($result) == 0) {
-        	return false;
+        	return null;
         } else {
             return reset($result);
         }
