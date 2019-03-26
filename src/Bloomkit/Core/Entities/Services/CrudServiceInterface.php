@@ -5,6 +5,7 @@ namespace Bloomkit\Core\Entities\Services;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Utilities\Repository;
+use Bloomkit\Core\Exceptions\NotFoundException;
 
 /**
  * Describes all functions a service implementation must provide.
@@ -32,6 +33,17 @@ interface CrudServiceInterface
     public function getDatasetByFilter(string $entityDescName, string $query): ?Entity;
 
     /**
+     * Load a specific entitiy by filter query.
+     *
+     * @param string $entityDescName The name of the entity Class to use
+     * @param string $query          A PbxQl Query to use
+     * @throws NotFoundException
+     *
+     * @return Entity The matching entity
+     */
+    public function requireDatasetByFilter(string $entityDescName, string $query): Entity;
+
+    /**
      * Load a specific entitiy by its id.
      *
      * @param string $entityDescName The name of the Entity Class to use
@@ -40,6 +52,17 @@ interface CrudServiceInterface
      * @return Entity|null The matching entity or null if not found
      */
     public function getDatasetById(string $entityDescName, string $dsId): ?Entity;
+
+    /**
+     * Load a specific entitiy by its id.
+     *
+     * @param string $entityDescName The name of the Entity Class to use
+     * @param string $id             The id of the Entity to load
+     * @throws NotFoundException
+     *
+     * @return Entity The matching entity
+     */
+    public function requireDatasetById(string $entityDescName, string $dsId): Entity;
 
     /**
      * Returns the entity manager.

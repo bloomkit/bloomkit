@@ -134,6 +134,18 @@ class Entity
     }
 
     /**
+     * Copies values from $fieldValues to the entity if possible
+     */
+    public function copyValuesFromArray(array $fieldValues): void
+    {
+        foreach ($fieldValues as $key => $value) {
+            if ($this->fieldExist($key)) {
+                $this->$key = $value;
+            }
+        }
+    }
+
+    /**
      * Returns the Field values as a associative array.
      *
      * @param array Array of options

@@ -140,15 +140,21 @@ class RestCrudController extends Controller
         return $response;
     }
 
-    public function insert()
+    protected function requireRequestData(): array
     {
         $request = $this->getRequest();
         $requestData = $request->getJsonData();
 
         if (is_null($requestData)) {
-            return RestResponse::createFault(400, 'Invalid request: No JSON found.');
+            throw new RestFaultException(400, 'Invalid request: No JSON found.');
         }
 
+        return $requestData;
+    }
+
+    public function insert()
+    {
+        $requestData = $this->requireRequestData();
         $dsId = $this->service->insert($this->entityDescName, $requestData);
 
         $result['success'] = true;
@@ -159,13 +165,7 @@ class RestCrudController extends Controller
 
     public function updateByFilter($query)
     {
-        $request = $this->getRequest();
-        $requestData = $request->getJsonData();
-
-        if (is_null($requestData)) {
-            return RestResponse::createFault(400, 'Invalid request: No JSON found.');
-        }
-
+        $requestData = $this->requireRequestData();
         $result = $this->service->updateByFilter($this->entityDescName, $query, $requestData);
         if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);
@@ -176,13 +176,7 @@ class RestCrudController extends Controller
 
     public function updateById($dsId)
     {
-        $request = $this->getRequest();
-        $requestData = $request->getJsonData();
-
-        if (is_null($requestData)) {
-            return RestResponse::createFault(400, 'Invalid request: No JSON found.');
-        }
-
+        $requestData = $this->requireRequestData();
         $result = $this->service->updateById($this->entityDescName, $dsId, $requestData);
         if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);

@@ -4,8 +4,8 @@ namespace Bloomkit\Core\Entities\Services;
 
 use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\Entity;
-use Bloomkit\Core\Utilities\Repository;
 use Bloomkit\Core\Entities\EntityManager;
+use Bloomkit\Core\Exceptions\NotFoundException;
 
 class CrudService implements CrudServiceInterface
 {
@@ -54,11 +54,37 @@ class CrudService implements CrudServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function requireDatasetByFilter(string $entityDescName, string $query): Entity
+    {
+        $entity = $this->getDatasetByFilter($entityDescName, $query);
+        if(is_null($entity)) {
+            throw new NotFoundException("Not found");
+        }
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDatasetById(string $entityDescName, string $dsId): ?Entity
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
 
         return $this->entityManager->loadById($entityDesc, $dsId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function requireDatasetById(string $entityDescName, string $dsId): Entity
+    {
+        $entity = $this->getDatasetById($entityDescName, $dsId);
+        if(is_null($entity)) {
+            throw new NotFoundException("Not found '$dsId");
+        }
+
+        return $entity;
     }
 
     /**

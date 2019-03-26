@@ -510,15 +510,23 @@ class EntityManager
                 }
             }
 
-            $abstractValueProvider = $this->tryGetAbstractValueProvider(get_class($entityDesc));
-            if(is_object($abstractValueProvider)) {
-                $abstractValueProvider->setAbstractFieldValues($entity);
-            }
-
+            $this->refreshAbstractFieldValues($entity);
             $result->set($entity->getDatasetId(), $entity);
         }
 
         return $result;
+    }
+
+    /**
+     * Refreshing abstract field values
+     */
+    public function refreshAbstractFieldValues(Entity $entity): void
+    {
+        $entityDesc = $entity->getDescriptor();
+        $abstractValueProvider = $this->tryGetAbstractValueProvider(get_class($entityDesc));
+        if(is_object($abstractValueProvider)) {
+            $abstractValueProvider->setAbstractFieldValues($entity);
+        }
     }
 
     /**
