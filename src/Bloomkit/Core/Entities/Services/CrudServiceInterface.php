@@ -27,7 +27,7 @@ interface CrudServiceInterface
      * @param string $entityDescName The name of the entity Class to use
      * @param string $query          A PbxQl Query to use
      *
-     * @return Entity|false The matching entity or false if not found
+     * @return Entity|null The matching entity or null if not found
      */
     public function getDatasetByFilter(string $entityDescName, string $query): ?Entity;
 
@@ -37,7 +37,7 @@ interface CrudServiceInterface
      * @param string $entityDescName The name of the Entity Class to use
      * @param string $id             The id of the Entity to load
      *
-     * @return Entity|false The matching entity or false if not found
+     * @return Entity|null The matching entity or null if not found
      */
     public function getDatasetById(string $entityDescName, string $dsId): ?Entity;
 
@@ -61,16 +61,13 @@ interface CrudServiceInterface
     /**
      * Load a list of Entities.
      *
-     * @param string      $entityDescName The name of the Entity Class to use
-     * @param string      $query          A PbxQl Query to use
-     * @param int         $limit          The amount of entities to load
-     * @param int         $offset         The offset to start loading entities from
-     * @param string|null $orderBy        The id of the field to order by
-     * @param bool        $orderAsc       Order ascending if true, descending if false
+     * @param string               $entityDescName The name of the Entity Class to use
+     * @param string               $query          A PbxQl Query to use
+     * @param ListOutputParameters $params         List output parameters
      *
      * @return Repository A Repository containing the loaded entities
      */
-    public function getList(string $entityDescName, string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository;
+    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): Repository;
 
     /**
      * Insert a dataset with the provided data.

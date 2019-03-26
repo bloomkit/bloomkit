@@ -7,6 +7,8 @@ use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Rest\Exceptions\RestFaultException;
 use Bloomkit\Core\Entities\Services\CrudServiceInterface;
 use Bloomkit\Core\Entities\Services\CrudService;
+use Bloomkit\Core\Entities\Services\ListOutputParameters;
+use Bloomkit\Core\Utilities\Repository;
 
 class RestCrudController extends Controller
 {
@@ -85,12 +87,37 @@ class RestCrudController extends Controller
         if (!isset($entityDescName)) {
             $entityDescName = $this->entityDescName;
         }
+
+        if (isset($filter)) {
+            $filterStr = $filter->getPbxQlQuery();
+        } else {
+            $filterStr = $this->createFilterStringFromRequest();
+        }
+
+        $listParams = $this->createListOutputParametersFromRequest();
+        $entities = $this->service->getList($entityDescName, $filterStr, $listParams);
+        $count = $this->service->getCount($entityDescName, $filterStr);
+
+        return $this->createEntityListResponse($entities, $count);
+    }
+
+    protected function createListOutputParametersFromRequest(): ListOutputParameters
+    {
         $request = $this->getRequest();
         $params = $request->getGetParams();
-        $limit = (int) $params->get('limit', 20);
-        $offset = (int) $params->get('offset', 0);
-        $orderAsc = (bool) $params->get('orderAsc', true);
-        $orderBy = $params->get('orderBy', null);
+
+        $result = new ListOutputParameters();
+        $result->limit = (int) $params->get('limit', 20);
+        $result->offset = (int) $params->get('offset', 0);
+        $result->orderAsc = (bool) $params->get('orderAsc', true);
+        $result->orderBy = $params->get('orderBy', null);
+        return $result;
+    }
+
+    protected function createFilterStringFromRequest(): ?string
+    {
+        $request = $this->getRequest();
+        $params = $request->getGetParams();
         $filterStr = $params->get('filter');
 
         if (isset($filterStr)) {
@@ -101,14 +128,13 @@ class RestCrudController extends Controller
             }
         }
 
-        if (isset($filter)) {
-            $filterStr = $filter->getPbxQlQuery();
-        }
+        return $filterStr;
+    }
 
-        $entitites = $this->service->getList($entityDescName, $filterStr, $limit, $offset, $orderBy, $orderAsc);
-        $count = $this->service->getCount($entityDescName, $filterStr);
+    protected function createEntityListResponse(Repository $entities, ?int $count = null)
+    {
         $response = new RestResponse();
-        $response->setEntityList($entitites, $count);
+        $response->setEntityList($entities, $count);
         $response->setStatusCode(200);
 
         return $response;

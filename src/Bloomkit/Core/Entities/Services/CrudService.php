@@ -27,7 +27,7 @@ class CrudService implements CrudServiceInterface
     /**
      * {@inheritdoc}
      */
-	public function deleteById(string $entityDescName, string $dsId): bool
+    public function deleteById(string $entityDescName, string $dsId): bool
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $entity = $this->entityManager->loadById($entityDesc, $dsId);
@@ -78,15 +78,16 @@ class CrudService implements CrudServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getList(string $entityDescName, ?string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository
+    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): Repository
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
+        $params = $params ?? new ListOutputParameters();
         $filter = null;
         if (!empty($query)) {
             $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
         }
 
-        return $this->entityManager->loadList($entityDesc, $filter, $limit, $offset, $orderBy, $orderAsc);
+        return $this->entityManager->loadList($entityDesc, $filter, $params->limit, $params->offset, $params->orderBy, $params->orderAsc);
     }
 
     /**
