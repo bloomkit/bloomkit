@@ -65,9 +65,9 @@ interface CrudServiceInterface
      * @param string               $query          A PbxQl Query to use
      * @param ListOutputParameters $params         List output parameters
      *
-     * @return Repository A Repository containing the loaded entities
+     * @return ListResult A ListResult containing the loaded entities
      */
-    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): Repository;
+    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): ListResult;
 
     /**
      * Insert a dataset with the provided data.

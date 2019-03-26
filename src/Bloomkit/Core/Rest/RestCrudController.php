@@ -8,7 +8,7 @@ use Bloomkit\Core\Rest\Exceptions\RestFaultException;
 use Bloomkit\Core\Entities\Services\CrudServiceInterface;
 use Bloomkit\Core\Entities\Services\CrudService;
 use Bloomkit\Core\Entities\Services\ListOutputParameters;
-use Bloomkit\Core\Utilities\Repository;
+use Bloomkit\Core\Entities\Services\ListResult;
 
 class RestCrudController extends Controller
 {
@@ -95,10 +95,8 @@ class RestCrudController extends Controller
         }
 
         $listParams = $this->createListOutputParametersFromRequest();
-        $entities = $this->service->getList($entityDescName, $filterStr, $listParams);
-        $count = $this->service->getCount($entityDescName, $filterStr);
-
-        return $this->createEntityListResponse($entities, $count);
+        $listResult = $this->service->getList($entityDescName, $filterStr, $listParams);
+        return $this->createEntityListResponse($listResult);
     }
 
     protected function createListOutputParametersFromRequest(): ListOutputParameters
@@ -111,6 +109,8 @@ class RestCrudController extends Controller
         $result->offset = (int) $params->get('offset', 0);
         $result->orderAsc = (bool) $params->get('orderAsc', true);
         $result->orderBy = $params->get('orderBy', null);
+        $result->determineTotalCount = true;
+
         return $result;
     }
 
@@ -131,10 +131,10 @@ class RestCrudController extends Controller
         return $filterStr;
     }
 
-    protected function createEntityListResponse(Repository $entities, ?int $count = null)
+    protected function createEntityListResponse(ListResult $listResult)
     {
         $response = new RestResponse();
-        $response->setEntityList($entities, $count);
+        $response->setEntityList($listResult, $listResult->getTotalCount());
         $response->setStatusCode(200);
 
         return $response;

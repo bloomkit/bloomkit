@@ -23,4 +23,9 @@ class ListOutputParameters
      * @var bool
      */
     public $orderAsc = true;
+
+    /**
+     * @var bool
+     */
+    public $determineTotalCount = false;
 }

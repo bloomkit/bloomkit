@@ -78,7 +78,7 @@ class CrudService implements CrudServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): Repository
+    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): ListResult
     {
         $entityDesc = $this->entityManager->getEntityDescriptor($entityDescName);
         $params = $params ?? new ListOutputParameters();
@@ -87,7 +87,14 @@ class CrudService implements CrudServiceInterface
             $filter = new Filter($entityDesc, $query, $this->entityManager->getDatabaseConnection());
         }
 
-        return $this->entityManager->loadList($entityDesc, $filter, $params->limit, $params->offset, $params->orderBy, $params->orderAsc);
+        $repository = $this->entityManager->loadList($entityDesc, $filter, $params->limit, $params->offset, $params->orderBy, $params->orderAsc);
+
+        $count = null;
+        if($params->determineTotalCount === true) {
+            $count = $this->entityManager->getCount($entityDesc, $filter);
+        }
+
+        return new ListResult($repository->getItems(), $count);
     }
 
     /**
