@@ -12,6 +12,8 @@ use Bloomkit\Core\EventManager\EventManager;
 use Bloomkit\Core\Security\SecurityContext;
 use Bloomkit\Core\Template\TemplateManager;
 use Bloomkit\Core\Tracer\Tracer;
+use Bloomkit\Core\Entities\Services\CrudServiceInterface;
+use Bloomkit\Core\Entities\Services\CrudService;
 
 class Application extends Container implements EventTracerInterface
 {
@@ -354,6 +356,8 @@ class Application extends Container implements EventTracerInterface
         $this->setAlias('Bloomkit\Core\Entities\TemplateManager', 'templateManager');
         $this->setAlias('Bloomkit\Core\Tracer\Tracer', 'tracer');
         $this->setAlias('Bloomkit\Core\Utilities\Repository', 'config');
+
+        $this->bind(CrudServiceInterface::class, CrudService::class, true);
     }
 
     /**
