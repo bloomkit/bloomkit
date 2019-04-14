@@ -96,6 +96,7 @@ class RestCrudController extends Controller
 
         $listParams = $this->createListOutputParametersFromRequest();
         $listResult = $this->service->getList($entityDescName, $filterStr, $listParams);
+
         return $this->createEntityListResponse($listResult);
     }
 
@@ -150,6 +151,26 @@ class RestCrudController extends Controller
         }
 
         return $requestData;
+    }
+
+    protected function requireRequestDataField(string $fieldName)
+    {
+        $requestData = $this->requireRequestData();
+        if (!array_key_exists($fieldName, $requestData)) {
+            throw new RestFaultException(400, "$fieldName not set", 400);
+        }
+
+        return $requestData[$fieldName];
+    }
+
+    protected function requireRequestDataFieldAsString(string $fieldName): string
+    {
+        return $this->requireRequestDataField($fieldName);
+    }
+
+    protected function requireRequestDataFieldAsArray(string $fieldName): array
+    {
+        return $this->requireRequestDataField($fieldName);
     }
 
     public function insert()
