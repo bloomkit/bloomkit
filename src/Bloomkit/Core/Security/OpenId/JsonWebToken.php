@@ -2,6 +2,8 @@
 
 namespace Bloomkit\Core\Security\OpenId;
 
+use Bloomkit\Core\Security\Exceptions\TokenExpiredException;
+
 /**
  * Representation of a Json Web Token (RFC7519).
  */
@@ -500,7 +502,7 @@ class JsonWebToken
             throw new \Exception('Cannot handle token prior to '.date(\DateTime::ISO8601, $this->iat));
         }
         if (isset($this->exp) && ($timestamp) >= $this->exp) {
-            throw new \Exception('Expired token');
+            throw new TokenExpiredException('Token expired');
         }
         $msg = $this->headerRaw.'.'.$this->payloadRaw;
         $signature = $this->signature;
