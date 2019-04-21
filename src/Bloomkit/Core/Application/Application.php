@@ -12,6 +12,8 @@ use Bloomkit\Core\EventManager\EventManager;
 use Bloomkit\Core\Security\SecurityContext;
 use Bloomkit\Core\Template\TemplateManager;
 use Bloomkit\Core\Tracer\Tracer;
+use Bloomkit\Core\Entities\Services\CrudServiceInterface;
+use Bloomkit\Core\Entities\Services\CrudService;
 
 class Application extends Container implements EventTracerInterface
 {
@@ -149,8 +151,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the path to the config directory.
-     *
-     * @return string
      */
     public function getConfigPath(): string
     {
@@ -159,8 +159,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the entity manager.
-     *
-     * @return \Bloomkit\Core\Entities\EntityManager;
      */
     public function getEntityManager(): EntityManager
     {
@@ -169,8 +167,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the event manager.
-     *
-     * @return \Bloomkit\Core\EventManager\EventManager;
      */
     public function getEventManager(): EventManager
     {
@@ -179,8 +175,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the application name + version as a string.
-     *
-     * @return string
      */
     public function getLongVersion(): string
     {
@@ -189,8 +183,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the logger.
-     *
-     * @return LoggerInterface;
      */
     public function getLogger(): LoggerInterface
     {
@@ -215,8 +207,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the security context.
-     *
-     * @return \Bloomkit\Core\Security\SecurityContext;
      */
     public function getSecurityContext(): SecurityContext
     {
@@ -225,8 +215,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the start-timestamp of the application.
-     *
-     * @return float
      */
     public function getStartTime(): float
     {
@@ -235,8 +223,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the template manager.
-     *
-     * @return \Bloomkit\Core\Template\TemplateManager;
      */
     public function getTemplateManager(): TemplateManager
     {
@@ -245,8 +231,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Returns the tracer.
-     *
-     * @return \Bloomkit\Core\Tracer\Tracer;
      */
     public function getTracer(): Tracer
     {
@@ -255,8 +239,6 @@ class Application extends Container implements EventTracerInterface
 
     /**
      * Checks if container has a specific key.
-     *
-     * @return bool True if key exists, false if not
      */
     public function has($key): bool
     {
@@ -266,7 +248,7 @@ class Application extends Container implements EventTracerInterface
     /**
      * Check the config-dir for configuration files and load them into the config repo.
      */
-    protected function loadConfigFromFiles()
+    protected function loadConfigFromFiles(): void
     {
         $cachedConfig = $this->getCachedConfigPath();
         if (file_exists($cachedConfig)) {
@@ -329,7 +311,7 @@ class Application extends Container implements EventTracerInterface
             return;
         }
 
-        $event->setTracerEvent($this->tracer->start($eventName, 'section'));
+        $event->setTracerEvent($this->getTracer()->start($eventName, 'section'));
     }
 
     /**
@@ -345,7 +327,7 @@ class Application extends Container implements EventTracerInterface
             return;
         }
 
-        $event->setTracerEvent($this->tracer->start($eventName, 'event_listener'));
+        $event->setTracerEvent($this->getTracer()->start($eventName, 'event_listener'));
     }
 
     /**
@@ -374,6 +356,8 @@ class Application extends Container implements EventTracerInterface
         $this->setAlias('Bloomkit\Core\Entities\TemplateManager', 'templateManager');
         $this->setAlias('Bloomkit\Core\Tracer\Tracer', 'tracer');
         $this->setAlias('Bloomkit\Core\Utilities\Repository', 'config');
+
+        $this->bind(CrudServiceInterface::class, CrudService::class, true);
     }
 
     /**

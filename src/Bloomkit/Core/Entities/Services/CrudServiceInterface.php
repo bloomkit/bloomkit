@@ -5,11 +5,12 @@ namespace Bloomkit\Core\Entities\Services;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Entities\Entity;
 use Bloomkit\Core\Utilities\Repository;
+use Bloomkit\Core\Exceptions\NotFoundException;
 
 /**
  * Describes all functions a service implementation must provide.
  */
-interface ServiceInterface
+interface CrudServiceInterface
 {
     /**
      * Delete a specific entitiy by its id.
@@ -27,9 +28,20 @@ interface ServiceInterface
      * @param string $entityDescName The name of the entity Class to use
      * @param string $query          A PbxQl Query to use
      *
-     * @return Entity|false The matching entity or false if not found
+     * @return Entity|null The matching entity or null if not found
      */
     public function getDatasetByFilter(string $entityDescName, string $query): ?Entity;
+
+    /**
+     * Load a specific entitiy by filter query.
+     *
+     * @param string $entityDescName The name of the entity Class to use
+     * @param string $query          A PbxQl Query to use
+     * @throws NotFoundException
+     *
+     * @return Entity The matching entity
+     */
+    public function requireDatasetByFilter(string $entityDescName, string $query): Entity;
 
     /**
      * Load a specific entitiy by its id.
@@ -37,9 +49,20 @@ interface ServiceInterface
      * @param string $entityDescName The name of the Entity Class to use
      * @param string $id             The id of the Entity to load
      *
-     * @return Entity|false The matching entity or false if not found
+     * @return Entity|null The matching entity or null if not found
      */
     public function getDatasetById(string $entityDescName, string $dsId): ?Entity;
+
+    /**
+     * Load a specific entitiy by its id.
+     *
+     * @param string $entityDescName The name of the Entity Class to use
+     * @param string $id             The id of the Entity to load
+     * @throws NotFoundException
+     *
+     * @return Entity The matching entity
+     */
+    public function requireDatasetById(string $entityDescName, string $dsId): Entity;
 
     /**
      * Returns the entity manager.
@@ -61,16 +84,13 @@ interface ServiceInterface
     /**
      * Load a list of Entities.
      *
-     * @param string      $entityDescName The name of the Entity Class to use
-     * @param string      $query          A PbxQl Query to use
-     * @param int         $limit          The amount of entities to load
-     * @param int         $offset         The offset to start loading entities from
-     * @param string|null $orderBy        The id of the field to order by
-     * @param bool        $orderAsc       Order ascending if true, descending if false
+     * @param string               $entityDescName The name of the Entity Class to use
+     * @param string               $query          A PbxQl Query to use
+     * @param ListOutputParameters $params         List output parameters
      *
-     * @return Repository A Repository containing the loaded entities
+     * @return ListResult A ListResult containing the loaded entities
      */
-    public function getList(string $entityDescName, string $query, int $limit = 10, int $offset = 0, ?string $orderBy = null, bool $orderAsc = true): Repository;
+    public function getList(string $entityDescName, ?string $query, ?ListOutputParameters $params = null): ListResult;
 
     /**
      * Insert a dataset with the provided data.

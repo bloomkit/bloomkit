@@ -54,7 +54,7 @@ class RestRequest extends HttpRequest
     {
         parent::__construct($server, $get, [], $cookies, $files);
 
-        if ((isset($post)) && ('' != trim($post))) {
+        if ('' != trim($post)) {
             $this->jsonData = json_decode($post, true);
             $this->postData = $post;
         } else {

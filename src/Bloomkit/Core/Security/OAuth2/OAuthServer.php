@@ -78,6 +78,8 @@ class OAuthServer
             $params = $request->getGetParams();
         } elseif ('POST' == $request->getHttpMethod()) {
             $params = $request->getPostParams();
+        } else {
+            throw new OAuthServerException(400, 'invalid_request', 'Method not supported');
         }
 
         // get the required client_id
@@ -162,7 +164,7 @@ class OAuthServer
             }
 
             $params['code'] = $tokenCode;
-            if ((isset($state)) && ('' != $state)) {
+            if ('' != $state) {
                 $params['state'] = $state;
             }
 
@@ -200,15 +202,15 @@ class OAuthServer
                 $params['id_token'] = $idToken->getTokenString($this->jwtSignKey);
             }
 
-            if ((isset($scope)) && ('' != $scope)) {
+            if ('' != $scope) {
                 $params['scope'] = $scope;
             }
 
-            if ((isset($state)) && ('' != $state)) {
+            if ('' != $state) {
                 $params['state'] = $state;
             }
 
-            if ((isset($nonce)) && ('' != $nonce)) {
+            if ('' != $nonce) {
                 $params['nonce'] = $nonce;
             }
 
@@ -448,6 +450,8 @@ class OAuthServer
             }
             $scope = filter_var($params->get('scope', ''), FILTER_SANITIZE_STRING);
             $token = $this->handleRefreshTokenRequest($refreshTokenCode, $client, $scope);
+        } else {
+            throw new OAuthServerException(400, 'invalid_request', 'Grant type not supported: '.$grantType);
         }
 
         unset($token['scopes']);

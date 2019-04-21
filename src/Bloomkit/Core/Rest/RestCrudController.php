@@ -3,16 +3,17 @@
 namespace Bloomkit\Core\Rest;
 
 use Bloomkit\Core\Module\Controller;
-use Bloomkit\Core\Database\PbxQl\Filter;
 use Bloomkit\Core\Entities\EntityManager;
 use Bloomkit\Core\Rest\Exceptions\RestFaultException;
-use Bloomkit\Core\Entities\Services\ServiceInterface;
+use Bloomkit\Core\Entities\Services\CrudServiceInterface;
 use Bloomkit\Core\Entities\Services\CrudService;
+use Bloomkit\Core\Entities\Services\ListOutputParameters;
+use Bloomkit\Core\Entities\Services\ListResult;
 
 class RestCrudController extends Controller
 {
     /**
-     * @var ServiceInterface
+     * @var CrudServiceInterface
      */
     protected $service;
 
@@ -86,44 +87,95 @@ class RestCrudController extends Controller
         if (!isset($entityDescName)) {
             $entityDescName = $this->entityDescName;
         }
-        $request = $this->getRequest();
-        $params = $request->getGetParams();
-        $limit = (int) $params->get('limit', 20);
-        $offset = (int) $params->get('offset', 0);
-        $orderAsc = (bool) $params->get('orderAsc', true);
-        $orderBy = $params->get('orderBy', null);
-        $filterStr = $params->get('filter');
 
         if (isset($filter)) {
-        	$filterStr = $filter->getPbxQlQuery();
-        } else if (isset($filterStr)) {
-			if (substr($filterStr, 0, 6) == 'PbxQL:') {
-				$filterStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
-			} else {
-				$filterStr = '* like "%'.$filterStr.'%"';
-			}
-		} else {
-			$filterStr = '';
+            $filterStr = $filter->getPbxQlQuery();
+        } else {
+            $filterStr = $this->createFilterStringFromRequest();
         }
 
-        $entitites = $this->service->getList($entityDescName, $filterStr, $limit, $offset, $orderBy, $orderAsc);
-        $count = $this->service->getCount($entityDescName, $filterStr);
+        $listParams = $this->createListOutputParametersFromRequest();
+        $listResult = $this->service->getList($entityDescName, $filterStr, $listParams);
+
+        return $this->createEntityListResponse($listResult);
+    }
+
+    protected function createListOutputParametersFromRequest(): ListOutputParameters
+    {
+        $request = $this->getRequest();
+        $params = $request->getGetParams();
+
+        $result = new ListOutputParameters();
+        $result->limit = (int) $params->get('limit', 20);
+        $result->offset = (int) $params->get('offset', 0);
+        $result->orderAsc = (bool) $params->get('orderAsc', true);
+        $result->orderBy = $params->get('orderBy', null);
+        $result->determineTotalCount = true;
+
+        return $result;
+    }
+
+    protected function createFilterStringFromRequest(): ?string
+    {
+        $request = $this->getRequest();
+        $params = $request->getGetParams();
+        $filterStr = $params->get('filter');
+
+        if (isset($filterStr)) {
+            if (substr($filterStr, 0, 6) == 'PbxQL:') {
+                $filterStr = trim(substr($filterStr, 6, strlen($filterStr) - 6));
+            } else {
+                $filterStr = '* like "%'.$filterStr.'%"';
+            }
+        }
+
+        return $filterStr;
+    }
+
+    protected function createEntityListResponse(ListResult $listResult)
+    {
         $response = new RestResponse();
-        $response->setEntityList($entitites, $count);
+        $response->setEntityList($listResult, $listResult->getTotalCount());
         $response->setStatusCode(200);
 
         return $response;
     }
 
-    public function insert()
+    protected function requireRequestData(): array
     {
         $request = $this->getRequest();
         $requestData = $request->getJsonData();
 
         if (is_null($requestData)) {
-            return RestResponse::createFault(400, 'Invalid request: No JSON found.');
+            throw new RestFaultException(400, 'Invalid request: No JSON found.');
         }
 
+        return $requestData;
+    }
+
+    protected function requireRequestDataField(string $fieldName)
+    {
+        $requestData = $this->requireRequestData();
+        if (!array_key_exists($fieldName, $requestData)) {
+            throw new RestFaultException(400, "$fieldName not set", 400);
+        }
+
+        return $requestData[$fieldName];
+    }
+
+    protected function requireRequestDataFieldAsString(string $fieldName): string
+    {
+        return $this->requireRequestDataField($fieldName);
+    }
+
+    protected function requireRequestDataFieldAsArray(string $fieldName): array
+    {
+        return $this->requireRequestDataField($fieldName);
+    }
+
+    public function insert()
+    {
+        $requestData = $this->requireRequestData();
         $dsId = $this->service->insert($this->entityDescName, $requestData);
 
         $result['success'] = true;
@@ -134,13 +186,7 @@ class RestCrudController extends Controller
 
     public function updateByFilter($query)
     {
-        $request = $this->getRequest();
-        $requestData = $request->getJsonData();
-
-        if (is_null($requestData)) {
-            return RestResponse::createFault(400, 'Invalid request: No JSON found.');
-        }
-
+        $requestData = $this->requireRequestData();
         $result = $this->service->updateByFilter($this->entityDescName, $query, $requestData);
         if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);
@@ -151,13 +197,7 @@ class RestCrudController extends Controller
 
     public function updateById($dsId)
     {
-        $request = $this->getRequest();
-        $requestData = $request->getJsonData();
-
-        if (is_null($requestData)) {
-            return RestResponse::createFault(400, 'Invalid request: No JSON found.');
-        }
-
+        $requestData = $this->requireRequestData();
         $result = $this->service->updateById($this->entityDescName, $dsId, $requestData);
         if (!$result) {
             return RestResponse::createFault(404, 'Not Found', 404);

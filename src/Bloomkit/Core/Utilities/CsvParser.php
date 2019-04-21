@@ -89,6 +89,7 @@ class CsvParser
         if ($sLine != '') {
             $aFields = str_getcsv($sLine, $this->delimiter, $this->enclosedBy, $this->escapedBy);
 
+            $aAssocFields = [];
             if ($this->sHeader != '') {
                 $aHeaders = str_getcsv($this->sHeader, $this->delimiter, $this->enclosedBy, $this->escapedBy);
                 foreach ($aFields as $iKey => $sField) {
@@ -100,7 +101,7 @@ class CsvParser
             $n = count($aFields);
             $nFields = $this->columnsPerLine;
 
-            if ($this->sHeader != '' && ($n == $nFields || $nFields == -1) && count($aHeaders) == $n) {
+            if (isset($aHeaders) && ($n == $nFields || $nFields == -1) && count($aHeaders) == $n) {
                 $ret = call_user_func($this->callback, $iDataset, $aAssocFields);
                 ++$iDataset;
             } elseif ($this->sHeader == '' && ($n == $nFields || $nFields == -1)) {

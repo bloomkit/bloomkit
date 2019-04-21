@@ -19,7 +19,7 @@ class FtpLoader
      * @var resource
      */
     protected $connection;
-    
+
     /**
      * @var boolean
      */

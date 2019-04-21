@@ -54,10 +54,7 @@ class OAuthJwtAuthenticator implements AuthenticatorInterface
                        'properly configured: '.$jwtAlgorithm.' is not a valid algorithm');
         }
 
-        if (isset($options['jwtKey'])) {
-            $jwtKey = $options['jwtKey'];
-        }
-
+        $jwtKey = $options['jwtKey'] ?? null;
         if (is_null($jwtKey)) {
             throw new ConfigurationException('Authentication failure: OAuthJwtAuthenticator is not '.
                 'properly configured: jwtKey is not set');

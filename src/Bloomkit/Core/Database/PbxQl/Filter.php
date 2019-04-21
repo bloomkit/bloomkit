@@ -96,10 +96,7 @@ class Filter
         //clean values
         $key = trim(str_replace(['"', "'", '´', '`'], '', $key));
         $op = strtoupper(trim($op));
-
-        if (isset($value)) {
-            $value = str_replace(['"', "'"], '', $value);
-        }
+        $value = str_replace(['"', "'"], '', $value);
 
         //check if operator is valid
         if (array_search($op, $operators) === false) {

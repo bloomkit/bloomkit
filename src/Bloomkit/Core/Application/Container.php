@@ -193,9 +193,8 @@ class Container implements \ArrayAccess
         $this->buildStack[] = $abstract;
 
         if ($shared === true) {
-            $key = $abstract;
-            if (isset($this->instances[$key])) {
-                return $this->instances[$key];
+            if (isset($this->instances[$abstract])) {
+                return $this->instances[$abstract];
             }
         }
 
@@ -206,7 +205,7 @@ class Container implements \ArrayAccess
         }
 
         if ($shared === true) {
-            $this->instances[$key] = $object;
+            $this->instances[$abstract] = $object;
         }
 
         return $object;

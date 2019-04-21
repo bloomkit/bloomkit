@@ -21,6 +21,16 @@ class EntityManager
     private $entityDescriptions = [];
 
     /**
+     * @var array
+     */
+    private $abstractValueProviders = [];
+
+    /**
+     * @var array
+     */
+    private $abstractValueProviderFactories = [];
+
+    /**
      * @var DbMaster
      */
     private $dbCon;
@@ -151,7 +161,7 @@ class EntityManager
             return $this->entityDescriptions[$className];
         }
 
-        if ((class_exists($className)) && (is_subclass_of($className, 'Bloomkit\Core\Entities\Descriptor\EntityDescriptor'))) {
+        if ((class_exists($className)) && (is_subclass_of($className, EntityDescriptor::class))) {
             $entityDesc = new $className();
             $this->entityDescriptions[$className] = $entityDesc;
 
@@ -314,7 +324,7 @@ class EntityManager
      *
      * @return Entity|false The first matching Entity or false if not found
      */
-    public function load(EntityDescriptor $entityDesc, Filter $filter = null)
+    public function load(EntityDescriptor $entityDesc, ?Filter $filter = null): ?Entity
     {
         $result = $this->loadList($entityDesc, $filter, 1);
         $result = $result->getItems();
@@ -499,10 +509,24 @@ class EntityManager
                     $entity->$fieldCol = $row[$fieldCol];
                 }
             }
+
+            $this->refreshAbstractFieldValues($entity);
             $result->set($entity->getDatasetId(), $entity);
         }
 
         return $result;
+    }
+
+    /**
+     * Refreshing abstract field values
+     */
+    public function refreshAbstractFieldValues(Entity $entity): void
+    {
+        $entityDesc = $entity->getDescriptor();
+        $abstractValueProvider = $this->tryGetAbstractValueProvider(get_class($entityDesc));
+        if(is_object($abstractValueProvider)) {
+            $abstractValueProvider->setAbstractFieldValues($entity);
+        }
     }
 
     /**
@@ -549,5 +573,31 @@ class EntityManager
         }
 
         $stmt->execute();
+    }
+
+    public function registerAbstractValueProvider(string $entityDescName, AbstractValueProviderInterface $valueProvider): void
+    {
+        $this->abstractValueProviders[$entityDescName] = $valueProvider;
+    }
+
+    public function registerAbstractValueProviderFactory(string $entityDescName, \Closure $valueProviderFactory): void
+    {
+        $this->abstractValueProviderFactories[$entityDescName] = $valueProviderFactory;
+    }
+
+    private function tryGetAbstractValueProvider(string $entityDescName): ?AbstractValueProviderInterface
+    {
+        if(isset($this->abstractValueProviders[$entityDescName])) {
+            return $this->abstractValueProviders[$entityDescName];
+        }
+
+        if(isset($this->abstractValueProviderFactories[$entityDescName])) {
+            $closure = $this->abstractValueProviderFactories[$entityDescName];
+            $valueProvider = $closure();
+            $this->registerAbstractValueProvider($entityDescName, $valueProvider);
+            return $valueProvider;
+        }
+
+        return null;
     }
 }
