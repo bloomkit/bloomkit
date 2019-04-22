@@ -63,7 +63,7 @@ class ExceptionListener
             if (isset($this->logger)) {
                 $this->logger->warning('Not found:'.$exception->getMessage());
             }
-            $response = RestResponse::createFault(404, $exception->getMessage());
+            $response = RestResponse::createFault(404, $exception->getMessage(), 404);
         } elseif ($exception instanceof AuthFailedException) {
             if (isset($this->logger)) {
                 $this->logger->warning('Authentication failed:'.$exception->getMessage());
