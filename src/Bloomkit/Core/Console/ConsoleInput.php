@@ -12,7 +12,7 @@ use Bloomkit\Core\Exceptions\InvalidParameterException;
 class ConsoleInput
 {
     /**
-     * Contains all application-options.
+     * Contains all application-options
      *
      * @var ConsoleOption[]
      */
@@ -42,9 +42,9 @@ class ConsoleInput
     /**
      * Contains all command-options.
      *
-     * @var ConsoleOption[]
+     * @var mixed[]
      */
-    private $options = [];
+    private $optionValues = [];
 
     /**
      * Contains a list of all command line parameters.
@@ -115,7 +115,7 @@ class ConsoleInput
         if ((is_null($value)) && ($option->getRequireValue())) {
             throw new \InvalidArgumentException(sprintf('Option "--%s" requires a value.', $name));
         }
-        $this->options[$option->getName()] = $value;
+        $this->optionValues[$option->getName()] = $value;
     }
 
     /**
@@ -141,7 +141,7 @@ class ConsoleInput
         if ((is_null($value)) && ($option->getRequireValue())) {
             throw new \InvalidArgumentException(sprintf('Option "-%s" requires a value.', $name));
         }
-        $this->options[$option->getName()] = $value;
+        $this->optionValues[$option->getName()] = $value;
     }
 
     /**
@@ -169,7 +169,7 @@ class ConsoleInput
      */
     public function getApplicationOptionByShortname($name)
     {
-        foreach ($this->options as $option) {
+        foreach ($this->applicationOptions as $option) {
             if ($option->getShortcut() == $name) {
                 return $option;
             }
@@ -208,18 +208,20 @@ class ConsoleInput
      * @return mixed Value of the option or default-value if null
      */
     public function getOptionValueByName($name)
-    {
-        $value = null;
+    {        
         $option = $this->getApplicationOptionByName($name);
-        if (is_null($option)) {
+        
+        if (is_null($option))
             $option = $this->command->getOptionByName($name);
-        }
-        if (is_null($option)) {
+            
+        if (is_null($option))
             throw new \InvalidArgumentException(sprintf('Option "--%s" does not exist.', $name));
+
+        $value = null;
+        if (isset($this->optionValues[$name])) {
+            $value = $this->optionValues[$name];
         }
-        if (isset($this->options[$name])) {
-            $value = $this->options[$name];
-        }
+        
         if (is_null($value)) {
             $value = $option->getDefault();
         }
@@ -248,7 +250,7 @@ class ConsoleInput
      */
     public function hasOption($name)
     {
-        return array_key_exists($name, $this->options);
+        return array_key_exists($name, $this->optionValues);
     }
 
     /**
@@ -277,6 +279,19 @@ class ConsoleInput
      */
     public function parse()
     {
+        // Parse params
+        $params = $this->params;
+        
+        foreach ($params as $param) {
+            if (0 === strpos($param, '--')) {
+                $this->parseLongOption($param);
+            } elseif (0 === strpos($param, '-')) {
+                $this->parseShortOption($param);
+            } else {
+                $this->addArgument($param);
+            }
+        }
+        
         //Finding the command
         $commandName = array_shift($this->params);
         $this->command = $this->application->getCommandByName($commandName);
@@ -286,19 +301,6 @@ class ConsoleInput
             $this->command = $this->application->getCommandByName('list');
 
             return;
-        }
-
-        // Parse params
-        $params = $this->params;
-
-        foreach ($params as $param) {
-            if (0 === strpos($param, '--')) {
-                $this->parseLongOption($param);
-            } elseif (0 === strpos($param, '-')) {
-                $this->parseShortOption($param);
-            } else {
-                $this->addArgument($param);
-            }
         }
     }
 
@@ -353,7 +355,7 @@ class ConsoleInput
             //these MUST be provided by command line
             if (($option->getIsRequired()) && (is_null($option->getDefault()))) {
                 $optionName = $option->getName();
-                if (false == isset($this->options[$optionName])) {
+                if (false == isset($this->optionValues[$optionName])) {
                     throw new \InvalidArgumentException(sprintf('Option "--%s" is required.', $optionName));
                 }
             }
