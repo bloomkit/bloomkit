@@ -7,6 +7,7 @@ use Bloomkit\Core\Module\ModuleInterface;
 use Bloomkit\Core\EventManager\Event;
 use Bloomkit\Core\Console\Events\ConsoleEvents;
 use Bloomkit\Core\Console\Events\ConsoleRunEvent;
+use Bloomkit\Core\Console\Events\ConsoleInitEvent;
 
 /**
  * Application class for building console applications.
@@ -125,10 +126,6 @@ class ConsoleApplication extends Application
     public function run(ConsoleInput $input = null, ConsoleOutput $output = null)
     {
         try {
-            foreach ($this->modules as $module) {
-                $module->onModulesLoaded();
-            }
-
             // Create output object if not provided
             if (false == isset($output)) {
                 $output = new ConsoleOutput($this);
@@ -138,7 +135,21 @@ class ConsoleApplication extends Application
             if (false == isset($input)) {
                 $input = new ConsoleInput($this);
             }
+            
+            // Trigger ConsoleInit Event
+            $eventManager = $this->getEventManager();
+            $event = new ConsoleInitEvent($input, $output);
+            $event->setData($input);
+            $eventManager->triggerEvent(ConsoleEvents::CONSOLEINIT, $event);
+            if ($event->stopProcessing()) {
+                echo $output->getOutputBuffer();
+                return 0;
+            }       
 
+            foreach ($this->modules as $module) {
+                $module->onModulesLoaded();
+            }
+            
             // Trigger ConsoleRun Event
             $eventManager = $this->getEventManager();
             $event = new ConsoleRunEvent($input, $output);
