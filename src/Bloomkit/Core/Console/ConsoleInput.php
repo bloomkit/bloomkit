@@ -17,42 +17,42 @@ class ConsoleInput
      * @var ConsoleOption[]
      */
     private $applicationOptions = [];
-
+    
     /**
      * Command line arguments.
      *
      * @var ConsoleArgument[]
      */
     private $arguments = [];
-
+    
     /**
      * Called console command.
      *
      * @var ConsoleCommand
      */
     private $command;
-
+    
     /**
      * The console application.
      *
      * @var ConsoleApplication
      */
     private $application;
-
+    
     /**
      * Contains all command-options.
      *
      * @var mixed[]
      */
     private $optionValues = [];
-
+    
     /**
      * Contains a list of all command line parameters.
      *
      * @var array
      */
     private $params = [];
-
+    
     /**
      * Constructor.
      *
@@ -62,21 +62,21 @@ class ConsoleInput
     {
         // Get command-line parameters
         $params = $_SERVER['argv'];
-
+        
         // Remove first entry (the file-name)
         array_shift($params);
         $this->params = $params;
         $this->application = $consoleApp;
-
+        
         $eventManager = $this->application->getEventManager();
         $event = new RepositoryEvent();
         $eventManager->triggerEvent(ConsoleEvents::REGISTEROPTIONS, $event);
         $this->applicationOptions = array_merge($this->applicationOptions, $event->getRepository()->getItems());
-
+        
         // Parse arguments and options
         $this->parse();
     }
-
+    
     /**
      * Add an argument to the argument-list.
      *
@@ -91,7 +91,7 @@ class ConsoleInput
         }
         $this->arguments[$argument->getName()] = $value;
     }
-
+    
     /**
      * Add a provided option by long-style (e.g. --name) to the option-list.
      *
@@ -117,7 +117,7 @@ class ConsoleInput
         }
         $this->optionValues[$option->getName()] = $value;
     }
-
+    
     /**
      * Add a provided option by short-style (e.g. -n) to the option-list.
      *
@@ -143,7 +143,7 @@ class ConsoleInput
         }
         $this->optionValues[$option->getName()] = $value;
     }
-
+    
     /**
      * Returns an applicationOption by its name.
      *
@@ -159,7 +159,7 @@ class ConsoleInput
             }
         }
     }
-
+    
     /**
      * Returns an applicationOption by its short-name.
      *
@@ -175,7 +175,7 @@ class ConsoleInput
             }
         }
     }
-
+    
     /**
      * Returns an argument value by its name.
      *
@@ -189,7 +189,7 @@ class ConsoleInput
             return $this->arguments[$name];
         }
     }
-
+    
     /**
      * Returns the command to be called.
      *
@@ -199,7 +199,7 @@ class ConsoleInput
     {
         return $this->command;
     }
-
+    
     /**
      * Returns an option by its name.
      *
@@ -208,27 +208,27 @@ class ConsoleInput
      * @return mixed Value of the option or default-value if null
      */
     public function getOptionValueByName($name)
-    {        
+    {
         $option = $this->getApplicationOptionByName($name);
         
         if (is_null($option))
             $option = $this->command->getOptionByName($name);
             
-        if (is_null($option))
-            throw new \InvalidArgumentException(sprintf('Option "--%s" does not exist.', $name));
-
-        $value = null;
-        if (isset($this->optionValues[$name])) {
-            $value = $this->optionValues[$name];
-        }
-        
-        if (is_null($value)) {
-            $value = $option->getDefault();
-        }
-
-        return $value;
+            if (is_null($option))
+                throw new \InvalidArgumentException(sprintf('Option "--%s" does not exist.', $name));
+                
+                $value = null;
+                if (isset($this->optionValues[$name])) {
+                    $value = $this->optionValues[$name];
+                }
+                
+                if (is_null($value)) {
+                    $value = $option->getDefault();
+                }
+                
+                return $value;
     }
-
+    
     /**
      * Check if argument is set in input.
      *
@@ -240,7 +240,7 @@ class ConsoleInput
     {
         return isset($this->arguments[$name]);
     }
-
+    
     /**
      * Check if option is is set in input.
      *
@@ -252,7 +252,7 @@ class ConsoleInput
     {
         return array_key_exists($name, $this->optionValues);
     }
-
+    
     /**
      * Checks if one ore more of the provided params is set in input.
      *
@@ -270,10 +270,10 @@ class ConsoleInput
                 }
             }
         }
-
+        
         return false;
     }
-
+    
     /**
      * Parse provided command-line parameters.
      */
@@ -281,29 +281,39 @@ class ConsoleInput
     {
         // Parse params
         $params = $this->params;
-        
+        $args = [];
+        $longOpts = [];
+        $shortOpts = [];
+                
         foreach ($params as $param) {
             if (0 === strpos($param, '--')) {
-                $this->parseLongOption($param);
+                $longOpts[] = $param;                
             } elseif (0 === strpos($param, '-')) {
-                $this->parseShortOption($param);
+                $shortOpts[] = $param;
             } else {
-                $this->addArgument($param);
+                $args[] = $param;
             }
         }
         
         //Finding the command
-        $commandName = array_shift($this->params);
+        $commandName = array_shift($args);
         $this->command = $this->application->getCommandByName($commandName);
-
+        
         //if this failes, use the "list" command instead and return
         if (is_null($this->command)) {
             $this->command = $this->application->getCommandByName('list');
-
-            return;
         }
+        
+        foreach($longOpts as $opt)
+            $this->parseLongOption($opt);
+        
+        foreach($shortOpts as $opt)
+            $this->parseShortOption($opt);
+        
+        foreach ($args as $arg)
+            $this->addArgument($arg);       
     }
-
+    
     /**
      * Parses a provided command-option in long-style.
      *
@@ -320,7 +330,7 @@ class ConsoleInput
         }
         $this->addLongOption($option, $value);
     }
-
+    
     /**
      * Parses a provided command-option in short-style.
      *
@@ -337,7 +347,7 @@ class ConsoleInput
         }
         $this->addShortOption($option, $value);
     }
-
+    
     /**
      * Checks if all required command-options are provided.
      *
