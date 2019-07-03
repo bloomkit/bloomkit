@@ -49,7 +49,7 @@ class Storage implements StorageInterface
         $path = Utils::normalizePath($path);
         $newpath = Utils::normalizePath($newpath);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if ($this->has($newpath)) {
             throw new FileExistsException();
@@ -76,7 +76,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
 
         return $this->getAdapter()->delete($path);
@@ -122,7 +122,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
 
         return $this->getAdapter()->getMetadata($path);
@@ -135,7 +135,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if ((!$object = $this->getAdapter()->getMimetype($path)) || !array_key_exists('mimetype', $object)) {
             return false;
@@ -151,7 +151,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if ((!$object = $this->getAdapter()->getSize($path)) || !array_key_exists('size', $object)) {
             return false;
@@ -167,7 +167,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if ((!$object = $this->getAdapter()->getTimestamp($path)) || !array_key_exists('timestamp', $object)) {
             return false;
@@ -183,7 +183,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if ((!$object = $this->getAdapter()->getVisibility($path)) || !array_key_exists('visibility', $object)) {
             return false;
@@ -267,7 +267,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if (!($object = $this->getAdapter()->read($path))) {
             return false;
@@ -283,7 +283,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if (!$object = $this->getAdapter()->readStream($path)) {
             return false;
@@ -300,7 +300,7 @@ class Storage implements StorageInterface
         $path = Utils::normalizePath($path);
         $newpath = Utils::normalizePath($newpath);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         if ($this->has($newpath)) {
             throw new FileExistsException();
@@ -316,7 +316,7 @@ class Storage implements StorageInterface
     {
         $path = Utils::normalizePath($path);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
 
         return (bool) $this->getAdapter()->setVisibility($path, $visibility);
@@ -330,7 +330,7 @@ class Storage implements StorageInterface
         $path = Utils::normalizePath($path);
         $config = $this->prepareConfig($config);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
 
         return (bool) $this->getAdapter()->update($path, $contents, $config);
@@ -347,7 +347,7 @@ class Storage implements StorageInterface
         $path = Utils::normalizePath($path);
         $config = $this->prepareConfig($config);
         if (!$this->has($path)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException('File not found: '.$path);
         }
         Utils::rewindStream($resource);
 
