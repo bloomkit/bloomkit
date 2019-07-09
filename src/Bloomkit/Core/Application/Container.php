@@ -288,7 +288,8 @@ class Container implements \ArrayAccess
     {
         unset($this->keys[$key]);
         unset($this->factories[$key]);
-        unset($this->values[$key]);
+        unset($this->values[$key]);        
+        unset($this->instances[$key]);
     }
 
     /**
