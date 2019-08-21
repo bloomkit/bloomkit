@@ -93,7 +93,7 @@ class RestResponse extends HttpResponse
     public function setEntityList(Repository $entities, $count = null)
     {
         if (is_null($count)) {
-            $result['count'] = count($entities);
+            $result['count'] = count($entities->getItems());
         } else {
             $result['count'] = $count;
         }
